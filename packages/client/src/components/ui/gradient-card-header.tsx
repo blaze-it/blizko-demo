@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { cn } from '@/utils/misc.tsx'
 
-type ColorTheme = 'emerald' | 'amber' | 'forest' | 'muted'
+type ColorTheme = 'primary' | 'accent' | 'warm' | 'muted'
 
 interface GradientCardHeaderProps {
 	children: ReactNode
@@ -10,15 +10,15 @@ interface GradientCardHeaderProps {
 }
 
 const themeClasses: Record<ColorTheme, string> = {
-	emerald: 'from-emerald-dark/30 to-forest/30',
-	amber: 'from-amber-dark/30 to-forest/30',
-	forest: 'from-forest/50 to-emerald-dark/30',
+	primary: 'from-terracotta-dark/30 to-primary/20',
+	accent: 'from-coral-dark/30 to-primary/20',
+	warm: 'from-primary/30 to-terracotta-dark/20',
 	muted: 'from-secondary/50 to-muted/30',
 }
 
 export function GradientCardHeader({
 	children,
-	theme = 'emerald',
+	theme = 'primary',
 	className,
 }: GradientCardHeaderProps) {
 	return (

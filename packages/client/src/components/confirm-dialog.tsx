@@ -155,7 +155,7 @@ export function ConfirmationProvider({ children }: ConfirmationProviderProps) {
 					<DialogHeader>
 						<DialogTitle className="flex items-center gap-2">
 							<Icon
-								className={`h-5 w-5 ${destructive ? 'text-destructive' : 'text-amber'}`}
+								className={`h-5 w-5 ${destructive ? 'text-destructive' : 'text-primary'}`}
 							/>
 							{options?.title}
 						</DialogTitle>

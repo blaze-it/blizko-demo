@@ -12,19 +12,19 @@ export function JSONDisplay({ value, className }: JSONDisplayProps) {
 	const getTokenClassName = (type: SyntaxToken['type']): string => {
 		switch (type) {
 			case 'key':
-				return 'text-emerald' // hsl(158 64% 32%)
+				return 'text-terracotta-dark'
 			case 'string':
-				return 'text-amber' // hsl(38 92% 50%)
+				return 'text-coral'
 			case 'number':
-				return 'text-emerald-light' // hsl(158 55% 42%)
+				return 'text-primary'
 			case 'boolean':
-				return 'text-amber-light' // hsl(38 95% 60%)
+				return 'text-coral-light'
 			case 'null':
-				return 'text-muted-foreground' // hsl(160 10% 55%)
+				return 'text-muted-foreground'
 			case 'punctuation':
-				return 'text-cream/70' // hsl(45 20% 92% / 0.7)
+				return 'text-foreground/70'
 			default:
-				return 'text-cream'
+				return 'text-foreground'
 		}
 	}
 

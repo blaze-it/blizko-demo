@@ -56,9 +56,9 @@ export function StarRating({
 							sizeClasses[size],
 							'transition-colors',
 							star <= displayValue
-								? 'fill-amber text-amber'
+								? 'fill-coral text-coral'
 								: 'text-muted-foreground',
-							!readOnly && star > displayValue && 'hover:text-amber-light',
+							!readOnly && star > displayValue && 'hover:text-coral-light',
 						)}
 					/>
 				</button>

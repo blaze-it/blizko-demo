@@ -17,6 +17,14 @@ const LandingPage = lazy(() =>
 	})),
 )
 
+// Legal
+const TermsPage = lazy(() =>
+	import('@/routes/terms').then((m) => ({ default: m.TermsPage })),
+)
+const PrivacyPage = lazy(() =>
+	import('@/routes/privacy').then((m) => ({ default: m.PrivacyPage })),
+)
+
 // Events
 const EventsPage = lazy(() =>
 	import('@/routes/events').then((m) => ({ default: m.EventsPage })),
@@ -69,6 +77,10 @@ export default function App() {
 
 					{/* Landing page */}
 					<Route path="/" element={<LandingPage />} />
+
+					{/* Legal */}
+					<Route path="/terms" element={<TermsPage />} />
+					<Route path="/privacy" element={<PrivacyPage />} />
 
 					{/* Protected routes */}
 					<Route

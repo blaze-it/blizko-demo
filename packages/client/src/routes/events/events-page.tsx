@@ -168,7 +168,7 @@ export function EventsPage() {
 					<div className="space-y-4">
 						{events.map((event) => (
 							<Link key={event.id} to={`/events/${event.id}`}>
-								<Card className="hover:border-emerald/30 transition-colors cursor-pointer">
+								<Card className="hover:border-primary/30 transition-colors cursor-pointer">
 									<CardContent className="p-4">
 										<div className="flex items-start justify-between gap-4">
 											<div className="flex-1 min-w-0">

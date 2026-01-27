@@ -96,6 +96,7 @@ export function LandingPage() {
 				</div>
 			</header>
 
+			<main>
 			{/* Hero */}
 			<section className="container relative pt-16 pb-24 md:pt-24 md:pb-32">
 				{/* Decorative background blob */}
@@ -287,7 +288,7 @@ export function LandingPage() {
 						<Button
 							size="lg"
 							variant="secondary"
-							className="bg-white text-foreground hover:bg-white/90 gap-2 text-base px-6"
+							className="bg-white !text-gray-900 hover:bg-white/90 gap-2 text-base px-6"
 							asChild
 						>
 							<Link to="/register">
@@ -299,9 +300,11 @@ export function LandingPage() {
 				</div>
 			</section>
 
+			</main>
+
 			{/* Footer */}
-			<footer className="container pb-10 text-center">
-				<div className="border-t border-border pt-8 flex flex-col items-center gap-2">
+			<footer className="container pb-10">
+				<div className="border-t border-border pt-8 flex flex-col items-center gap-4">
 					<div className="inline-flex items-center gap-1.5">
 						<span className="font-display font-bold text-lg tracking-tight text-muted-foreground">
 							blizko
@@ -310,6 +313,33 @@ export function LandingPage() {
 					</div>
 					<p className="text-sm text-muted-foreground">
 						Lokální události, každý den.
+					</p>
+					<div className="flex items-center gap-4 text-sm text-muted-foreground">
+						<Link
+							to="/terms"
+							className="hover:text-foreground transition-colors"
+						>
+							Obchodní podmínky
+						</Link>
+						<span className="w-1 h-1 rounded-full bg-border" />
+						<Link
+							to="/privacy"
+							className="hover:text-foreground transition-colors"
+						>
+							Ochrana soukromí
+						</Link>
+					</div>
+					<p className="text-xs text-muted-foreground/70">
+						&copy; {new Date().getFullYear()}{' '}
+						<a
+							href="https://blaze.codes"
+							target="_blank"
+							rel="noopener noreferrer"
+							className="hover:text-foreground transition-colors"
+						>
+							Blaze
+						</a>
+						. Všechna práva vyhrazena.
 					</p>
 				</div>
 			</footer>
