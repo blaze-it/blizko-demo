@@ -2,7 +2,7 @@
 set -e
 
 echo "Syncing database schema..."
-npx prisma db push
+npx prisma db push --accept-data-loss
 
 echo "Starting API server..."
 exec node dist/index.js
