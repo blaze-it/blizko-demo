@@ -186,7 +186,7 @@ export const eventsRouter = router({
 		.query(async ({ ctx, input }) => {
 			const event = await ensureExists(
 				ctx.prisma.event.findFirst({
-					where: { id: input.id, status: EventStatus.PUBLISHED },
+					where: { id: input.id },
 					include: {
 						organizer: { select: { id: true, name: true, image: true } },
 						participants: {
