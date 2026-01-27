@@ -20,7 +20,7 @@ import { trpc } from '@/trpc/client'
 
 const CATEGORIES = [
 	{ value: 'WORKOUT', label: 'Cvičení' },
-	{ value: 'WORKSHOP', label: 'Workshop' },
+	{ value: 'WORKSHOP', label: 'Dílna' },
 	{ value: 'KIDS', label: 'Děti' },
 	{ value: 'MEETUP', label: 'Setkání' },
 	{ value: 'LECTURE', label: 'Přednáška' },

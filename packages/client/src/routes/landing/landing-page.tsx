@@ -20,7 +20,7 @@ const categories = [
 	},
 	{
 		emoji: '\u{1F3A8}',
-		label: 'Workshop',
+		label: 'Dílna',
 		desc: 'Tvoření, vaření, kutilské kurzy',
 		color: 'bg-amber-100 dark:bg-amber-950/40',
 	},
@@ -53,7 +53,7 @@ const categories = [
 const features = [
 	{
 		icon: MapPin,
-		title: 'Hyperlocal',
+		title: 'Ve vašem okolí',
 		desc: 'Události na dosah ruky. Váš dvůr, váš park, vaše ulice.',
 	},
 	{

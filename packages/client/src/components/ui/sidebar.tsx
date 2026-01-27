@@ -305,7 +305,7 @@ const SidebarTrigger = React.forwardRef<
 			{...props}
 		>
 			<PanelLeft />
-			<span className="sr-only">Toggle Sidebar</span>
+			<span className="sr-only">Přepnout postranní panel</span>
 		</Button>
 	)
 })
@@ -321,10 +321,10 @@ const SidebarRail = React.forwardRef<
 		<button
 			ref={ref}
 			data-sidebar="rail"
-			aria-label="Toggle Sidebar"
+			aria-label="Přepnout postranní panel"
 			tabIndex={-1}
 			onClick={toggleSidebar}
-			title="Toggle Sidebar"
+			title="Přepnout postranní panel"
 			className={cn(
 				'absolute inset-y-0 z-20 hidden w-5 -translate-x-1/2 transition-all duration-300 ease-out sm:flex',
 				// Hover indicator line
