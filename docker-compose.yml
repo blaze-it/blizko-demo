@@ -30,6 +30,8 @@ services:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-blizko}
       - NODE_ENV=production
       - BETTER_AUTH_SECRET
+      - BETTER_AUTH_URL=${SERVICE_URL_SERVER:-https://blizko-api.blaze.codes}
+      - FRONTEND_URL=${SERVICE_URL_CLIENT:-https://blizko.blaze.codes}
       - SENTRY_DSN
     expose:
       - 4000
