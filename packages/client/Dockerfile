@@ -26,7 +26,7 @@ RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy shared package source and build it
 COPY packages/shared ./packages/shared
-RUN pnpm --filter @jarvis/shared build
+RUN pnpm --filter @blizko/shared build
 
 # Copy server source (needed for type imports)
 COPY packages/server ./packages/server

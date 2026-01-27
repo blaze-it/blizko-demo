@@ -45,14 +45,14 @@ RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy shared package source and build it
 COPY packages/shared ./packages/shared
-RUN pnpm --filter @jarvis/shared build
+RUN pnpm --filter @blizko/shared build
 
 # Copy and generate Prisma
 # Note: DATABASE_URL is required for prisma.config.ts but not actually used at build time
 COPY packages/server/prisma ./packages/server/prisma
 COPY packages/server/prisma.config.ts ./packages/server/prisma.config.ts
 ENV DATABASE_URL="postgresql://build:build@localhost:5432/build"
-RUN pnpm --filter @jarvis/server db:generate
+RUN pnpm --filter @blizko/server db:generate
 
 # Copy source code
 COPY packages/server ./packages/server
@@ -124,7 +124,7 @@ WORKDIR /app
 COPY pnpm-lock.yaml ./pnpm-lock.yaml
 COPY .npmrc ./
 COPY packages/server/package.json ./package.json
-RUN sed -i '/"@jarvis\/shared"/d' package.json
+RUN sed -i '/"@blizko\/shared"/d' package.json
 
 # Install production dependencies only (lockfile helps with version resolution)
 RUN pnpm install --prod
