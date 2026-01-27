@@ -54,7 +54,6 @@ services:
       - RESEND_API_KEY
       - SLACK_BOT_TOKEN
       - SLACK_TEAM_ID
-      - ALLOW_INDEXING
     expose:
       - 4000
     healthcheck:

@@ -21,7 +21,6 @@ const schema = z.object({
 
 	// Monitoring (optional for PoC)
 	SENTRY_DSN: z.string().optional(),
-	ALLOW_INDEXING: z.enum(['true', 'false']).default('false'),
 })
 
 export type Env = z.infer<typeof schema>
@@ -48,7 +47,7 @@ export function getEnv() {
 	return {
 		MODE: env.NODE_ENV,
 		SENTRY_DSN: env.SENTRY_DSN,
-		ALLOW_INDEXING: env.ALLOW_INDEXING,
+		ALLOW_INDEXING: 'true',
 	}
 }
 
