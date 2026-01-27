@@ -19,7 +19,8 @@
 		"db:generate": "pnpm --filter @blizko/server db:generate",
 		"db:push": "pnpm --filter @blizko/server db:push",
 		"db:migrate": "pnpm --filter @blizko/server db:migrate",
-		"db:studio": "pnpm --filter @blizko/server db:studio"
+		"db:studio": "pnpm --filter @blizko/server db:studio",
+		"test:e2e": "pnpm --filter @blizko/e2e test"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.3.8",

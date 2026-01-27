@@ -36,7 +36,10 @@ const EditEventSchema = z.object({
 	date: z.string().min(1),
 	startTime: z.string().min(1),
 	endTime: z.string().optional(),
-	durationMinutes: z.coerce.number().int().positive().optional(),
+	durationMinutes: z.preprocess(
+		(val) => (val === '' || val === undefined ? undefined : val),
+		z.coerce.number().int().positive().optional(),
+	),
 	locationName: z.string().min(1).max(200),
 	address: z.string().min(1).max(500),
 	latitude: z.coerce.number().min(-90).max(90),

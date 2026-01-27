@@ -2,8 +2,6 @@
  * Shared date utilities
  */
 
-import type { TaskDue } from '../types/task.js'
-
 /**
  * Format a Date object to YYYY-MM-DD string
  */
@@ -75,72 +73,6 @@ export function isTomorrow(dateStr: string): boolean {
 	const dueDate = new Date(dateStr)
 	dueDate.setHours(0, 0, 0, 0)
 	return dueDate.getTime() === getTomorrow().getTime()
-}
-
-export interface DueDateInfo {
-	text: string
-	isOverdue: boolean
-}
-
-/**
- * Format a TaskDue object to a human-readable string with overdue status
- * Returns relative dates like "Today", "Tomorrow", weekday for this week,
- * or formatted date for other dates.
- */
-export function formatDueDate(
-	due: TaskDue | null | undefined,
-): DueDateInfo | null {
-	if (!due?.date) return null
-
-	const dueDate = new Date(due.date)
-	const today = getToday()
-	const tomorrow = getTomorrow()
-
-	const dueDay = new Date(dueDate)
-	dueDay.setHours(0, 0, 0, 0)
-
-	const overdueStatus = dueDay < today
-
-	// Today
-	if (dueDay.getTime() === today.getTime()) {
-		return { text: 'Today', isOverdue: false }
-	}
-
-	// Tomorrow
-	if (dueDay.getTime() === tomorrow.getTime()) {
-		return { text: 'Tomorrow', isOverdue: false }
-	}
-
-	// Overdue - show short date
-	if (overdueStatus) {
-		return {
-			text: dueDate.toLocaleDateString('en-US', {
-				month: 'short',
-				day: 'numeric',
-			}),
-			isOverdue: true,
-		}
-	}
-
-	// Check if within this week - show weekday
-	const endOfWeek = new Date(today)
-	endOfWeek.setDate(endOfWeek.getDate() + (7 - endOfWeek.getDay()))
-
-	if (dueDay <= endOfWeek) {
-		return {
-			text: dueDate.toLocaleDateString('en-US', { weekday: 'short' }),
-			isOverdue: false,
-		}
-	}
-
-	// Other dates - show short date
-	return {
-		text: dueDate.toLocaleDateString('en-US', {
-			month: 'short',
-			day: 'numeric',
-		}),
-		isOverdue: false,
-	}
 }
 
 /**

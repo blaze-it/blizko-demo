@@ -35,7 +35,10 @@ const CreateEventSchema = z.object({
 	date: z.string().min(1, 'Date is required'),
 	startTime: z.string().min(1, 'Start time is required'),
 	endTime: z.string().optional(),
-	durationMinutes: z.coerce.number().int().positive().optional(),
+	durationMinutes: z.preprocess(
+		(val) => (val === '' || val === undefined ? undefined : val),
+		z.coerce.number().int().positive().optional(),
+	),
 	locationName: z.string().min(1, 'Location name is required').max(200),
 	address: z.string().min(1, 'Address is required').max(500),
 	latitude: z.coerce.number().min(-90).max(90),

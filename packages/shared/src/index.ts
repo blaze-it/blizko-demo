@@ -19,7 +19,6 @@ export {
 	sortByValue,
 } from './utils/common.js'
 
-export type { DueDateInfo } from './utils/date.js'
 export {
 	formatDate,
 	formatDateCompact,
@@ -32,7 +31,6 @@ export {
 	formatDateTimeFull,
 	formatDateTimeShort,
 	formatDateWithTime,
-	formatDueDate,
 	formatMonthYear,
 	getToday,
 	getTomorrow,
