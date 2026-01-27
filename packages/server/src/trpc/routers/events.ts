@@ -58,6 +58,7 @@ const updateEventSchema = z.object({
 	currency: z.string().optional(),
 	capacity: z.number().int().positive().optional(),
 	imageUrl: z.string().url().optional(),
+	status: z.nativeEnum(EventStatus).optional(),
 })
 
 // =============================================================================

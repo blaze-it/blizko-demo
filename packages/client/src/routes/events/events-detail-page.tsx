@@ -1,3 +1,4 @@
+import 'leaflet/dist/leaflet.css'
 import {
 	ArrowLeft,
 	CalendarDays,
@@ -6,6 +7,7 @@ import {
 	Users,
 	XCircle,
 } from 'lucide-react'
+import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -35,10 +37,7 @@ export function EventsDetailPage() {
 
 	const cancelMutation = trpc.events.update.useMutation({
 		onSuccess: () => utils.events.getById.invalidate({ id: id! }),
-	}) as {
-		mutate: (input: { id: string; status: string }) => void
-		isPending: boolean
-	}
+	})
 
 	usePageTitle(event?.title ?? 'Událost')
 
@@ -150,14 +149,20 @@ export function EventsDetailPage() {
 						</div>
 					</div>
 
-					{/* Map placeholder */}
-					<div className="rounded-lg bg-muted/50 border border-border h-48 flex items-center justify-center">
-						<div className="text-center text-muted-foreground text-sm">
-							<MapPin className="h-8 w-8 mx-auto mb-1 opacity-50" />
-							<p>
-								{event.latitude.toFixed(4)}, {event.longitude.toFixed(4)}
-							</p>
-						</div>
+					{/* Map */}
+					<div className="rounded-lg overflow-hidden border border-border h-48">
+						<MapContainer
+							center={[event.latitude, event.longitude]}
+							zoom={15}
+							scrollWheelZoom={false}
+							className="h-full w-full"
+						>
+							<TileLayer
+								attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+								url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+							/>
+							<Marker position={[event.latitude, event.longitude]} />
+						</MapContainer>
 					</div>
 
 					{/* Organizer */}
