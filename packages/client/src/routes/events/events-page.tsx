@@ -170,9 +170,9 @@ export function EventsPage() {
 							<Link key={event.id} to={`/events/${event.id}`}>
 								<Card className="hover:border-primary/30 transition-colors cursor-pointer">
 									<CardContent className="p-4">
-										<div className="flex items-start justify-between gap-4">
+										<div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
 											<div className="flex-1 min-w-0">
-												<div className="flex items-center gap-2 mb-1">
+												<div className="flex flex-wrap items-center gap-2 mb-1">
 													<h3 className="font-semibold text-foreground truncate">
 														{event.title}
 													</h3>
@@ -184,18 +184,18 @@ export function EventsPage() {
 														{CATEGORIES.find((c) => c.value === event.category)?.label ?? event.category}
 													</Badge>
 												</div>
-												<div className="flex items-center gap-4 text-sm text-muted-foreground mt-2">
+												<div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground mt-2">
 													<span className="flex items-center gap-1">
-														<Calendar className="h-3.5 w-3.5" />
+														<Calendar className="h-3.5 w-3.5 shrink-0" />
 														{formatDate(event.date)} v {event.startTime}
 													</span>
-													<span className="flex items-center gap-1">
-														<MapPin className="h-3.5 w-3.5" />
-														{event.locationName}
+													<span className="flex items-center gap-1 min-w-0">
+														<MapPin className="h-3.5 w-3.5 shrink-0" />
+														<span className="truncate">{event.locationName}</span>
 													</span>
 													{event.capacity && (
 														<span className="flex items-center gap-1">
-															<Users className="h-3.5 w-3.5" />
+															<Users className="h-3.5 w-3.5 shrink-0" />
 															{event._count?.participants ?? 0} /{' '}
 															{event.capacity}
 														</span>

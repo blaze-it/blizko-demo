@@ -150,7 +150,7 @@ export function EventsNewPage() {
 							)}
 						</div>
 
-						<div className="grid grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div className="space-y-2">
 								<Label htmlFor="date">Datum</Label>
 								<Input id="date" type="date" {...register('date')} />
@@ -171,7 +171,7 @@ export function EventsNewPage() {
 							</div>
 						</div>
 
-						<div className="grid grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div className="space-y-2">
 								<Label htmlFor="endTime">Čas konce (nepovinné)</Label>
 								<Input id="endTime" type="time" {...register('endTime')} />
@@ -215,7 +215,7 @@ export function EventsNewPage() {
 							)}
 						</div>
 
-						<div className="grid grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div className="space-y-2">
 								<Label htmlFor="latitude">Zeměpisná šířka</Label>
 								<Input
@@ -246,7 +246,7 @@ export function EventsNewPage() {
 							</div>
 						</div>
 
-						<div className="grid grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div className="space-y-2">
 								<Label htmlFor="price">Cena (Kč, 0 = zdarma)</Label>
 								<Input

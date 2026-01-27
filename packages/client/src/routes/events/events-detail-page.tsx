@@ -79,18 +79,20 @@ export function EventsDetailPage() {
 
 			<Card>
 				<CardHeader>
-					<div className="flex items-start justify-between gap-4">
+					<div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
 						<div>
-							<Badge className="mb-2">{event.category}</Badge>
-							{event.status === 'CANCELLED' && (
-								<Badge variant="destructive" className="ml-2 mb-2">
-									Zrušeno
-								</Badge>
-							)}
-							<CardTitle className="text-2xl">{event.title}</CardTitle>
+							<div className="flex flex-wrap gap-2 mb-2">
+								<Badge>{event.category}</Badge>
+								{event.status === 'CANCELLED' && (
+									<Badge variant="destructive">
+										Zrušeno
+									</Badge>
+								)}
+							</div>
+							<CardTitle className="text-xl sm:text-2xl">{event.title}</CardTitle>
 						</div>
-						<div className="text-right">
-							<p className="text-2xl font-bold text-primary">
+						<div className="sm:text-right shrink-0">
+							<p className="text-xl sm:text-2xl font-bold text-primary">
 								{event.price === 0
 									? 'Zdarma'
 									: `${event.price} ${event.currency}`}

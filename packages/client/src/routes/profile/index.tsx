@@ -112,13 +112,13 @@ export function ProfilePage() {
 						Zpět na události
 					</Link>
 				</Button>
-				<div className="flex items-center gap-3">
-					<div className="flex h-16 w-16 items-center justify-center rounded-full bg-primary/10">
-						<User className="h-8 w-8 text-primary" />
+				<div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+					<div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-full bg-primary/10 shrink-0">
+						<User className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
 					</div>
-					<div>
-						<h1 className="text-3xl font-bold">{user.name || 'Profil'}</h1>
-						<p className="text-muted-foreground">{user.email}</p>
+					<div className="min-w-0">
+						<h1 className="text-2xl sm:text-3xl font-bold truncate">{user.name || 'Profil'}</h1>
+						<p className="text-muted-foreground truncate">{user.email}</p>
 					</div>
 				</div>
 			</div>
@@ -126,12 +126,12 @@ export function ProfilePage() {
 			{/* Account Information */}
 			<Card>
 				<CardHeader>
-					<div className="flex items-center justify-between">
+					<div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
 						<CardTitle className="flex items-center gap-2">
 							<User className="h-5 w-5 text-blue-500" />
 							Informace o účtu
 						</CardTitle>
-						<Button variant="ghost" size="sm" onClick={handleOpenEditDialog}>
+						<Button variant="ghost" size="sm" onClick={handleOpenEditDialog} className="w-full sm:w-auto">
 							<Pencil className="mr-2 h-4 w-4" />
 							Upravit
 						</Button>

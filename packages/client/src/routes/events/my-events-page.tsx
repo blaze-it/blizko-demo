@@ -21,16 +21,16 @@ export function MyEventsPage() {
 
 	return (
 		<div className="container">
-			<div className="flex items-center justify-between mb-6">
+			<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
 				<h1 className="text-2xl font-bold">Moje události</h1>
-				<Button onClick={() => navigate('/events/new')}>
+				<Button onClick={() => navigate('/events/new')} className="w-full sm:w-auto">
 					<Plus className="h-4 w-4 mr-2" />
 					Vytvořit událost
 				</Button>
 			</div>
 
 			{/* Tabs */}
-			<div className="flex gap-2 mb-6">
+			<div className="flex gap-2 mb-6 overflow-x-auto">
 				<Button
 					variant={tab === 'organized' ? 'default' : 'outline'}
 					onClick={() => setTab('organized')}

@@ -177,7 +177,7 @@ export function EventsEditPage() {
 							</Select>
 						</div>
 
-						<div className="grid grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div className="space-y-2">
 								<Label htmlFor="date">Datum</Label>
 								<Input id="date" type="date" {...register('date')} />
@@ -188,7 +188,7 @@ export function EventsEditPage() {
 							</div>
 						</div>
 
-						<div className="grid grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div className="space-y-2">
 								<Label htmlFor="endTime">Čas konce</Label>
 								<Input id="endTime" type="time" {...register('endTime')} />
@@ -213,7 +213,7 @@ export function EventsEditPage() {
 							<Input id="address" {...register('address')} />
 						</div>
 
-						<div className="grid grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div className="space-y-2">
 								<Label htmlFor="latitude">Zeměpisná šířka</Label>
 								<Input
@@ -234,7 +234,7 @@ export function EventsEditPage() {
 							</div>
 						</div>
 
-						<div className="grid grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 							<div className="space-y-2">
 								<Label htmlFor="price">Cena (Kč)</Label>
 								<Input

@@ -50,17 +50,17 @@ export function PageHeader({
 				<ArrowLeft className="h-4 w-4 mr-2" />
 				{backLabel}
 			</Button>
-			<div className="flex justify-between items-start">
+			<div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start">
 				<div>
-					<h1 className="text-3xl font-bold flex items-center gap-2">
-						{Icon && <Icon className={`h-8 w-8 ${iconClassName || ''}`} />}
+					<h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+						{Icon && <Icon className={`h-7 w-7 sm:h-8 sm:w-8 ${iconClassName || ''}`} />}
 						{title}
 					</h1>
 					{description && (
 						<p className="text-muted-foreground mt-1">{description}</p>
 					)}
 				</div>
-				{actions && <div className="flex flex-nowrap gap-2">{actions}</div>}
+				{actions && <div className="flex flex-wrap gap-2">{actions}</div>}
 			</div>
 		</div>
 	)
@@ -101,15 +101,15 @@ export function MainPageHeader({
 	actions,
 }: MainPageHeaderProps) {
 	return (
-		<div className="flex justify-between items-center mb-6">
+		<div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mb-6">
 			<div>
-				<h1 className="text-3xl font-bold flex items-center gap-2">
-					{Icon && <Icon className={`h-8 w-8 ${iconClassName || ''}`} />}
+				<h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
+					{Icon && <Icon className={`h-7 w-7 sm:h-8 sm:w-8 ${iconClassName || ''}`} />}
 					{title}
 				</h1>
 				{description && <p className="text-muted-foreground">{description}</p>}
 			</div>
-			{actions && <div className="flex flex-nowrap gap-2">{actions}</div>}
+			{actions && <div className="flex flex-wrap gap-2">{actions}</div>}
 		</div>
 	)
 }
