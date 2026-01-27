@@ -1,0 +1,45 @@
+{
+	"name": "@blizko/server",
+	"version": "0.1.0",
+	"private": true,
+	"type": "module",
+	"exports": {
+		"./trpc": {
+			"types": "./src/trpc/routers/index.ts",
+			"import": "./dist/trpc/routers/index.js"
+		}
+	},
+	"scripts": {
+		"dev": "tsx watch --env-file=.env src/index.ts",
+		"build": "tsc",
+		"start": "node --env-file=.env dist/index.js",
+		"typecheck": "tsc --noEmit",
+		"db:generate": "prisma generate",
+		"db:push": "prisma db push",
+		"db:migrate": "prisma migrate dev",
+		"db:studio": "prisma studio"
+	},
+	"dependencies": {
+		"@blizko/shared": "workspace:*",
+		"@hono/node-server": "^1.19.7",
+		"@hono/trpc-server": "^0.4.0",
+		"@prisma/adapter-pg": "^7.3.0",
+		"@prisma/client": "^7.0.1",
+		"@trpc/server": "^11.8.0",
+		"bcryptjs": "^3.0.2",
+		"better-auth": "^1.4.7",
+		"date-fns": "^4.1.0",
+		"hono": "^4.11.1",
+		"prisma": "^7.0.1",
+		"superjson": "^2.2.6",
+		"zod": "^4.3.5"
+	},
+	"devDependencies": {
+		"@types/node": "^25.0.3",
+		"tsx": "^4.20.3",
+		"typescript": "^5.9.2"
+	},
+	"engines": {
+		"node": "22"
+	}
+}

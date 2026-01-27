@@ -1,0 +1,55 @@
+node_modules
+.DS_Store
+
+# Build outputs
+dist/
+/build
+/public/build
+/server-build
+.env
+.cache
+.react-router/
+
+# Generated files
+**/generated/prisma/
+
+# Workspace package-locks (only root is needed)
+packages/*/package-lock.json
+
+/prisma/data.db
+/prisma/data.db-journal
+/tests/prisma
+
+/test-results/
+/playwright-report/
+/playwright/.cache/
+/tests/fixtures/email/
+/coverage
+
+# Expo
+.expo/
+
+/other/cache.db
+
+# Easy way to create temporary files/folders that won't accidentally be added to git
+*.local.*
+
+# generated files
+/app/components/ui/icons
+/app/generated
+
+invoices-data/
+
+expense-data/
+
+scripts/expenses.xlsx
+
+jarvis_tracker_data.sql
+
+scripts/expenses-aug.xlsx
+
+backups/
+backup.sql
+
+# Playwright MCP
+.playwright-mcp/

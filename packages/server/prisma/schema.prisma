@@ -1,0 +1,176 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================================================
+// Auth Models (BetterAuth)
+// ============================================================================
+
+model User {
+  id              String   @id @default(cuid())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  email           String   @unique
+  name            String?
+  username        String?  @unique
+  displayUsername  String?  @unique
+  emailVerified   Boolean  @default(false)
+  neighborhood    String?
+  bio             String?
+
+  sessions          Session[]
+  accounts          Account[]
+  image             UserImage?
+  password          Password?
+  roles             Role[]
+  organizedEvents   Event[]              @relation("EventOrganizer")
+  eventParticipants EventParticipant[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  expiresAt DateTime
+  token     String   @unique
+  ipAddress String?
+  userAgent String?
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Verification {
+  id         String    @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime? @updatedAt
+}
+
+model UserImage {
+  id          String @id @default(cuid())
+  contentType String
+  blob        Bytes
+  userId      String @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Password {
+  hash   String
+  userId String @unique
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Role {
+  id          String       @id @default(cuid())
+  name        String       @unique
+  users       User[]
+  permissions Permission[]
+}
+
+model Permission {
+  id     String @id @default(cuid())
+  entity String
+  action String
+  access String
+  roleId String
+
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+}
+
+// ============================================================================
+// Events Platform Models
+// ============================================================================
+
+model Event {
+  id              String        @id @default(cuid())
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  title           String
+  description     String
+  category        EventCategory
+  date            DateTime
+  startTime       String
+  endTime         String?
+  durationMinutes Int?
+  locationName    String
+  address         String
+  latitude        Float
+  longitude       Float
+  price           Int           @default(0)
+  currency        String        @default("CZK")
+  capacity        Int
+  status          EventStatus   @default(DRAFT)
+  imageUrl        String?
+  organizerId     String
+
+  organizer    User               @relation("EventOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
+  participants EventParticipant[]
+}
+
+model EventParticipant {
+  id        String            @id @default(cuid())
+  createdAt DateTime          @default(now())
+  status    ParticipantStatus @default(CONFIRMED)
+  eventId   String
+  userId    String
+
+  event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+}
+
+// ============================================================================
+// Enums
+// ============================================================================
+
+enum EventCategory {
+  WORKOUT
+  WORKSHOP
+  KIDS
+  MEETUP
+  LECTURE
+  LEISURE
+  OTHER
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+  CANCELLED
+  COMPLETED
+}
+
+enum ParticipantStatus {
+  CONFIRMED
+  CANCELLED
+  WAITLISTED
+}

@@ -1,0 +1,236 @@
+import {
+	ArrowLeft,
+	CalendarDays,
+	Edit,
+	MapPin,
+	Users,
+	XCircle,
+} from 'lucide-react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { usePageTitle } from '@/hooks/use-page-title'
+import { trpc } from '@/trpc/client'
+
+export function EventsDetailPage() {
+	const { id } = useParams<{ id: string }>()
+	const navigate = useNavigate()
+	const utils = trpc.useUtils()
+
+	const { data: event, isLoading } = trpc.events.getById.useQuery(
+		{ id: id! },
+		{ enabled: !!id },
+	)
+
+	const { data: user } = trpc.user.me.useQuery()
+
+	const joinMutation = trpc.events.join.useMutation({
+		onSuccess: () => utils.events.getById.invalidate({ id: id! }),
+	})
+
+	const leaveMutation = trpc.events.leave.useMutation({
+		onSuccess: () => utils.events.getById.invalidate({ id: id! }),
+	})
+
+	const cancelMutation = trpc.events.update.useMutation({
+		onSuccess: () => utils.events.getById.invalidate({ id: id! }),
+	}) as { mutate: (input: { id: string; status: string }) => void; isPending: boolean }
+
+	usePageTitle(event?.title ?? 'Event')
+
+	if (isLoading) {
+		return (
+			<div className="flex justify-center py-12">
+				<div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+			</div>
+		)
+	}
+
+	if (!event) {
+		return (
+			<div className="container text-center py-12">
+				<p className="text-muted-foreground">Event not found</p>
+				<Button variant="ghost" onClick={() => navigate('/events')}>
+					Back to events
+				</Button>
+			</div>
+		)
+	}
+
+	const isOrganizer = user?.id === event.organizerId
+	const isParticipant = event.participants.some((p) => p.userId === user?.id)
+	const confirmedCount = event.participants.length
+	const isFull = confirmedCount >= event.capacity
+
+	return (
+		<div className="container max-w-3xl">
+			<Button
+				variant="ghost"
+				size="sm"
+				onClick={() => navigate('/events')}
+				className="mb-4"
+			>
+				<ArrowLeft className="h-4 w-4 mr-2" />
+				Back to events
+			</Button>
+
+			<Card>
+				<CardHeader>
+					<div className="flex items-start justify-between gap-4">
+						<div>
+							<Badge className="mb-2">{event.category}</Badge>
+							{event.status === 'CANCELLED' && (
+								<Badge variant="destructive" className="ml-2 mb-2">
+									Cancelled
+								</Badge>
+							)}
+							<CardTitle className="text-2xl">{event.title}</CardTitle>
+						</div>
+						<div className="text-right">
+							<p className="text-2xl font-bold text-primary">
+								{event.price === 0
+									? 'Free'
+									: `${event.price} ${event.currency}`}
+							</p>
+						</div>
+					</div>
+				</CardHeader>
+
+				<CardContent className="space-y-6">
+					{/* Description */}
+					<p className="text-muted-foreground whitespace-pre-wrap">
+						{event.description}
+					</p>
+
+					{/* Details */}
+					<div className="grid gap-4 sm:grid-cols-2">
+						<div className="flex items-center gap-3">
+							<CalendarDays className="h-5 w-5 text-primary" />
+							<div>
+								<p className="font-medium">
+									{new Date(event.date).toLocaleDateString('cs-CZ', {
+										weekday: 'long',
+										day: 'numeric',
+										month: 'long',
+										year: 'numeric',
+									})}
+								</p>
+								<p className="text-sm text-muted-foreground">
+									{event.startTime}
+									{event.endTime ? ` - ${event.endTime}` : ''}
+									{event.durationMinutes
+										? ` (${event.durationMinutes} min)`
+										: ''}
+								</p>
+							</div>
+						</div>
+
+						<div className="flex items-center gap-3">
+							<MapPin className="h-5 w-5 text-primary" />
+							<div>
+								<p className="font-medium">{event.locationName}</p>
+								<p className="text-sm text-muted-foreground">
+									{event.address}
+								</p>
+							</div>
+						</div>
+
+						<div className="flex items-center gap-3">
+							<Users className="h-5 w-5 text-primary" />
+							<div>
+								<p className="font-medium">
+									{confirmedCount} / {event.capacity} spots filled
+								</p>
+								{isFull && (
+									<p className="text-sm text-orange-400">Event is full</p>
+								)}
+							</div>
+						</div>
+					</div>
+
+					{/* Map placeholder */}
+					<div className="rounded-lg bg-muted/50 border border-border h-48 flex items-center justify-center">
+						<div className="text-center text-muted-foreground text-sm">
+							<MapPin className="h-8 w-8 mx-auto mb-1 opacity-50" />
+							<p>
+								{event.latitude.toFixed(4)}, {event.longitude.toFixed(4)}
+							</p>
+						</div>
+					</div>
+
+					{/* Organizer */}
+					<div className="border-t border-border pt-4">
+						<p className="text-sm text-muted-foreground mb-1">Organized by</p>
+						<p className="font-medium">
+							{event.organizer.name ?? 'Anonymous'}
+						</p>
+					</div>
+
+					{/* Actions */}
+					<div className="flex flex-wrap gap-3 border-t border-border pt-4">
+						{isOrganizer ? (
+							<>
+								<Button asChild>
+									<Link to={`/events/${event.id}/edit`}>
+										<Edit className="h-4 w-4 mr-2" />
+										Edit Event
+									</Link>
+								</Button>
+								{event.status !== 'CANCELLED' && (
+									<Button
+										variant="destructive"
+										onClick={() =>
+											cancelMutation.mutate({
+												id: event.id,
+												status: 'CANCELLED',
+											})
+										}
+									>
+										<XCircle className="h-4 w-4 mr-2" />
+										Cancel Event
+									</Button>
+								)}
+							</>
+						) : isParticipant ? (
+							<Button
+								variant="outline"
+								onClick={() => leaveMutation.mutate({ eventId: event.id })}
+								disabled={leaveMutation.isPending}
+							>
+								{leaveMutation.isPending ? 'Leaving...' : 'Leave Event'}
+							</Button>
+						) : (
+							<Button
+								onClick={() => joinMutation.mutate({ eventId: event.id })}
+								disabled={joinMutation.isPending || (isFull && !isOrganizer)}
+							>
+								{joinMutation.isPending
+									? 'Joining...'
+									: isFull
+										? 'Waitlist'
+										: 'Join Event'}
+							</Button>
+						)}
+					</div>
+
+					{/* Participants */}
+					{event.participants.length > 0 && (
+						<div className="border-t border-border pt-4">
+							<h3 className="font-medium mb-3">
+								Participants ({confirmedCount})
+							</h3>
+							<div className="flex flex-wrap gap-2">
+								{event.participants.map((p) => (
+									<Badge key={p.id} variant="secondary">
+										{p.user.name ?? 'Anonymous'}
+									</Badge>
+								))}
+							</div>
+						</div>
+					)}
+				</CardContent>
+			</Card>
+		</div>
+	)
+}

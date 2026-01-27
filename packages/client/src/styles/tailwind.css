@@ -1,0 +1,386 @@
+/* Blizko Brand — Warm Neighborhood Design System */
+
+/* Display Font: Borna — geometric humanist sans-serif */
+@font-face {
+	font-family: "Borna";
+	src: url("/fonts/Borna-Regular.otf") format("opentype");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Borna";
+	src: url("/fonts/Borna-RegularItalic.otf") format("opentype");
+	font-weight: 400;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Borna";
+	src: url("/fonts/Borna-SemiBold.otf") format("opentype");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Borna";
+	src: url("/fonts/Borna-SemiBoldItalic.otf") format("opentype");
+	font-weight: 600;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Borna";
+	src: url("/fonts/Borna-Bold.otf") format("opentype");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Borna";
+	src: url("/fonts/Borna-BoldItalic.otf") format("opentype");
+	font-weight: 700;
+	font-style: italic;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Borna";
+	src: url("/fonts/Borna-MediumItalic.otf") format("opentype");
+	font-weight: 500;
+	font-style: italic;
+	font-display: swap;
+}
+
+/* Body Font: Source Sans 3 */
+@font-face {
+	font-family: "Source Sans 3";
+	src: url("/fonts/SourceSans3-Light.woff2") format("woff2");
+	font-weight: 300;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Source Sans 3";
+	src: url("/fonts/SourceSans3-Regular.woff2") format("woff2");
+	font-weight: 400;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Source Sans 3";
+	src: url("/fonts/SourceSans3-Medium.woff2") format("woff2");
+	font-weight: 500;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Source Sans 3";
+	src: url("/fonts/SourceSans3-SemiBold.woff2") format("woff2");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: "Source Sans 3";
+	src: url("/fonts/SourceSans3-Bold.woff2") format("woff2");
+	font-weight: 700;
+	font-style: normal;
+	font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		/* Blizko — Light Mode (Default) */
+		font-family: "Source Sans 3", system-ui, sans-serif;
+
+		/* Warm sand base */
+		--background: hsl(35 30% 97%);
+		--foreground: hsl(20 20% 14%);
+
+		/* Terracotta primary */
+		--primary: hsl(14 76% 52%);
+		--primary-foreground: hsl(35 30% 97%);
+
+		/* Warm stone secondary */
+		--secondary: hsl(30 18% 90%);
+		--secondary-foreground: hsl(20 20% 24%);
+
+		/* Coral accent */
+		--accent: hsl(4 90% 62%);
+		--accent-foreground: hsl(0 0% 100%);
+
+		/* Muted tones */
+		--muted: hsl(30 12% 92%);
+		--muted-foreground: hsl(20 10% 46%);
+
+		/* Card surfaces */
+		--card: hsl(0 0% 100%);
+		--card-foreground: hsl(20 20% 14%);
+
+		/* Popover */
+		--popover: hsl(0 0% 100%);
+		--popover-foreground: hsl(20 20% 14%);
+
+		/* Borders & inputs */
+		--border: hsl(30 18% 86%);
+		--input: hsl(30 18% 86%);
+		--input-invalid: hsl(0 62.8% 50%);
+
+		/* Focus ring */
+		--ring: hsl(14 76% 52%);
+
+		/* Destructive */
+		--destructive: hsl(0 72% 50%);
+		--destructive-foreground: hsl(0 0% 100%);
+		--foreground-destructive: hsl(0 72% 50%);
+
+		/* Extended palette */
+		--terracotta: hsl(14 76% 52%);
+		--terracotta-light: hsl(14 72% 64%);
+		--terracotta-dark: hsl(14 80% 40%);
+
+		--coral: hsl(4 90% 62%);
+		--coral-light: hsl(4 92% 72%);
+		--coral-dark: hsl(4 85% 50%);
+
+		--sand: hsl(35 30% 97%);
+		--warm-stone: hsl(30 18% 90%);
+		--earth: hsl(20 20% 14%);
+		--earth-muted: hsl(20 10% 46%);
+
+		/* Border Radius */
+		--radius: 0.75rem;
+
+		/* Chart Colors */
+		--chart-1: hsl(14 76% 52%);
+		--chart-2: hsl(4 90% 62%);
+
+		/* Sidebar */
+		--sidebar-background: hsl(0 0% 100%);
+		--sidebar-foreground: hsl(20 20% 14%);
+		--sidebar-primary: hsl(14 76% 52%);
+		--sidebar-primary-foreground: hsl(0 0% 100%);
+		--sidebar-accent: hsl(30 18% 94%);
+		--sidebar-accent-foreground: hsl(20 20% 24%);
+		--sidebar-border: hsl(30 18% 88%);
+		--sidebar-ring: hsl(14 76% 52%);
+	}
+
+	.dark {
+		/* Dark mode */
+		--background: hsl(20 18% 10%);
+		--foreground: hsl(35 20% 92%);
+
+		--primary: hsl(14 72% 58%);
+		--primary-foreground: hsl(20 18% 10%);
+
+		--secondary: hsl(20 14% 18%);
+		--secondary-foreground: hsl(35 20% 88%);
+
+		--accent: hsl(4 85% 66%);
+		--accent-foreground: hsl(20 18% 10%);
+
+		--muted: hsl(20 14% 16%);
+		--muted-foreground: hsl(20 10% 55%);
+
+		--card: hsl(20 14% 13%);
+		--card-foreground: hsl(35 20% 92%);
+
+		--popover: hsl(20 14% 13%);
+		--popover-foreground: hsl(35 20% 92%);
+
+		--border: hsl(20 14% 20%);
+		--input: hsl(20 14% 20%);
+		--input-invalid: hsl(0 62.8% 40%);
+
+		--ring: hsl(14 72% 58%);
+
+		--destructive: hsl(0 62.8% 40%);
+		--destructive-foreground: hsl(35 20% 92%);
+		--foreground-destructive: hsl(345 82.7% 60.8%);
+
+		--terracotta: hsl(14 72% 58%);
+		--terracotta-light: hsl(14 68% 68%);
+		--terracotta-dark: hsl(14 76% 44%);
+
+		--coral: hsl(4 85% 66%);
+		--coral-light: hsl(4 88% 76%);
+		--coral-dark: hsl(4 80% 54%);
+
+		--sand: hsl(20 18% 10%);
+		--warm-stone: hsl(20 14% 18%);
+		--earth: hsl(35 20% 92%);
+		--earth-muted: hsl(20 10% 55%);
+
+		--chart-1: hsl(14 72% 58%);
+		--chart-2: hsl(4 85% 66%);
+
+		--sidebar-background: hsl(20 18% 8%);
+		--sidebar-foreground: hsl(35 20% 92%);
+		--sidebar-primary: hsl(14 72% 58%);
+		--sidebar-primary-foreground: hsl(35 20% 92%);
+		--sidebar-accent: hsl(20 14% 18%);
+		--sidebar-accent-foreground: hsl(35 20% 88%);
+		--sidebar-border: hsl(20 14% 20%);
+		--sidebar-ring: hsl(14 72% 58%);
+	}
+
+	/*
+	 * DaisyUI v5 Theme Integration
+	 * Map DaisyUI colors to our design tokens when a DaisyUI theme is active.
+	 */
+	[data-theme]:not(:root) {
+		--background: var(--color-base-100);
+		--foreground: var(--color-base-content);
+		--primary: var(--color-primary);
+		--primary-foreground: var(--color-primary-content);
+		--secondary: var(--color-secondary);
+		--secondary-foreground: var(--color-secondary-content);
+		--accent: var(--color-accent);
+		--accent-foreground: var(--color-accent-content);
+		--muted: var(--color-neutral);
+		--muted-foreground: var(--color-neutral-content);
+		--card: var(--color-base-200);
+		--card-foreground: var(--color-base-content);
+		--popover: var(--color-base-200);
+		--popover-foreground: var(--color-base-content);
+		--border: var(--color-base-300);
+		--input: var(--color-base-300);
+		--ring: var(--color-primary);
+		--destructive: var(--color-error);
+		--destructive-foreground: var(--color-error-content);
+		--chart-1: var(--color-primary);
+		--chart-2: var(--color-accent);
+		--sidebar-background: var(--color-base-200);
+		--sidebar-foreground: var(--color-base-content);
+		--sidebar-primary: var(--color-primary);
+		--sidebar-primary-foreground: var(--color-primary-content);
+		--sidebar-accent: var(--color-secondary);
+		--sidebar-accent-foreground: var(--color-secondary-content);
+		--sidebar-border: var(--color-base-300);
+		--sidebar-ring: var(--color-primary);
+		--terracotta: var(--color-primary);
+		--coral: var(--color-accent);
+		--sand: var(--color-base-100);
+		--warm-stone: var(--color-base-300);
+		--earth: var(--color-base-content);
+		--earth-muted: var(--color-neutral-content);
+	}
+
+	.section-title {
+		@apply font-bold;
+	}
+}
+
+html body[data-scroll-locked] {
+	overflow: visible;
+	margin-right: 0;
+}
+
+@layer utilities {
+	/* Warm radial gradient background */
+	.gradient-background {
+		background: radial-gradient(
+			ellipse 80% 60% at 50% 30%,
+			hsl(30 30% 95%) 0%,
+			hsl(35 30% 97%) 100%
+		);
+	}
+
+	.dark .gradient-background {
+		background: radial-gradient(
+			ellipse 80% 60% at 50% 30%,
+			hsl(20 18% 14%) 0%,
+			hsl(20 18% 10%) 100%
+		);
+	}
+
+	/* Text Gradients */
+	.text-gradient-terracotta {
+		background: linear-gradient(
+			135deg,
+			hsl(14 76% 52%) 0%,
+			hsl(4 90% 62%) 100%
+		);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	.text-gradient-coral {
+		background: linear-gradient(
+			135deg,
+			hsl(4 90% 62%) 0%,
+			hsl(340 80% 58%) 100%
+		);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-clip: text;
+	}
+
+	/* Frosted Glass Effect */
+	.glass-warm {
+		background: hsl(0 0% 100% / 0.7);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		border: 1px solid hsl(30 18% 86% / 0.5);
+	}
+
+	.dark .glass-warm {
+		background: hsl(20 14% 13% / 0.7);
+		border: 1px solid hsl(20 14% 20% / 0.5);
+	}
+
+	/* Glow Effects */
+	.glow-terracotta {
+		box-shadow: 0 0 24px hsl(14 76% 52% / 0.2);
+	}
+
+	.glow-coral {
+		box-shadow: 0 0 20px hsl(4 90% 62% / 0.2);
+	}
+
+	/* Custom Scrollbar */
+	.scrollbar-thin {
+		scrollbar-width: thin;
+		scrollbar-color: oklch(0.5 0 0 / 0.3) transparent;
+	}
+
+	.scrollbar-thin::-webkit-scrollbar {
+		width: 6px;
+		height: 6px;
+	}
+
+	.scrollbar-thin::-webkit-scrollbar-track {
+		background: transparent;
+		border-radius: 3px;
+	}
+
+	.scrollbar-thin::-webkit-scrollbar-thumb {
+		background: oklch(0.5 0 0 / 0.3);
+		border-radius: 3px;
+		transition: background 0.2s ease;
+	}
+
+	.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+		background: oklch(0.5 0 0 / 0.5);
+	}
+
+	.scrollbar-track-transparent::-webkit-scrollbar-track {
+		background: transparent;
+	}
+}

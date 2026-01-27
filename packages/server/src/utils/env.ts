@@ -1,0 +1,62 @@
+import { Errors } from '@blizko/shared'
+import { z } from 'zod'
+
+const schema = z.object({
+	// Core
+	NODE_ENV: z.enum(['production', 'development', 'test'] as const),
+	PORT: z.coerce.number().default(4000),
+	DATABASE_URL: z.string(),
+
+	// Runtime metadata (set by npm)
+	npm_package_version: z.string().default('1.0.0'),
+
+	// Security
+	SESSION_SECRET: z.string(),
+
+	// URLs
+	CLIENT_URL: z.string().optional(),
+	FRONTEND_URL: z.string().optional(),
+	BETTER_AUTH_URL: z.string().optional(),
+	COOKIE_DOMAIN: z.string().optional(),
+
+	// Monitoring (optional for PoC)
+	SENTRY_DSN: z.string().optional(),
+	ALLOW_INDEXING: z.enum(['true', 'false']).default('false'),
+})
+
+export type Env = z.infer<typeof schema>
+
+const parsed = schema.safeParse(process.env)
+
+if (parsed.success === false) {
+	const flatErrors = z.flattenError(parsed.error).fieldErrors
+	console.error('Invalid environment variables:', flatErrors)
+	throw Errors.validation(
+		`Invalid environment variables: ${JSON.stringify(flatErrors)}`,
+	)
+}
+
+export const env: Env = parsed.data
+
+export function init() {}
+
+export function getValidatedEnv(): Env {
+	return env
+}
+
+export function getEnv() {
+	return {
+		MODE: env.NODE_ENV,
+		SENTRY_DSN: env.SENTRY_DSN,
+		ALLOW_INDEXING: env.ALLOW_INDEXING,
+	}
+}
+
+type ENV = ReturnType<typeof getEnv>
+
+declare global {
+	var ENV: ENV
+	interface Window {
+		ENV: ENV
+	}
+}

@@ -1,0 +1,22 @@
+{
+	"include": ["packages/**/*.ts", "packages/**/*.tsx", "scripts/**/*.ts"],
+	"compilerOptions": {
+		"target": "ES2022",
+		"module": "NodeNext",
+		"moduleResolution": "NodeNext",
+		"esModuleInterop": true,
+		"strict": true,
+		"skipLibCheck": true,
+		"resolveJsonModule": true,
+		"paths": {}
+	},
+	"references": [
+		{
+			"path": "./packages/server"
+		},
+		{
+			"path": "./packages/client"
+		}
+	],
+	"extends": "expo/tsconfig.base"
+}
