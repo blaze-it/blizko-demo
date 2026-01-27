@@ -11,7 +11,7 @@ const schema = z.object({
 	npm_package_version: z.string().default('1.0.0'),
 
 	// Security
-	SESSION_SECRET: z.string(),
+	BETTER_AUTH_SECRET: z.string(),
 
 	// URLs
 	CLIENT_URL: z.string().optional(),

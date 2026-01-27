@@ -6,7 +6,7 @@ import { prisma } from '../utils/db.js'
 import { env } from '../utils/env.js'
 
 const IS_PROD = env.NODE_ENV === 'production'
-const AUTH_SECRET = env.SESSION_SECRET.split(',')[0]
+const AUTH_SECRET = env.BETTER_AUTH_SECRET
 
 export const auth = betterAuth({
 	database: prismaAdapter(prisma, {

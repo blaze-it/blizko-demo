@@ -29,7 +29,7 @@ services:
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-blizko}
       - NODE_ENV=production
-      - SESSION_SECRET
+      - BETTER_AUTH_SECRET
       - SENTRY_DSN
     expose:
       - 4000
