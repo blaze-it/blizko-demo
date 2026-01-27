@@ -1,17 +1,13 @@
 {
 	"mcpServers": {
-		"jarvis": {
+		"blizko": {
 			"type": "stdio",
 			"command": "node",
 			"args": ["packages/mcp/dist/index.js"],
 			"env": {
-				"JARVIS_USER_ID": "admin-user-001",
-				"DATABASE_URL": "postgresql://postgres:postgres@localhost:5432/jarvistrack"
+				"BLIZKO_USER_ID": "admin-user-001",
+				"DATABASE_URL": "postgresql://postgres:postgres@localhost:5432/blizko"
 			}
-		},
-		"jarvis-remote": {
-			"type": "http",
-			"url": "https://jarvistrack-api.danielsuchan.dev/mcp/stream"
 		}
 	}
 }
