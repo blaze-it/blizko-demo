@@ -10,7 +10,7 @@ interface ErrorStateProps {
 }
 
 export function ErrorState({
-	title = 'Something went wrong',
+	title = 'Něco se pokazilo',
 	message,
 	className,
 	onRetry,
@@ -33,7 +33,7 @@ export function ErrorState({
 			{onRetry && (
 				<Button variant="outline" size="sm" className="mt-4" onClick={onRetry}>
 					<RefreshCw className="h-4 w-4 mr-2" />
-					Try again
+					Zkusit znovu
 				</Button>
 			)}
 		</div>

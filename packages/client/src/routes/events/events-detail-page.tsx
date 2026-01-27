@@ -35,9 +35,12 @@ export function EventsDetailPage() {
 
 	const cancelMutation = trpc.events.update.useMutation({
 		onSuccess: () => utils.events.getById.invalidate({ id: id! }),
-	}) as { mutate: (input: { id: string; status: string }) => void; isPending: boolean }
+	}) as {
+		mutate: (input: { id: string; status: string }) => void
+		isPending: boolean
+	}
 
-	usePageTitle(event?.title ?? 'Event')
+	usePageTitle(event?.title ?? 'Událost')
 
 	if (isLoading) {
 		return (
@@ -50,9 +53,9 @@ export function EventsDetailPage() {
 	if (!event) {
 		return (
 			<div className="container text-center py-12">
-				<p className="text-muted-foreground">Event not found</p>
+				<p className="text-muted-foreground">Událost nenalezena</p>
 				<Button variant="ghost" onClick={() => navigate('/events')}>
-					Back to events
+					Zpět na události
 				</Button>
 			</div>
 		)
@@ -72,7 +75,7 @@ export function EventsDetailPage() {
 				className="mb-4"
 			>
 				<ArrowLeft className="h-4 w-4 mr-2" />
-				Back to events
+				Zpět na události
 			</Button>
 
 			<Card>
@@ -82,7 +85,7 @@ export function EventsDetailPage() {
 							<Badge className="mb-2">{event.category}</Badge>
 							{event.status === 'CANCELLED' && (
 								<Badge variant="destructive" className="ml-2 mb-2">
-									Cancelled
+									Zrušeno
 								</Badge>
 							)}
 							<CardTitle className="text-2xl">{event.title}</CardTitle>
@@ -90,7 +93,7 @@ export function EventsDetailPage() {
 						<div className="text-right">
 							<p className="text-2xl font-bold text-primary">
 								{event.price === 0
-									? 'Free'
+									? 'Zdarma'
 									: `${event.price} ${event.currency}`}
 							</p>
 						</div>
@@ -130,9 +133,7 @@ export function EventsDetailPage() {
 							<MapPin className="h-5 w-5 text-primary" />
 							<div>
 								<p className="font-medium">{event.locationName}</p>
-								<p className="text-sm text-muted-foreground">
-									{event.address}
-								</p>
+								<p className="text-sm text-muted-foreground">{event.address}</p>
 							</div>
 						</div>
 
@@ -140,10 +141,10 @@ export function EventsDetailPage() {
 							<Users className="h-5 w-5 text-primary" />
 							<div>
 								<p className="font-medium">
-									{confirmedCount} / {event.capacity} spots filled
+									{confirmedCount} / {event.capacity} obsazeno
 								</p>
 								{isFull && (
-									<p className="text-sm text-orange-400">Event is full</p>
+									<p className="text-sm text-orange-400">Událost je plná</p>
 								)}
 							</div>
 						</div>
@@ -161,10 +162,8 @@ export function EventsDetailPage() {
 
 					{/* Organizer */}
 					<div className="border-t border-border pt-4">
-						<p className="text-sm text-muted-foreground mb-1">Organized by</p>
-						<p className="font-medium">
-							{event.organizer.name ?? 'Anonymous'}
-						</p>
+						<p className="text-sm text-muted-foreground mb-1">Organizuje</p>
+						<p className="font-medium">{event.organizer.name ?? 'Anonymní'}</p>
 					</div>
 
 					{/* Actions */}
@@ -174,7 +173,7 @@ export function EventsDetailPage() {
 								<Button asChild>
 									<Link to={`/events/${event.id}/edit`}>
 										<Edit className="h-4 w-4 mr-2" />
-										Edit Event
+										Upravit událost
 									</Link>
 								</Button>
 								{event.status !== 'CANCELLED' && (
@@ -188,7 +187,7 @@ export function EventsDetailPage() {
 										}
 									>
 										<XCircle className="h-4 w-4 mr-2" />
-										Cancel Event
+										Zrušit událost
 									</Button>
 								)}
 							</>
@@ -198,7 +197,7 @@ export function EventsDetailPage() {
 								onClick={() => leaveMutation.mutate({ eventId: event.id })}
 								disabled={leaveMutation.isPending}
 							>
-								{leaveMutation.isPending ? 'Leaving...' : 'Leave Event'}
+								{leaveMutation.isPending ? 'Odcházení...' : 'Odejít z události'}
 							</Button>
 						) : (
 							<Button
@@ -206,10 +205,10 @@ export function EventsDetailPage() {
 								disabled={joinMutation.isPending || (isFull && !isOrganizer)}
 							>
 								{joinMutation.isPending
-									? 'Joining...'
+									? 'Připojování...'
 									: isFull
-										? 'Waitlist'
-										: 'Join Event'}
+										? 'Čekací listina'
+										: 'Připojit se'}
 							</Button>
 						)}
 					</div>
@@ -217,13 +216,11 @@ export function EventsDetailPage() {
 					{/* Participants */}
 					{event.participants.length > 0 && (
 						<div className="border-t border-border pt-4">
-							<h3 className="font-medium mb-3">
-								Participants ({confirmedCount})
-							</h3>
+							<h3 className="font-medium mb-3">Účastníci ({confirmedCount})</h3>
 							<div className="flex flex-wrap gap-2">
 								{event.participants.map((p) => (
 									<Badge key={p.id} variant="secondary">
-										{p.user.name ?? 'Anonymous'}
+										{p.user.name ?? 'Anonymní'}
 									</Badge>
 								))}
 							</div>

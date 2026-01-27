@@ -72,14 +72,8 @@ export const eventsRouter = router({
 				input
 
 			// If geo filter is requested, use raw SQL for Haversine distance
-			if (
-				lat !== undefined &&
-				lng !== undefined &&
-				radiusKm !== undefined
-			) {
-				const nearbyIds = await ctx.prisma.$queryRaw<
-					Array<{ id: string }>
-				>`
+			if (lat !== undefined && lng !== undefined && radiusKm !== undefined) {
+				const nearbyIds = await ctx.prisma.$queryRaw<Array<{ id: string }>>`
 					SELECT id FROM "Event"
 					WHERE status = 'PUBLISHED'
 					AND (
@@ -104,9 +98,7 @@ export const eventsRouter = router({
 						...(date && {
 							date: {
 								gte: new Date(date),
-								lt: new Date(
-									new Date(date).getTime() + 24 * 60 * 60 * 1000,
-								),
+								lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000),
 							},
 						}),
 						...(search && {
@@ -151,9 +143,7 @@ export const eventsRouter = router({
 					...(date && {
 						date: {
 							gte: new Date(date),
-							lt: new Date(
-								new Date(date).getTime() + 24 * 60 * 60 * 1000,
-							),
+							lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000),
 						},
 					}),
 					...(search && {
@@ -280,15 +270,14 @@ export const eventsRouter = router({
 			)
 
 			// Check if already joined
-			const existingParticipant =
-				await ctx.prisma.eventParticipant.findUnique({
-					where: {
-						eventId_userId: {
-							eventId: input.eventId,
-							userId: ctx.userId,
-						},
+			const existingParticipant = await ctx.prisma.eventParticipant.findUnique({
+				where: {
+					eventId_userId: {
+						eventId: input.eventId,
+						userId: ctx.userId,
 					},
-				})
+				},
+			})
 
 			if (existingParticipant) {
 				throw Errors.conflict('You have already joined this event')

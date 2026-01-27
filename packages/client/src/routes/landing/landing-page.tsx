@@ -14,38 +14,38 @@ import { usePageTitle } from '@/hooks/use-page-title'
 const categories = [
 	{
 		emoji: '\u{1F3CB}',
-		label: 'Workout',
-		desc: 'Courtyard fitness, running groups',
+		label: 'Cvičení',
+		desc: 'Fitness na dvoře, běžecké skupiny',
 		color: 'bg-orange-100 dark:bg-orange-950/40',
 	},
 	{
 		emoji: '\u{1F3A8}',
 		label: 'Workshop',
-		desc: 'Crafts, cooking, DIY classes',
+		desc: 'Tvoření, vaření, kutilské kurzy',
 		color: 'bg-amber-100 dark:bg-amber-950/40',
 	},
 	{
 		emoji: '\u{1F476}',
-		label: 'Kids',
-		desc: 'Children activities & playgroups',
+		label: 'Děti',
+		desc: 'Dětské aktivity a herní skupiny',
 		color: 'bg-rose-100 dark:bg-rose-950/40',
 	},
 	{
 		emoji: '\u{1F91D}',
-		label: 'Meetup',
-		desc: 'Neighbor gatherings & socials',
+		label: 'Setkání',
+		desc: 'Sousedská setkání a společenské akce',
 		color: 'bg-sky-100 dark:bg-sky-950/40',
 	},
 	{
 		emoji: '\u{1F393}',
-		label: 'Lecture',
-		desc: 'Talks, discussions, learning',
+		label: 'Přednáška',
+		desc: 'Přednášky, diskuze, vzdělávání',
 		color: 'bg-violet-100 dark:bg-violet-950/40',
 	},
 	{
 		emoji: '\u{1F3AF}',
-		label: 'Leisure',
-		desc: 'Games, walks, shared hobbies',
+		label: 'Volný čas',
+		desc: 'Hry, procházky, společné koníčky',
 		color: 'bg-emerald-100 dark:bg-emerald-950/40',
 	},
 ]
@@ -54,27 +54,27 @@ const features = [
 	{
 		icon: MapPin,
 		title: 'Hyperlocal',
-		desc: 'Events within walking distance. Your courtyard, your park, your street.',
+		desc: 'Události na dosah ruky. Váš dvůr, váš park, vaše ulice.',
 	},
 	{
 		icon: Zap,
-		title: 'Instant',
-		desc: 'Create or join in under a minute. No bureaucracy, no waiting.',
+		title: 'Okamžité',
+		desc: 'Vytvořte nebo se přidejte za minutu. Žádná byrokracie, žádné čekání.',
 	},
 	{
 		icon: Users,
-		title: 'Community',
-		desc: 'Meet the people who live around you. Build real connections.',
+		title: 'Komunita',
+		desc: 'Poznejte lidi, kteří bydlí kolem vás. Budujte skutečná spojení.',
 	},
 	{
 		icon: Heart,
-		title: 'For Everyone',
-		desc: 'Free or paid. Fitness or crafts. Kids or adults. You choose.',
+		title: 'Pro každého',
+		desc: 'Zdarma nebo za poplatek. Fitness nebo tvoření. Děti nebo dospělí. Vy si vyberete.',
 	},
 ]
 
 export function LandingPage() {
-	usePageTitle('Local Events Around You')
+	usePageTitle('Lokální události ve vašem okolí')
 
 	return (
 		<div className="min-h-screen bg-background text-foreground overflow-hidden">
@@ -88,10 +88,10 @@ export function LandingPage() {
 				</Link>
 				<div className="flex items-center gap-2">
 					<Button variant="ghost" size="sm" asChild>
-						<Link to="/login">Sign In</Link>
+						<Link to="/login">Přihlásit se</Link>
 					</Button>
 					<Button size="sm" asChild>
-						<Link to="/register">Get Started</Link>
+						<Link to="/register">Začít</Link>
 					</Button>
 				</div>
 			</header>
@@ -106,23 +106,21 @@ export function LandingPage() {
 				<div className="relative max-w-3xl mx-auto text-center">
 					<div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary mb-8 animate-fade-in">
 						<Sparkles className="h-3.5 w-3.5" />
-						<span>Events happening around you right now</span>
+						<span>Události probíhající právě teď ve vašem okolí</span>
 					</div>
 
-					<h1
-						className="font-display font-bold text-5xl md:text-7xl leading-[1.08] tracking-tight mb-6 animate-fade-in-up"
-					>
-						Your neighborhood
+					<h1 className="font-display font-bold text-5xl md:text-7xl leading-[1.08] tracking-tight mb-6 animate-fade-in-up">
+						Vaše sousedství
 						<br />
-						<span className="text-gradient-terracotta">comes alive</span>
+						<span className="text-gradient-terracotta">ožívá</span>
 					</h1>
 
 					<p
 						className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-10 animate-fade-in-up"
 						style={{ animationDelay: '100ms', animationFillMode: 'both' }}
 					>
-						Micro-events created by your neighbors. Workouts in the courtyard,
-						workshops around the corner, playdates across the street.
+						Mikro-události od vašich sousedů. Cvičení na dvoře, workshopy za
+						rohem, herna přes ulici.
 					</p>
 
 					<div
@@ -131,7 +129,7 @@ export function LandingPage() {
 					>
 						<Button size="lg" className="gap-2 text-base px-6" asChild>
 							<Link to="/events">
-								Browse Events
+								Procházet události
 								<ArrowRight className="h-4 w-4" />
 							</Link>
 						</Button>
@@ -141,7 +139,7 @@ export function LandingPage() {
 							className="text-base px-6"
 							asChild
 						>
-							<Link to="/events/new">Create Event</Link>
+							<Link to="/events/new">Vytvořit událost</Link>
 						</Button>
 					</div>
 				</div>
@@ -151,10 +149,10 @@ export function LandingPage() {
 			<section className="container pb-24">
 				<div className="text-center mb-12">
 					<h2 className="font-display font-bold text-3xl md:text-4xl tracking-tight mb-3">
-						What's happening nearby?
+						Co se děje poblíž?
 					</h2>
 					<p className="text-muted-foreground">
-						Every day, people near you are organizing something worth joining.
+						Každý den lidé kolem vás organizují něco, co stojí za to.
 					</p>
 				</div>
 
@@ -214,28 +212,28 @@ export function LandingPage() {
 							<Calendar className="h-5 w-5 text-primary" />
 						</div>
 						<h3 className="font-display font-bold text-xl mb-4">
-							For Participants
+							Pro účastníky
 						</h3>
 						<ul className="space-y-3 text-muted-foreground text-sm">
 							<li className="flex items-start gap-2">
 								<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-								Find activities within walking distance
+								Najděte aktivity na dosah pěšky
 							</li>
 							<li className="flex items-start gap-2">
 								<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-								Meet your actual neighbors
+								Poznejte své skutečné sousedy
 							</li>
 							<li className="flex items-start gap-2">
 								<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-								Keep kids meaningfully engaged
+								Smysluplné vyžití pro děti
 							</li>
 							<li className="flex items-start gap-2">
 								<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-								Break your daily routine
+								Rozbijte svou denní rutinu
 							</li>
 							<li className="flex items-start gap-2">
 								<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-								Join in under a minute
+								Přidejte se za minutu
 							</li>
 						</ul>
 					</div>
@@ -244,28 +242,28 @@ export function LandingPage() {
 							<Sparkles className="h-5 w-5 text-coral" />
 						</div>
 						<h3 className="font-display font-bold text-xl mb-4">
-							For Organizers
+							Pro organizátory
 						</h3>
 						<ul className="space-y-3 text-muted-foreground text-sm">
 							<li className="flex items-start gap-2">
 								<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
-								Create events in minutes
+								Vytvořte událost za pár minut
 							</li>
 							<li className="flex items-start gap-2">
 								<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
-								Set format, price, time & capacity
+								Nastavte formát, cenu, čas a kapacitu
 							</li>
 							<li className="flex items-start gap-2">
 								<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
-								Build a new income stream
+								Vybudujte si nový zdroj příjmů
 							</li>
 							<li className="flex items-start gap-2">
 								<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
-								Platform handles payments
+								Platby řeší platforma
 							</li>
 							<li className="flex items-start gap-2">
 								<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
-								Grow your local community
+								Rozvíjejte svou lokální komunitu
 							</li>
 						</ul>
 					</div>
@@ -281,10 +279,10 @@ export function LandingPage() {
 
 					<div className="relative">
 						<h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4 tracking-tight">
-							Ready to explore your neighborhood?
+							Připraveni prozkoumat své okolí?
 						</h2>
 						<p className="text-white/80 mb-8 max-w-md mx-auto">
-							Joining a nearby event is as easy as sending a message.
+							Připojit se k události poblíž je snadné jako poslat zprávu.
 						</p>
 						<Button
 							size="lg"
@@ -293,7 +291,7 @@ export function LandingPage() {
 							asChild
 						>
 							<Link to="/register">
-								Get Started Free
+								Začít zdarma
 								<ArrowRight className="h-4 w-4" />
 							</Link>
 						</Button>
@@ -311,7 +309,7 @@ export function LandingPage() {
 						<span className="w-1.5 h-1.5 rounded-full bg-primary" />
 					</div>
 					<p className="text-sm text-muted-foreground">
-						Local events, everyday.
+						Lokální události, každý den.
 					</p>
 				</div>
 			</footer>

@@ -28,25 +28,28 @@ import { usePageTitle } from '@/hooks/use-page-title'
 import { trpc } from '@/trpc/client'
 
 const updateProfileSchema = z.object({
-	name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
+	name: z
+		.string()
+		.min(1, 'Jméno je povinné')
+		.max(100, 'Jméno je příliš dlouhé'),
 })
 
 type UpdateProfileData = z.infer<typeof updateProfileSchema>
 
 export function ProfilePage() {
-	usePageTitle('Profile')
+	usePageTitle('Profil')
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 	const utils = trpc.useUtils()
 	const { data: user, isLoading } = trpc.user.me.useQuery()
 
 	const updateProfileMutation = trpc.user.updateProfile.useMutation({
 		onSuccess: () => {
-			toast.success('Profile updated successfully')
+			toast.success('Profil byl úspěšně aktualizován')
 			setIsEditDialogOpen(false)
 			utils.user.me.invalidate()
 		},
 		onError: (error) => {
-			toast.error(error.message || 'Failed to update profile')
+			toast.error(error.message || 'Nepodařilo se aktualizovat profil')
 		},
 	})
 
@@ -87,13 +90,13 @@ export function ProfilePage() {
 	if (!user) {
 		return (
 			<div className="container py-8">
-				<p className="text-muted-foreground">Unable to load profile</p>
+				<p className="text-muted-foreground">Nepodařilo se načíst profil</p>
 			</div>
 		)
 	}
 
 	const formatDate = (date: Date | string) => {
-		return new Intl.DateTimeFormat('en-US', {
+		return new Intl.DateTimeFormat('cs-CZ', {
 			year: 'numeric',
 			month: 'long',
 			day: 'numeric',
@@ -106,7 +109,7 @@ export function ProfilePage() {
 				<Button variant="ghost" size="sm" asChild className="mb-4">
 					<Link to="/events">
 						<ArrowLeft className="mr-2 h-4 w-4" />
-						Back to Events
+						Zpět na události
 					</Link>
 				</Button>
 				<div className="flex items-center gap-3">
@@ -114,9 +117,7 @@ export function ProfilePage() {
 						<User className="h-8 w-8 text-primary" />
 					</div>
 					<div>
-						<h1 className="text-3xl font-bold">
-							{user.name || 'Profile'}
-						</h1>
+						<h1 className="text-3xl font-bold">{user.name || 'Profil'}</h1>
 						<p className="text-muted-foreground">{user.email}</p>
 					</div>
 				</div>
@@ -128,33 +129,33 @@ export function ProfilePage() {
 					<div className="flex items-center justify-between">
 						<CardTitle className="flex items-center gap-2">
 							<User className="h-5 w-5 text-blue-500" />
-							Account Information
+							Informace o účtu
 						</CardTitle>
 						<Button variant="ghost" size="sm" onClick={handleOpenEditDialog}>
 							<Pencil className="mr-2 h-4 w-4" />
-							Edit
+							Upravit
 						</Button>
 					</div>
-					<CardDescription>Your basic account details</CardDescription>
+					<CardDescription>Základní údaje vašeho účtu</CardDescription>
 				</CardHeader>
 				<CardContent className="space-y-4">
 					<div className="space-y-1">
 						<label className="text-sm font-medium text-muted-foreground">
-							Name
+							Jméno
 						</label>
-						<p className="text-lg">{user.name || 'Not set'}</p>
+						<p className="text-lg">{user.name || 'Nenastaveno'}</p>
 					</div>
 					<div className="space-y-1">
 						<label className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
 							<Mail className="h-3.5 w-3.5" />
-							Email
+							E-mail
 						</label>
 						<p className="text-lg">{user.email}</p>
 					</div>
 					<div className="space-y-1">
 						<label className="flex items-center gap-1 text-sm font-medium text-muted-foreground">
 							<Calendar className="h-3.5 w-3.5" />
-							Member Since
+							Členem od
 						</label>
 						<p className="text-lg">{formatDate(user.createdAt)}</p>
 					</div>
@@ -165,18 +166,18 @@ export function ProfilePage() {
 			<Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
 				<DialogContent>
 					<DialogHeader>
-						<DialogTitle>Edit Profile</DialogTitle>
+						<DialogTitle>Upravit profil</DialogTitle>
 						<DialogDescription>
-							Update your profile information
+							Aktualizujte své profilové údaje
 						</DialogDescription>
 					</DialogHeader>
 					<form onSubmit={form.handleSubmit(onSubmit)}>
 						<div className="space-y-4 py-4">
 							<div className="space-y-2">
-								<Label htmlFor="name">Name</Label>
+								<Label htmlFor="name">Jméno</Label>
 								<Input
 									id="name"
-									placeholder="Enter your name"
+									placeholder="Zadejte své jméno"
 									{...form.register('name')}
 								/>
 								{form.formState.errors.name && (
@@ -192,10 +193,10 @@ export function ProfilePage() {
 								variant="outline"
 								onClick={() => setIsEditDialogOpen(false)}
 							>
-								Cancel
+								Zrušit
 							</Button>
 							<Button type="submit" disabled={updateProfileMutation.isPending}>
-								{updateProfileMutation.isPending ? 'Saving...' : 'Save'}
+								{updateProfileMutation.isPending ? 'Ukládání...' : 'Uložit'}
 							</Button>
 						</DialogFooter>
 					</form>

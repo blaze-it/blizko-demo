@@ -19,38 +19,38 @@ import { usePageTitle } from '@/hooks/use-page-title'
 import { trpc } from '@/trpc/client'
 
 const CATEGORIES = [
-	{ value: 'WORKOUT', label: 'Workout' },
+	{ value: 'WORKOUT', label: 'Cvičení' },
 	{ value: 'WORKSHOP', label: 'Workshop' },
-	{ value: 'KIDS', label: 'Kids' },
-	{ value: 'MEETUP', label: 'Meetup' },
-	{ value: 'LECTURE', label: 'Lecture' },
-	{ value: 'LEISURE', label: 'Leisure' },
-	{ value: 'OTHER', label: 'Other' },
+	{ value: 'KIDS', label: 'Děti' },
+	{ value: 'MEETUP', label: 'Setkání' },
+	{ value: 'LECTURE', label: 'Přednáška' },
+	{ value: 'LEISURE', label: 'Volný čas' },
+	{ value: 'OTHER', label: 'Ostatní' },
 ]
 
 const CreateEventSchema = z.object({
-	title: z.string().min(1, 'Title is required').max(200),
-	description: z.string().min(1, 'Description is required').max(5000),
-	category: z.string().min(1, 'Category is required'),
-	date: z.string().min(1, 'Date is required'),
-	startTime: z.string().min(1, 'Start time is required'),
+	title: z.string().min(1, 'Název je povinný').max(200),
+	description: z.string().min(1, 'Popis je povinný').max(5000),
+	category: z.string().min(1, 'Kategorie je povinná'),
+	date: z.string().min(1, 'Datum je povinné'),
+	startTime: z.string().min(1, 'Čas začátku je povinný'),
 	endTime: z.string().optional(),
 	durationMinutes: z.preprocess(
 		(val) => (val === '' || val === undefined ? undefined : val),
 		z.coerce.number().int().positive().optional(),
 	),
-	locationName: z.string().min(1, 'Location name is required').max(200),
-	address: z.string().min(1, 'Address is required').max(500),
+	locationName: z.string().min(1, 'Název místa je povinný').max(200),
+	address: z.string().min(1, 'Adresa je povinná').max(500),
 	latitude: z.coerce.number().min(-90).max(90),
 	longitude: z.coerce.number().min(-180).max(180),
 	price: z.coerce.number().int().min(0).default(0),
-	capacity: z.coerce.number().int().positive('Capacity must be positive'),
+	capacity: z.coerce.number().int().positive('Kapacita musí být kladné číslo'),
 })
 
 type CreateEventFormData = z.infer<typeof CreateEventSchema>
 
 export function EventsNewPage() {
-	usePageTitle('Create Event')
+	usePageTitle('Vytvořit událost')
 	const navigate = useNavigate()
 
 	const createMutation = trpc.events.create.useMutation({
@@ -91,20 +91,20 @@ export function EventsNewPage() {
 				className="mb-4"
 			>
 				<ArrowLeft className="h-4 w-4 mr-2" />
-				Back to events
+				Zpět na události
 			</Button>
 
 			<Card>
 				<CardHeader>
-					<CardTitle>Create New Event</CardTitle>
+					<CardTitle>Vytvořit novou událost</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 						<div className="space-y-2">
-							<Label htmlFor="title">Title</Label>
+							<Label htmlFor="title">Název</Label>
 							<Input
 								id="title"
-								placeholder="e.g. Morning Yoga in the Park"
+								placeholder="např. Ranní jóga v parku"
 								{...register('title')}
 							/>
 							{errors.title && (
@@ -115,10 +115,10 @@ export function EventsNewPage() {
 						</div>
 
 						<div className="space-y-2">
-							<Label htmlFor="description">Description</Label>
+							<Label htmlFor="description">Popis</Label>
 							<Textarea
 								id="description"
-								placeholder="Describe your event..."
+								placeholder="Popište svou událost..."
 								rows={4}
 								{...register('description')}
 							/>
@@ -130,12 +130,10 @@ export function EventsNewPage() {
 						</div>
 
 						<div className="space-y-2">
-							<Label>Category</Label>
-							<Select
-								onValueChange={(value) => setValue('category', value)}
-							>
+							<Label>Kategorie</Label>
+							<Select onValueChange={(value) => setValue('category', value)}>
 								<SelectTrigger>
-									<SelectValue placeholder="Select category" />
+									<SelectValue placeholder="Vyberte kategorii" />
 								</SelectTrigger>
 								<SelectContent>
 									{CATEGORIES.map((cat) => (
@@ -154,7 +152,7 @@ export function EventsNewPage() {
 
 						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label htmlFor="date">Date</Label>
+								<Label htmlFor="date">Datum</Label>
 								<Input id="date" type="date" {...register('date')} />
 								{errors.date && (
 									<p className="text-destructive text-sm">
@@ -163,12 +161,8 @@ export function EventsNewPage() {
 								)}
 							</div>
 							<div className="space-y-2">
-								<Label htmlFor="startTime">Start Time</Label>
-								<Input
-									id="startTime"
-									type="time"
-									{...register('startTime')}
-								/>
+								<Label htmlFor="startTime">Čas začátku</Label>
+								<Input id="startTime" type="time" {...register('startTime')} />
 								{errors.startTime && (
 									<p className="text-destructive text-sm">
 										{errors.startTime.message}
@@ -179,11 +173,11 @@ export function EventsNewPage() {
 
 						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label htmlFor="endTime">End Time (optional)</Label>
+								<Label htmlFor="endTime">Čas konce (nepovinné)</Label>
 								<Input id="endTime" type="time" {...register('endTime')} />
 							</div>
 							<div className="space-y-2">
-								<Label htmlFor="durationMinutes">Duration (min, optional)</Label>
+								<Label htmlFor="durationMinutes">Délka (min, nepovinné)</Label>
 								<Input
 									id="durationMinutes"
 									type="number"
@@ -194,10 +188,10 @@ export function EventsNewPage() {
 						</div>
 
 						<div className="space-y-2">
-							<Label htmlFor="locationName">Location Name</Label>
+							<Label htmlFor="locationName">Název místa</Label>
 							<Input
 								id="locationName"
-								placeholder="e.g. Courtyard at Vinohradska 12"
+								placeholder="např. Dvůr na Vinohradské 12"
 								{...register('locationName')}
 							/>
 							{errors.locationName && (
@@ -208,10 +202,10 @@ export function EventsNewPage() {
 						</div>
 
 						<div className="space-y-2">
-							<Label htmlFor="address">Address</Label>
+							<Label htmlFor="address">Adresa</Label>
 							<Input
 								id="address"
-								placeholder="Full address"
+								placeholder="Celá adresa"
 								{...register('address')}
 							/>
 							{errors.address && (
@@ -223,7 +217,7 @@ export function EventsNewPage() {
 
 						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label htmlFor="latitude">Latitude</Label>
+								<Label htmlFor="latitude">Zeměpisná šířka</Label>
 								<Input
 									id="latitude"
 									type="number"
@@ -237,7 +231,7 @@ export function EventsNewPage() {
 								)}
 							</div>
 							<div className="space-y-2">
-								<Label htmlFor="longitude">Longitude</Label>
+								<Label htmlFor="longitude">Zeměpisná délka</Label>
 								<Input
 									id="longitude"
 									type="number"
@@ -254,7 +248,7 @@ export function EventsNewPage() {
 
 						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label htmlFor="price">Price (CZK, 0 = free)</Label>
+								<Label htmlFor="price">Cena (Kč, 0 = zdarma)</Label>
 								<Input
 									id="price"
 									type="number"
@@ -268,7 +262,7 @@ export function EventsNewPage() {
 								)}
 							</div>
 							<div className="space-y-2">
-								<Label htmlFor="capacity">Capacity</Label>
+								<Label htmlFor="capacity">Kapacita</Label>
 								<Input
 									id="capacity"
 									type="number"
@@ -298,8 +292,8 @@ export function EventsNewPage() {
 							disabled={createMutation.isPending}
 						>
 							{createMutation.isPending
-								? 'Creating event...'
-								: 'Create Event'}
+								? 'Vytváření události...'
+								: 'Vytvořit událost'}
 						</Button>
 					</form>
 				</CardContent>

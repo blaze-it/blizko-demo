@@ -1,5 +1,5 @@
-export { EventsPage } from './events-page'
 export { EventsDetailPage } from './events-detail-page'
-export { EventsNewPage } from './events-new-page'
 export { EventsEditPage } from './events-edit-page'
+export { EventsNewPage } from './events-new-page'
+export { EventsPage } from './events-page'
 export { MyEventsPage } from './my-events-page'

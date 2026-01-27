@@ -20,13 +20,13 @@ import { usePageTitle } from '@/hooks/use-page-title'
 import { trpc } from '@/trpc/client'
 
 const CATEGORIES = [
-	{ value: 'WORKOUT', label: 'Workout' },
+	{ value: 'WORKOUT', label: 'Cvičení' },
 	{ value: 'WORKSHOP', label: 'Workshop' },
-	{ value: 'KIDS', label: 'Kids' },
-	{ value: 'MEETUP', label: 'Meetup' },
-	{ value: 'LECTURE', label: 'Lecture' },
-	{ value: 'LEISURE', label: 'Leisure' },
-	{ value: 'OTHER', label: 'Other' },
+	{ value: 'KIDS', label: 'Děti' },
+	{ value: 'MEETUP', label: 'Setkání' },
+	{ value: 'LECTURE', label: 'Přednáška' },
+	{ value: 'LEISURE', label: 'Volný čas' },
+	{ value: 'OTHER', label: 'Ostatní' },
 ]
 
 const EditEventSchema = z.object({
@@ -51,7 +51,7 @@ const EditEventSchema = z.object({
 type EditEventFormData = z.infer<typeof EditEventSchema>
 
 export function EventsEditPage() {
-	usePageTitle('Edit Event')
+	usePageTitle('Upravit událost')
 	const { id } = useParams<{ id: string }>()
 	const navigate = useNavigate()
 	const utils = trpc.useUtils()
@@ -125,33 +125,41 @@ export function EventsEditPage() {
 				className="mb-4"
 			>
 				<ArrowLeft className="h-4 w-4 mr-2" />
-				Back to event
+				Zpět na událost
 			</Button>
 
 			<Card>
 				<CardHeader>
-					<CardTitle>Edit Event</CardTitle>
+					<CardTitle>Upravit událost</CardTitle>
 				</CardHeader>
 				<CardContent>
 					<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 						<div className="space-y-2">
-							<Label htmlFor="title">Title</Label>
+							<Label htmlFor="title">Název</Label>
 							<Input id="title" {...register('title')} />
 							{errors.title && (
-								<p className="text-destructive text-sm">{errors.title.message}</p>
+								<p className="text-destructive text-sm">
+									{errors.title.message}
+								</p>
 							)}
 						</div>
 
 						<div className="space-y-2">
-							<Label htmlFor="description">Description</Label>
-							<Textarea id="description" rows={4} {...register('description')} />
+							<Label htmlFor="description">Popis</Label>
+							<Textarea
+								id="description"
+								rows={4}
+								{...register('description')}
+							/>
 							{errors.description && (
-								<p className="text-destructive text-sm">{errors.description.message}</p>
+								<p className="text-destructive text-sm">
+									{errors.description.message}
+								</p>
 							)}
 						</div>
 
 						<div className="space-y-2">
-							<Label>Category</Label>
+							<Label>Kategorie</Label>
 							<Select
 								defaultValue={event?.category}
 								onValueChange={(value) => setValue('category', value)}
@@ -171,66 +179,96 @@ export function EventsEditPage() {
 
 						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label htmlFor="date">Date</Label>
+								<Label htmlFor="date">Datum</Label>
 								<Input id="date" type="date" {...register('date')} />
 							</div>
 							<div className="space-y-2">
-								<Label htmlFor="startTime">Start Time</Label>
+								<Label htmlFor="startTime">Čas začátku</Label>
 								<Input id="startTime" type="time" {...register('startTime')} />
 							</div>
 						</div>
 
 						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label htmlFor="endTime">End Time</Label>
+								<Label htmlFor="endTime">Čas konce</Label>
 								<Input id="endTime" type="time" {...register('endTime')} />
 							</div>
 							<div className="space-y-2">
-								<Label htmlFor="durationMinutes">Duration (min)</Label>
-								<Input id="durationMinutes" type="number" {...register('durationMinutes')} />
+								<Label htmlFor="durationMinutes">Délka (min)</Label>
+								<Input
+									id="durationMinutes"
+									type="number"
+									{...register('durationMinutes')}
+								/>
 							</div>
 						</div>
 
 						<div className="space-y-2">
-							<Label htmlFor="locationName">Location Name</Label>
+							<Label htmlFor="locationName">Název místa</Label>
 							<Input id="locationName" {...register('locationName')} />
 						</div>
 
 						<div className="space-y-2">
-							<Label htmlFor="address">Address</Label>
+							<Label htmlFor="address">Adresa</Label>
 							<Input id="address" {...register('address')} />
 						</div>
 
 						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label htmlFor="latitude">Latitude</Label>
-								<Input id="latitude" type="number" step="any" {...register('latitude')} />
+								<Label htmlFor="latitude">Zeměpisná šířka</Label>
+								<Input
+									id="latitude"
+									type="number"
+									step="any"
+									{...register('latitude')}
+								/>
 							</div>
 							<div className="space-y-2">
-								<Label htmlFor="longitude">Longitude</Label>
-								<Input id="longitude" type="number" step="any" {...register('longitude')} />
+								<Label htmlFor="longitude">Zeměpisná délka</Label>
+								<Input
+									id="longitude"
+									type="number"
+									step="any"
+									{...register('longitude')}
+								/>
 							</div>
 						</div>
 
 						<div className="grid grid-cols-2 gap-4">
 							<div className="space-y-2">
-								<Label htmlFor="price">Price (CZK)</Label>
-								<Input id="price" type="number" min={0} {...register('price')} />
+								<Label htmlFor="price">Cena (Kč)</Label>
+								<Input
+									id="price"
+									type="number"
+									min={0}
+									{...register('price')}
+								/>
 							</div>
 							<div className="space-y-2">
-								<Label htmlFor="capacity">Capacity</Label>
-								<Input id="capacity" type="number" min={1} {...register('capacity')} />
+								<Label htmlFor="capacity">Kapacita</Label>
+								<Input
+									id="capacity"
+									type="number"
+									min={1}
+									{...register('capacity')}
+								/>
 							</div>
 						</div>
 
 						{updateMutation.error && (
 							<div className="p-3 rounded-lg bg-destructive/20 border border-destructive/30">
-								<p className="text-destructive text-sm">{updateMutation.error.message}</p>
+								<p className="text-destructive text-sm">
+									{updateMutation.error.message}
+								</p>
 							</div>
 						)}
 
-						<Button type="submit" className="w-full" disabled={updateMutation.isPending}>
-							{updateMutation.isPending ? 'Saving...' : 'Save Changes'}
+						<Button
+							type="submit"
+							className="w-full"
+							disabled={updateMutation.isPending}
+						>
+							{updateMutation.isPending ? 'Ukládání...' : 'Uložit změny'}
 						</Button>
 					</form>
 				</CardContent>

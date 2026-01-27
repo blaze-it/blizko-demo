@@ -8,7 +8,7 @@ import { usePageTitle } from '@/hooks/use-page-title'
 import { trpc } from '@/trpc/client'
 
 export function MyEventsPage() {
-	usePageTitle('My Events')
+	usePageTitle('Moje události')
 	const navigate = useNavigate()
 	const [tab, setTab] = useState<'organized' | 'joined'>('organized')
 
@@ -22,10 +22,10 @@ export function MyEventsPage() {
 	return (
 		<div className="container">
 			<div className="flex items-center justify-between mb-6">
-				<h1 className="text-2xl font-bold">My Events</h1>
+				<h1 className="text-2xl font-bold">Moje události</h1>
 				<Button onClick={() => navigate('/events/new')}>
 					<Plus className="h-4 w-4 mr-2" />
-					Create Event
+					Vytvořit událost
 				</Button>
 			</div>
 
@@ -35,13 +35,13 @@ export function MyEventsPage() {
 					variant={tab === 'organized' ? 'default' : 'outline'}
 					onClick={() => setTab('organized')}
 				>
-					Organized
+					Organizované
 				</Button>
 				<Button
 					variant={tab === 'joined' ? 'default' : 'outline'}
 					onClick={() => setTab('joined')}
 				>
-					Joined
+					Zúčastněné
 				</Button>
 			</div>
 
@@ -52,8 +52,8 @@ export function MyEventsPage() {
 			) : tab === 'organized' ? (
 				!myEvents?.length ? (
 					<EmptyState
-						message="You haven't created any events yet"
-						actionLabel="Create your first event"
+						message="Zatím jste nevytvořili žádné události"
+						actionLabel="Vytvořte svou první událost"
 						onAction={() => navigate('/events/new')}
 					/>
 				) : (
@@ -91,8 +91,8 @@ export function MyEventsPage() {
 				)
 			) : !joined?.length ? (
 				<EmptyState
-					message="You haven't joined any events yet"
-					actionLabel="Browse events"
+					message="Zatím jste se nezúčastnili žádných událostí"
+					actionLabel="Procházet události"
 					onAction={() => navigate('/events')}
 				/>
 			) : (
@@ -109,7 +109,7 @@ export function MyEventsPage() {
 										{p.event.title}
 									</h3>
 									<p className="text-xs text-muted-foreground mb-2">
-										by {p.event.organizer.name ?? 'Anonymous'}
+										od {p.event.organizer.name ?? 'Anonymní'}
 									</p>
 									<EventMeta
 										date={p.event.date}
@@ -131,7 +131,11 @@ function EmptyState({
 	message,
 	actionLabel,
 	onAction,
-}: { message: string; actionLabel: string; onAction: () => void }) {
+}: {
+	message: string
+	actionLabel: string
+	onAction: () => void
+}) {
 	return (
 		<div className="text-center py-12">
 			<CalendarDays className="h-12 w-12 mx-auto mb-3 text-muted-foreground opacity-50" />
@@ -173,7 +177,7 @@ function EventMeta({
 			<div className="flex items-center gap-2">
 				<Users className="h-4 w-4 shrink-0" />
 				<span>
-					{participantCount} / {capacity} spots
+					{participantCount} / {capacity} míst
 				</span>
 			</div>
 		</div>

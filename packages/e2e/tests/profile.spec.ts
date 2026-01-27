@@ -8,32 +8,34 @@ test.describe('Profile Page', () => {
 
 		await expect(page.getByRole('heading', { name: user.name })).toBeVisible()
 		await expect(page.getByText(user.email).first()).toBeVisible()
-		await expect(page.getByText('Account Information')).toBeVisible()
-		await expect(page.getByText('Member Since')).toBeVisible()
+		await expect(page.getByText('Informace o účtu')).toBeVisible()
+		await expect(page.getByText('Členem od')).toBeVisible()
 	})
 
 	test('can edit profile name', async ({ page }) => {
-		const user = await register(page)
+		const _user = await register(page)
 		await page.goto('/profile')
 
-		await page.getByRole('button', { name: 'Edit' }).click()
+		await page.getByRole('button', { name: 'Upravit' }).click()
 
 		// Dialog should appear
-		await expect(page.getByText('Edit Profile')).toBeVisible()
+		await expect(page.getByText('Upravit profil')).toBeVisible()
 
-		const nameInput = page.getByLabel('Name')
+		const nameInput = page.getByLabel('Jméno')
 		await nameInput.clear()
 		await nameInput.fill('Updated Name')
-		await page.getByRole('button', { name: 'Save' }).click()
+		await page.getByRole('button', { name: 'Uložit' }).click()
 
 		// Should show updated name in the heading
-		await expect(page.getByRole('heading', { name: 'Updated Name' })).toBeVisible({ timeout: 10_000 })
+		await expect(
+			page.getByRole('heading', { name: 'Updated Name' }),
+		).toBeVisible({ timeout: 10_000 })
 	})
 
 	test('back to events link works', async ({ page }) => {
 		await register(page)
 		await page.goto('/profile')
-		await page.getByRole('link', { name: /Back to Events/ }).click()
+		await page.getByRole('link', { name: /Zpět na události/ }).click()
 		await expect(page).toHaveURL('/events')
 	})
 })

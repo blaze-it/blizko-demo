@@ -9,26 +9,32 @@ test.describe('Navigation & Sidebar', () => {
 	test('sidebar shows all navigation links', async ({ page }) => {
 		await page.goto('/events')
 
-		await expect(page.getByRole('link', { name: 'Home' })).toBeVisible()
-		await expect(page.getByRole('link', { name: 'Browse Events' })).toBeVisible()
-		await expect(page.getByRole('link', { name: 'Create Event' })).toBeVisible()
-		await expect(page.getByRole('link', { name: 'My Events' })).toBeVisible()
-		await expect(page.getByRole('link', { name: 'Profile' })).toBeVisible()
+		await expect(page.getByRole('link', { name: 'Domů' })).toBeVisible()
+		await expect(
+			page.getByRole('link', { name: 'Procházet události' }),
+		).toBeVisible()
+		await expect(
+			page.getByRole('link', { name: 'Vytvořit událost' }),
+		).toBeVisible()
+		await expect(
+			page.getByRole('link', { name: 'Moje události' }),
+		).toBeVisible()
+		await expect(page.getByRole('link', { name: 'Profil' })).toBeVisible()
 	})
 
 	test('sidebar navigation works', async ({ page }) => {
 		await page.goto('/events')
 
-		await page.getByRole('link', { name: 'My Events' }).click()
+		await page.getByRole('link', { name: 'Moje události' }).click()
 		await expect(page).toHaveURL('/my-events')
 
-		await page.getByRole('link', { name: 'Create Event' }).click()
+		await page.getByRole('link', { name: 'Vytvořit událost' }).click()
 		await expect(page).toHaveURL('/events/new')
 
-		await page.getByRole('link', { name: 'Profile' }).click()
+		await page.getByRole('link', { name: 'Profil' }).click()
 		await expect(page).toHaveURL('/profile')
 
-		await page.getByRole('link', { name: 'Browse Events' }).click()
+		await page.getByRole('link', { name: 'Procházet události' }).click()
 		await expect(page).toHaveURL('/events')
 	})
 
@@ -36,12 +42,12 @@ test.describe('Navigation & Sidebar', () => {
 		await page.goto('/events')
 
 		// Sign out button should exist
-		await expect(page.getByTitle('Sign out')).toBeVisible()
+		await expect(page.getByTitle('Odhlásit se')).toBeVisible()
 	})
 
 	test('sign out redirects to login', async ({ page }) => {
 		await page.goto('/events')
-		await page.getByTitle('Sign out').click()
+		await page.getByTitle('Odhlásit se').click()
 		await expect(page).toHaveURL(/\/login/)
 	})
 

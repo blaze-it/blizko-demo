@@ -4,26 +4,21 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate, useSearchParams } from 'react-router-dom'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-} from '@/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { signIn } from '@/lib/auth-client'
 
 const LoginSchema = z.object({
-	username: z.string().min(1, 'Username is required'),
-	password: z.string().min(1, 'Password is required'),
+	username: z.string().min(1, 'Uživatelské jméno je povinné'),
+	password: z.string().min(1, 'Heslo je povinné'),
 })
 
 type LoginFormData = z.infer<typeof LoginSchema>
 
 export function LoginPage() {
-	usePageTitle('Login')
+	usePageTitle('Přihlášení')
 	const navigate = useNavigate()
 	const [searchParams] = useSearchParams()
 	const redirectTo = searchParams.get('redirectTo') || '/events'
@@ -54,17 +49,17 @@ export function LoginPage() {
 					password: data.password,
 				})
 				if (emailResult.error) {
-					setError(emailResult.error.message || 'Login failed')
+					setError(emailResult.error.message || 'Přihlášení selhalo')
 					return
 				}
 			} else if (usernameResult.error) {
-				setError(usernameResult.error.message || 'Login failed')
+				setError(usernameResult.error.message || 'Přihlášení selhalo')
 				return
 			}
 
 			navigate(redirectTo)
 		} catch (_err) {
-			setError('An error occurred. Please try again.')
+			setError('Došlo k chybě. Zkuste to prosím znovu.')
 		} finally {
 			setIsLoading(false)
 		}
@@ -85,22 +80,22 @@ export function LoginPage() {
 
 				<Card className="border-border shadow-warm-lg">
 					<CardHeader className="space-y-1 text-center pb-2">
-						<h1 className="font-display font-bold text-2xl">Welcome back</h1>
+						<h1 className="font-display font-bold text-2xl">Vítejte zpět</h1>
 						<p className="text-sm text-muted-foreground">
-							Sign in to discover local events
+							Přihlaste se a objevujte lokální události
 						</p>
 					</CardHeader>
 
 					<CardContent>
 						<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 							<div className="space-y-2">
-								<Label htmlFor="username">Username or Email</Label>
+								<Label htmlFor="username">Uživatelské jméno nebo e-mail</Label>
 								<Input
 									id="username"
 									type="text"
 									autoComplete="username"
 									autoFocus
-									placeholder="Enter your username or email"
+									placeholder="Zadejte uživatelské jméno nebo e-mail"
 									{...register('username')}
 								/>
 								{errors.username && (
@@ -111,12 +106,12 @@ export function LoginPage() {
 							</div>
 
 							<div className="space-y-2">
-								<Label htmlFor="password">Password</Label>
+								<Label htmlFor="password">Heslo</Label>
 								<Input
 									id="password"
 									type="password"
 									autoComplete="current-password"
-									placeholder="Enter your password"
+									placeholder="Zadejte heslo"
 									{...register('password')}
 								/>
 								{errors.password && (
@@ -133,16 +128,19 @@ export function LoginPage() {
 							)}
 
 							<Button type="submit" className="w-full" disabled={isLoading}>
-								{isLoading ? 'Signing in...' : 'Sign In'}
+								{isLoading ? 'Přihlašování...' : 'Přihlásit se'}
 							</Button>
 						</form>
 					</CardContent>
 
 					<CardFooter className="flex flex-col gap-4 border-t border-border pt-6">
 						<p className="text-sm text-muted-foreground">
-							Don't have an account?{' '}
-							<Link to="/register" className="text-primary font-medium hover:underline">
-								Sign up
+							Nemáte účet?{' '}
+							<Link
+								to="/register"
+								className="text-primary font-medium hover:underline"
+							>
+								Zaregistrovat se
 							</Link>
 						</p>
 					</CardFooter>

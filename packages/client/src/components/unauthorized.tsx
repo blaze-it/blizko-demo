@@ -17,17 +17,17 @@ export function Unauthorized() {
 				<div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
 					<ShieldAlert className="h-8 w-8 text-destructive" />
 				</div>
-				<h1 className="text-3xl font-bold text-cream">Session Expired</h1>
+				<h1 className="text-3xl font-bold text-cream">Relace vypršela</h1>
 				<p className="mt-3 text-muted-foreground">
-					Your session has expired or you are not authorized to access this
-					page. Please log in again to continue.
+					Vaše relace vypršela nebo nemáte oprávnění k přístupu na tuto stránku.
+					Přihlaste se prosím znovu.
 				</p>
 				<div className="mt-8 flex flex-col gap-3">
 					<Button asChild>
-						<Link to="/login">Log In</Link>
+						<Link to="/login">Přihlásit se</Link>
 					</Button>
 					<Button variant="ghost" onClick={handleSignOut}>
-						Log Out & Clear Session
+						Odhlásit se a vymazat relaci
 					</Button>
 				</div>
 			</div>

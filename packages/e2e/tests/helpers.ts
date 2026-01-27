@@ -13,42 +13,51 @@ export function uniqueUser() {
 	}
 }
 
-export async function register(page: Page, user?: ReturnType<typeof uniqueUser>) {
+export async function register(
+	page: Page,
+	user?: ReturnType<typeof uniqueUser>,
+) {
 	const u = user ?? uniqueUser()
 	await page.goto('/register')
-	await page.getByLabel('Full Name').fill(u.name)
-	await page.getByLabel('Username').fill(u.username)
-	await page.getByLabel('Email').fill(u.email)
-	await page.getByLabel('Password').fill(u.password)
-	await page.getByRole('button', { name: 'Create Account' }).click()
+	await page.getByLabel('Celé jméno').fill(u.name)
+	await page.getByLabel('Uživatelské jméno').fill(u.username)
+	await page.getByLabel('E-mail').fill(u.email)
+	await page.getByLabel('Heslo').fill(u.password)
+	await page.getByRole('button', { name: 'Vytvořit účet' }).click()
 	await page.waitForURL(/\/events/, { timeout: 10_000 })
 	return u
 }
 
-export async function login(page: Page, user: { username: string; password: string }) {
+export async function login(
+	page: Page,
+	user: { username: string; password: string },
+) {
 	await page.goto('/login')
-	await page.getByLabel('Username or Email').fill(user.username)
-	await page.getByLabel('Password').fill(user.password)
-	await page.getByRole('button', { name: 'Sign In' }).click()
+	await page.getByLabel('Uživatelské jméno nebo e-mail').fill(user.username)
+	await page.getByLabel('Heslo').fill(user.password)
+	await page.getByRole('button', { name: 'Přihlásit se' }).click()
 	await page.waitForURL(/\/events/, { timeout: 10_000 })
 }
 
-export async function createEvent(page: Page, overrides?: Partial<{
-	title: string
-	description: string
-	category: string
-	date: string
-	startTime: string
-	endTime: string
-	locationName: string
-	address: string
-	capacity: string
-	price: string
-}>) {
+export async function createEvent(
+	page: Page,
+	overrides?: Partial<{
+		title: string
+		description: string
+		category: string
+		date: string
+		startTime: string
+		endTime: string
+		locationName: string
+		address: string
+		capacity: string
+		price: string
+	}>,
+) {
 	const defaults = {
 		title: `Test Event ${Date.now()}`,
 		description: 'A test event created by Playwright e2e tests.',
-		category: 'Meetup',
+		category: 'Setkání',
 		date: getFutureDate(),
 		startTime: '10:00',
 		endTime: '11:00',
@@ -60,35 +69,38 @@ export async function createEvent(page: Page, overrides?: Partial<{
 	const data = { ...defaults, ...overrides }
 
 	await page.goto('/events/new')
-	await page.getByLabel('Title').fill(data.title)
-	await page.getByLabel('Description').fill(data.description)
+	await page.getByLabel('Název', { exact: true }).fill(data.title)
+	await page.getByLabel('Popis').fill(data.description)
 
 	// Radix Select for category
 	await page.getByRole('combobox').click()
 	await page.getByRole('option', { name: data.category }).click()
 
-	await page.getByLabel('Date').fill(data.date)
-	await page.getByLabel('Start Time').fill(data.startTime)
+	await page.getByLabel('Datum').fill(data.date)
+	await page.getByLabel('Čas začátku').fill(data.startTime)
 	if (data.endTime) {
 		await page.locator('#endTime').fill(data.endTime)
 	}
 
-	await page.getByLabel('Location Name').fill(data.locationName)
-	await page.getByLabel('Address').fill(data.address)
-	await page.getByLabel('Capacity').fill(data.capacity)
+	await page.getByLabel('Název místa').fill(data.locationName)
+	await page.getByLabel('Adresa').fill(data.address)
+	await page.getByLabel('Kapacita').fill(data.capacity)
 
 	const priceInput = page.locator('#price')
 	await priceInput.clear()
 	await priceInput.fill(data.price)
 
-	await page.getByRole('button', { name: 'Create Event' }).click()
+	await page.getByRole('button', { name: 'Vytvořit událost' }).click()
 
-	// Wait for navigation away from /events/new to the event detail page
-	await page.waitForFunction(
-		() => !window.location.pathname.endsWith('/new'),
-		{ timeout: 10_000 },
-	)
+	// Wait for navigation to the event detail page
+	await page.waitForFunction(() => !window.location.pathname.endsWith('/new'), {
+		timeout: 10_000,
+	})
 	await page.waitForLoadState('networkidle')
+
+	// Verify we landed on a valid event detail page
+	const { expect } = await import('@playwright/test')
+	await expect(page).toHaveURL(/\/events\/[a-z0-9-]+$/i)
 
 	return data
 }

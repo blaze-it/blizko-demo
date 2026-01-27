@@ -4,28 +4,23 @@ import { useForm } from 'react-hook-form'
 import { Link, useNavigate } from 'react-router-dom'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardFooter,
-	CardHeader,
-} from '@/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { usePageTitle } from '@/hooks/use-page-title'
 import { signUp } from '@/lib/auth-client'
 
 const RegisterSchema = z.object({
-	name: z.string().min(1, 'Name is required'),
-	username: z.string().min(3, 'Username must be at least 3 characters'),
-	email: z.string().email('Invalid email address'),
-	password: z.string().min(8, 'Password must be at least 8 characters'),
+	name: z.string().min(1, 'Jméno je povinné'),
+	username: z.string().min(3, 'Uživatelské jméno musí mít alespoň 3 znaky'),
+	email: z.string().email('Neplatná e-mailová adresa'),
+	password: z.string().min(8, 'Heslo musí mít alespoň 8 znaků'),
 })
 
 type RegisterFormData = z.infer<typeof RegisterSchema>
 
 export function RegisterPage() {
-	usePageTitle('Register')
+	usePageTitle('Registrace')
 	const navigate = useNavigate()
 	const [error, setError] = useState<string | null>(null)
 	const [isLoading, setIsLoading] = useState(false)
@@ -51,13 +46,13 @@ export function RegisterPage() {
 			})
 
 			if (result.error) {
-				setError(result.error.message || 'Registration failed')
+				setError(result.error.message || 'Registrace selhala')
 				return
 			}
 
 			navigate('/events')
 		} catch (_err) {
-			setError('An error occurred. Please try again.')
+			setError('Došlo k chybě. Zkuste to prosím znovu.')
 		} finally {
 			setIsLoading(false)
 		}
@@ -78,22 +73,24 @@ export function RegisterPage() {
 
 				<Card className="border-border shadow-warm-lg">
 					<CardHeader className="space-y-1 text-center pb-2">
-						<h1 className="font-display font-bold text-2xl">Join Blizko</h1>
+						<h1 className="font-display font-bold text-2xl">
+							Přidejte se k Blizko
+						</h1>
 						<p className="text-sm text-muted-foreground">
-							Create an account to discover and organize local events
+							Vytvořte si účet a objevujte a organizujte lokální události
 						</p>
 					</CardHeader>
 
 					<CardContent>
 						<form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
 							<div className="space-y-2">
-								<Label htmlFor="name">Full Name</Label>
+								<Label htmlFor="name">Celé jméno</Label>
 								<Input
 									id="name"
 									type="text"
 									autoComplete="name"
 									autoFocus
-									placeholder="Your name"
+									placeholder="Vaše jméno"
 									{...register('name')}
 								/>
 								{errors.name && (
@@ -104,12 +101,12 @@ export function RegisterPage() {
 							</div>
 
 							<div className="space-y-2">
-								<Label htmlFor="username">Username</Label>
+								<Label htmlFor="username">Uživatelské jméno</Label>
 								<Input
 									id="username"
 									type="text"
 									autoComplete="username"
-									placeholder="Choose a username"
+									placeholder="Zvolte uživatelské jméno"
 									{...register('username')}
 								/>
 								{errors.username && (
@@ -120,12 +117,12 @@ export function RegisterPage() {
 							</div>
 
 							<div className="space-y-2">
-								<Label htmlFor="email">Email</Label>
+								<Label htmlFor="email">E-mail</Label>
 								<Input
 									id="email"
 									type="email"
 									autoComplete="email"
-									placeholder="your@email.com"
+									placeholder="vas@email.cz"
 									{...register('email')}
 								/>
 								{errors.email && (
@@ -136,12 +133,12 @@ export function RegisterPage() {
 							</div>
 
 							<div className="space-y-2">
-								<Label htmlFor="password">Password</Label>
+								<Label htmlFor="password">Heslo</Label>
 								<Input
 									id="password"
 									type="password"
 									autoComplete="new-password"
-									placeholder="At least 8 characters"
+									placeholder="Alespoň 8 znaků"
 									{...register('password')}
 								/>
 								{errors.password && (
@@ -158,16 +155,19 @@ export function RegisterPage() {
 							)}
 
 							<Button type="submit" className="w-full" disabled={isLoading}>
-								{isLoading ? 'Creating account...' : 'Create Account'}
+								{isLoading ? 'Vytváření účtu...' : 'Vytvořit účet'}
 							</Button>
 						</form>
 					</CardContent>
 
 					<CardFooter className="flex flex-col gap-4 border-t border-border pt-6">
 						<p className="text-sm text-muted-foreground">
-							Already have an account?{' '}
-							<Link to="/login" className="text-primary font-medium hover:underline">
-								Sign in
+							Už máte účet?{' '}
+							<Link
+								to="/login"
+								className="text-primary font-medium hover:underline"
+							>
+								Přihlásit se
 							</Link>
 						</p>
 					</CardFooter>

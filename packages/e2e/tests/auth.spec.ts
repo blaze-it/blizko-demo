@@ -6,14 +6,16 @@ test.describe('Registration', () => {
 		const user = uniqueUser()
 		await register(page, user)
 		await expect(page).toHaveURL(/\/events/)
-		await expect(page.getByRole('heading', { name: 'Browse Events' })).toBeVisible()
+		await expect(
+			page.getByRole('heading', { name: 'Procházet události' }),
+		).toBeVisible()
 	})
 
 	test('shows validation errors for empty fields', async ({ page }) => {
 		await page.goto('/register')
-		await page.getByRole('button', { name: 'Create Account' }).click()
+		await page.getByRole('button', { name: 'Vytvořit účet' }).click()
 
-		await expect(page.getByText('Name is required')).toBeVisible()
+		await expect(page.getByText('Jméno je povinné')).toBeVisible()
 	})
 
 	test('shows error for duplicate username', async ({ page }) => {
@@ -23,21 +25,22 @@ test.describe('Registration', () => {
 		// Sign out and try to register with same username
 		await page.goto('/register')
 		const dup = { ...uniqueUser(), username: user.username }
-		await page.getByLabel('Full Name').fill(dup.name)
-		await page.getByLabel('Username').fill(dup.username)
-		await page.getByLabel('Email').fill(dup.email)
-		await page.getByLabel('Password').fill(dup.password)
-		await page.getByRole('button', { name: 'Create Account' }).click()
+		await page.getByLabel('Celé jméno').fill(dup.name)
+		await page.getByLabel('Uživatelské jméno').fill(dup.username)
+		await page.getByLabel('E-mail').fill(dup.email)
+		await page.getByLabel('Heslo').fill(dup.password)
+		await page.getByRole('button', { name: 'Vytvořit účet' }).click()
 
-		// Should show some error (not redirect to events)
-		await page.waitForTimeout(2000)
-		const url = page.url()
-		expect(url).toContain('/register')
+		// Should show an error message and stay on register page
+		await expect(page.locator('.text-destructive').first()).toBeVisible({
+			timeout: 5_000,
+		})
+		expect(page.url()).toContain('/register')
 	})
 
 	test('has link to sign in page', async ({ page }) => {
 		await page.goto('/register')
-		await page.getByRole('link', { name: 'Sign in' }).click()
+		await page.getByRole('link', { name: 'Přihlásit se' }).click()
 		await expect(page).toHaveURL('/login')
 	})
 })
@@ -61,25 +64,27 @@ test.describe('Login', () => {
 
 	test('shows validation errors for empty fields', async ({ page }) => {
 		await page.goto('/login')
-		await page.getByRole('button', { name: 'Sign In' }).click()
+		await page.getByRole('button', { name: 'Přihlásit se' }).click()
 
-		await expect(page.getByText('Username is required')).toBeVisible()
+		await expect(page.getByText('Uživatelské jméno je povinné')).toBeVisible()
 	})
 
 	test('shows error for wrong credentials', async ({ page }) => {
 		await page.goto('/login')
-		await page.getByLabel('Username or Email').fill('nonexistent')
-		await page.getByLabel('Password').fill('wrongpassword')
-		await page.getByRole('button', { name: 'Sign In' }).click()
+		await page.getByLabel('Uživatelské jméno nebo e-mail').fill('nonexistent')
+		await page.getByLabel('Heslo').fill('wrongpassword')
+		await page.getByRole('button', { name: 'Přihlásit se' }).click()
 
-		await page.waitForTimeout(2000)
-		// Should stay on login page or show error
+		// Should show an error message and stay on login page
+		await expect(page.locator('.text-destructive').first()).toBeVisible({
+			timeout: 5_000,
+		})
 		expect(page.url()).toContain('/login')
 	})
 
 	test('has link to register page', async ({ page }) => {
 		await page.goto('/login')
-		await page.getByRole('link', { name: 'Sign up' }).click()
+		await page.getByRole('link', { name: 'Zaregistrovat se' }).click()
 		await expect(page).toHaveURL('/register')
 	})
 })

@@ -33,7 +33,7 @@ export class ErrorBoundary extends Component<
 			return (
 				<div className="flex min-h-screen items-center justify-center p-4">
 					<div className="text-center">
-						<h1 className="text-2xl font-bold mb-2">Something went wrong</h1>
+						<h1 className="text-2xl font-bold mb-2">Něco se pokazilo</h1>
 						<p className="text-muted-foreground mb-4">
 							{this.state.error?.message}
 						</p>
@@ -42,7 +42,7 @@ export class ErrorBoundary extends Component<
 							className="btn btn-primary"
 							onClick={() => this.setState({ hasError: false, error: null })}
 						>
-							Try again
+							Zkusit znovu
 						</button>
 					</div>
 				</div>

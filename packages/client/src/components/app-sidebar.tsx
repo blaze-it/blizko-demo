@@ -1,13 +1,5 @@
-import {
-	CalendarDays,
-	Home,
-	LogOut,
-	MapPin,
-	Plus,
-	User,
-} from 'lucide-react'
+import { CalendarDays, Home, LogOut, MapPin, Plus, User } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { signOut } from '@/lib/auth-client'
 import { Button } from '@/components/ui/button'
 import {
 	Sidebar,
@@ -21,14 +13,15 @@ import {
 	SidebarMenuButton,
 	SidebarMenuItem,
 } from '@/components/ui/sidebar'
+import { signOut } from '@/lib/auth-client'
 import { trpc } from '@/trpc/client'
 
 const menuItems = [
-	{ label: 'Home', href: '/', icon: Home },
-	{ label: 'Browse Events', href: '/events', icon: MapPin },
-	{ label: 'Create Event', href: '/events/new', icon: Plus },
-	{ label: 'My Events', href: '/my-events', icon: CalendarDays },
-	{ label: 'Profile', href: '/profile', icon: User },
+	{ label: 'Domů', href: '/', icon: Home },
+	{ label: 'Procházet události', href: '/events', icon: MapPin },
+	{ label: 'Vytvořit událost', href: '/events/new', icon: Plus },
+	{ label: 'Moje události', href: '/my-events', icon: CalendarDays },
+	{ label: 'Profil', href: '/profile', icon: User },
 ]
 
 export function AppSideBar() {
@@ -54,7 +47,7 @@ export function AppSideBar() {
 
 			<SidebarContent>
 				<SidebarGroup>
-					<SidebarGroupLabel>Navigation</SidebarGroupLabel>
+					<SidebarGroupLabel>Navigace</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<SidebarMenu>
 							{menuItems.map((item) => (
@@ -86,7 +79,7 @@ export function AppSideBar() {
 							variant="ghost"
 							size="icon"
 							onClick={handleSignOut}
-							title="Sign out"
+							title="Odhlásit se"
 						>
 							<LogOut className="h-4 w-4" />
 						</Button>

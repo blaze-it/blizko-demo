@@ -8,41 +8,57 @@ test.describe('My Events Page', () => {
 
 	test('shows empty state for organized tab', async ({ page }) => {
 		await page.goto('/my-events')
-		await expect(page.getByText("You haven't created any events yet")).toBeVisible()
-		await expect(page.getByRole('button', { name: 'Create your first event' })).toBeVisible()
+		await expect(
+			page.getByText('Zatím jste nevytvořili žádné události'),
+		).toBeVisible()
+		await expect(
+			page.getByRole('button', { name: 'Vytvořte svou první událost' }),
+		).toBeVisible()
 	})
 
 	test('shows empty state for joined tab', async ({ page }) => {
 		await page.goto('/my-events')
-		await page.getByRole('button', { name: 'Joined' }).click()
-		await expect(page.getByText("You haven't joined any events yet")).toBeVisible()
-		await expect(page.getByRole('button', { name: 'Browse events' })).toBeVisible()
+		await page.getByRole('button', { name: 'Zúčastněné' }).click()
+		await expect(
+			page.getByText('Zatím jste se nezúčastnili žádných událostí'),
+		).toBeVisible()
+		await expect(
+			page.getByRole('button', { name: 'Procházet události' }),
+		).toBeVisible()
 	})
 
 	test('tabs switch between organized and joined', async ({ page }) => {
 		await page.goto('/my-events')
 
 		// Default tab is Organized
-		await expect(page.getByText("You haven't created any events yet")).toBeVisible()
+		await expect(
+			page.getByText('Zatím jste nevytvořili žádné události'),
+		).toBeVisible()
 
 		// Switch to Joined
-		await page.getByRole('button', { name: 'Joined' }).click()
-		await expect(page.getByText("You haven't joined any events yet")).toBeVisible()
+		await page.getByRole('button', { name: 'Zúčastněné' }).click()
+		await expect(
+			page.getByText('Zatím jste se nezúčastnili žádných událostí'),
+		).toBeVisible()
 
 		// Switch back
-		await page.getByRole('button', { name: 'Organized' }).click()
-		await expect(page.getByText("You haven't created any events yet")).toBeVisible()
+		await page.getByRole('button', { name: 'Organizované' }).click()
+		await expect(
+			page.getByText('Zatím jste nevytvořili žádné události'),
+		).toBeVisible()
 	})
 
 	test('organized events show after creating one', async ({ page }) => {
-		const event = await createEvent(page, { title: `My Organized ${Date.now()}` })
+		const event = await createEvent(page, {
+			title: `My Organized ${Date.now()}`,
+		})
 		await page.goto('/my-events')
 		await expect(page.getByText(event.title)).toBeVisible()
 	})
 
 	test('Create Event button on page header works', async ({ page }) => {
 		await page.goto('/my-events')
-		await page.getByRole('button', { name: 'Create Event' }).first().click()
+		await page.getByRole('button', { name: 'Vytvořit událost' }).first().click()
 		await expect(page).toHaveURL('/events/new')
 	})
 

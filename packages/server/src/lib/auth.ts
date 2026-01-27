@@ -56,7 +56,7 @@ export const auth = betterAuth({
 		cookiePrefix: 'blizko',
 		useSecureCookies: IS_PROD,
 		crossSubDomainCookies: {
-			enabled: env.COOKIE_DOMAIN ? true : false,
+			enabled: !!env.COOKIE_DOMAIN,
 			domain: env.COOKIE_DOMAIN,
 		},
 	},

@@ -168,14 +168,14 @@ export function ConfirmationProvider({ children }: ConfirmationProviderProps) {
 
 					<DialogFooter>
 						<Button type="button" variant="outline" onClick={handleCancel}>
-							{options?.cancelLabel ?? 'Cancel'}
+							{options?.cancelLabel ?? 'Zrušit'}
 						</Button>
 						<Button
 							type="button"
 							variant={actionVariant}
 							onClick={handleConfirm}
 						>
-							{options?.actionLabel ?? 'Confirm'}
+							{options?.actionLabel ?? 'Potvrdit'}
 						</Button>
 					</DialogFooter>
 				</DialogContent>
@@ -229,7 +229,7 @@ export interface UseConfirmReturn {
  *   const confirmed = await confirm({
  *     title: 'Delete Task',
  *     description: 'Are you sure? This cannot be undone.',
- *     actionLabel: 'Delete',
+ *     actionLabel: 'Smazat',
  *     icon: Trash2,
  *   })
  *   if (confirmed) {
@@ -248,18 +248,18 @@ export function useConfirm(): UseConfirmReturn {
 		(itemType: string, itemName?: string): Promise<boolean> => {
 			const description = itemName ? (
 				<>
-					Are you sure you want to delete{' '}
+					Opravdu chcete smazat{' '}
 					<span className="font-semibold text-foreground">{itemName}</span>?
-					This action cannot be undone.
+					Tuto akci nelze vrátit zpět.
 				</>
 			) : (
-				`Are you sure you want to delete this ${itemType}? This action cannot be undone.`
+				`Opravdu chcete smazat tento ${itemType}? Tuto akci nelze vrátit zpět.`
 			)
 
 			return context.confirm({
-				title: `Delete ${itemType.charAt(0).toUpperCase() + itemType.slice(1)}`,
+				title: `Smazat ${itemType}`,
 				description,
-				actionLabel: 'Delete',
+				actionLabel: 'Smazat',
 				actionVariant: 'destructive',
 				icon: Trash2,
 				destructive: true,
@@ -273,7 +273,7 @@ export function useConfirm(): UseConfirmReturn {
 			return context.confirm({
 				title,
 				description,
-				actionLabel: 'Confirm',
+				actionLabel: 'Potvrdit',
 				actionVariant: 'destructive',
 				icon: AlertTriangle,
 				destructive: true,

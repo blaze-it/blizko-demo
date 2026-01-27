@@ -1,24 +1,23 @@
 import crypto from 'node:crypto'
+import { AppError } from '@blizko/shared'
 import { serve } from '@hono/node-server'
 import { trpcServer } from '@hono/trpc-server'
-import { AppError } from '@blizko/shared'
-import type { Context } from 'hono'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
-import { secureHeaders } from 'hono/secure-headers'
 import { logger as pinoLogger } from 'hono/logger'
+import { secureHeaders } from 'hono/secure-headers'
 import { init as initEnv } from './utils/env.js'
 import { getPort, portNumbers } from './utils/get-port.js'
 import { onShutdown } from './utils/graceful-shutdown.js'
 
 initEnv()
 
-import { logger } from './utils/logger.js'
 import { auth } from './lib/auth.js'
 import { createContext } from './trpc/context.js'
 import { appRouter } from './trpc/routers/index.js'
 import { prisma } from './utils/db.js'
 import { env } from './utils/env.js'
+import { logger } from './utils/logger.js'
 
 const MODE = env.NODE_ENV
 const IS_PROD = MODE === 'production'
@@ -54,10 +53,7 @@ app.use(
 	cors({
 		origin: IS_DEV
 			? ['http://localhost:3000', 'http://localhost:5173']
-			: [
-					'http://localhost:3000',
-					env.FRONTEND_URL ?? '',
-				].filter(Boolean),
+			: ['http://localhost:3000', env.FRONTEND_URL ?? ''].filter(Boolean),
 		credentials: true,
 		allowHeaders: ['Content-Type', 'Authorization'],
 	}),
@@ -101,7 +97,9 @@ app.onError((err, c) => {
 	logger.error(`HTTP error: ${c.req.method} ${c.req.path}`, err)
 	return c.json(
 		{
-			error: IS_PROD ? 'An unexpected error occurred' : err.message || 'Internal Server Error',
+			error: IS_PROD
+				? 'An unexpected error occurred'
+				: err.message || 'Internal Server Error',
 			code: 'INTERNAL',
 		},
 		500,
