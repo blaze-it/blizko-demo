@@ -9,7 +9,7 @@ FROM base AS builder
 WORKDIR /app
 
 # Build argument for API URL
-ARG VITE_API_URL=/api
+ARG VITE_API_URL=https://blizko-api.blaze.codes
 ENV VITE_API_URL=${VITE_API_URL}
 
 # Copy workspace config, lockfile, and package files
