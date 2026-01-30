@@ -1,15 +1,24 @@
 # Blizko - Rozpad funkcí
 
 ## Co už máme
-Základní CRUD eventů, registrace, mapa na detailu, join/leave na event.
+- Základní CRUD eventů
+- Registrace/přihlášení
+- Mapa na detailu eventu
+- Join/leave na event
 
 ---
 
 ## 1. Vytvořit událost, propagovat, prodat, dostat peníze
 
-Vytvoření eventu - upload fotek (potřeba storage, asi R2), náhled před publikací, draft stavy.
+Vytvoření eventu:
+- Upload fotek (potřeba storage, asi R2)
+- Náhled před publikací
+- Draft stavy
 
-Propagace - OG meta tagy aby se to hezky sdílelo, share buttony (FB, WhatsApp, link), QR kód.
+Propagace:
+- OG meta tagy aby se to hezky sdílelo
+- Share buttony (FB, WhatsApp, link)
+- QR kód
 
 Platby přes Stripe:
 - Stripe Connect - organizátor si propojí účet
@@ -18,23 +27,40 @@ Platby přes Stripe:
 - Split - platforma si bere procento, zbytek organizátorovi
 - Refundy
 
-Služby co budeme potřebovat: Stripe (platby), R2 (obrázky), Resend (emaily).
+Služby co budeme potřebovat:
+- Stripe (platby)
+- R2 (obrázky)
+- Resend (emaily)
 
 ---
 
 ## 2. Prozkoumat, vybrat, zaplatit, zúčastnit se
 
-Objevování - fulltext search, filtry (kategorie, datum, cena, vzdálenost), řazení.
+Objevování:
+- Fulltext search
+- Filtry (kategorie, datum, cena, vzdálenost)
+- Řazení
 
-Platba - pro zdarma jen přihlásit, pro placené checkout, waitlist když plno.
+Platba:
+- Pro zdarma jen přihlásit
+- Pro placené checkout
+- Waitlist když plno
 
-Po zaplacení - email s QR, vstupenka v appce, check-in pro organizátora.
+Po zaplacení:
+- Email s QR
+- Vstupenka v appce
+- Check-in pro organizátora
 
 ---
 
 ## 3. Mapa
 
-Piny na mapě, clustering při oddálení, popup s názvem. Filtry na mapě, hledat v oblasti, geolokace.
+- Piny na mapě
+- Clustering při oddálení
+- Popup s názvem
+- Filtry na mapě
+- Hledat v oblasti
+- Geolokace
 
 Leaflet + OpenStreetMap, je to zadarmo.
 
@@ -42,21 +68,35 @@ Leaflet + OpenStreetMap, je to zadarmo.
 
 ## 4. Hodnocení a důvěra
 
-Hodnocení eventu po skončení (1-5 hvězd + komentář), jen účastníci můžou hodnotit. Průměr na detailu.
+Hodnocení:
+- Po skončení eventu (1-5 hvězd + komentář)
+- Jen účastníci můžou hodnotit
+- Průměr na detailu
 
-Organizátor má agregované hodnocení ze všech eventů.
+Organizátor:
+- Agregované hodnocení ze všech eventů
 
-Ověřený email, počet eventů, report button.
+Důvěra:
+- Ověřený email
+- Počet eventů
+- Report button
 
 ---
 
 ## 5. Sociální funkce
 
-Sledovat organizátora, feed od sledovaných.
+- Sledovat organizátora
+- Feed od sledovaných
 
-Notifikace - nový event od sledovaného, připomínka před eventem, změna/zrušení.
+Notifikace:
+- Nový event od sledovaného
+- Připomínka před eventem
+- Změna/zrušení
 
-Veřejný profil, historie eventů, bio.
+Profily:
+- Veřejný profil
+- Historie eventů
+- Bio
 
 ---
 
