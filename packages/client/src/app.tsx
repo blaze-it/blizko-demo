@@ -50,6 +50,9 @@ const TicketPage = lazy(() =>
 const CheckInPage = lazy(() =>
 	import('@/routes/events').then((m) => ({ default: m.CheckInPage })),
 )
+const FeedPage = lazy(() =>
+	import('@/routes/events').then((m) => ({ default: m.FeedPage })),
+)
 
 // Profile
 const ProfilePage = lazy(() =>
@@ -113,6 +116,7 @@ export default function App() {
 						<Route path="/events/:id/ticket" element={<TicketPage />} />
 						<Route path="/events/:id/check-in" element={<CheckInPage />} />
 						<Route path="/my-events" element={<MyEventsPage />} />
+						<Route path="/feed" element={<FeedPage />} />
 
 						{/* Profile */}
 						<Route path="/profile" element={<ProfilePage />} />

@@ -3,6 +3,7 @@ import { z } from 'zod'
 import {
 	EventCategory,
 	EventStatus,
+	NotificationType,
 	ParticipantStatus,
 } from '../../generated/prisma/client.js'
 import { generateTicketQRCode } from '../../lib/qrcode.js'
@@ -309,6 +310,29 @@ export const eventsRouter = router({
 				where: { id: input.id },
 				data: { status: EventStatus.PUBLISHED },
 			})
+
+			// Create notifications for all followers
+			const followers = await ctx.prisma.follow.findMany({
+				where: { followingId: ctx.userId },
+				select: { followerId: true },
+			})
+
+			if (followers.length > 0) {
+				const organizer = await ctx.prisma.user.findUnique({
+					where: { id: ctx.userId },
+					select: { name: true },
+				})
+
+				await ctx.prisma.notification.createMany({
+					data: followers.map((follower) => ({
+						type: NotificationType.EVENT_FROM_FOLLOWING,
+						title: 'Nová událost od sledovaného organizátora',
+						body: `${organizer?.name || 'Sledovaný organizátor'} vytvořil novou událost: ${event.title}`,
+						data: { eventId: event.id, organizerId: ctx.userId },
+						userId: follower.followerId,
+					})),
+				})
+			}
 
 			return event
 		}),

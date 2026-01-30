@@ -1,4 +1,4 @@
-import { CalendarDays, Home, LogOut, MapPin, Plus, User } from 'lucide-react'
+import { CalendarDays, Home, LogOut, MapPin, Plus, Rss, User } from 'lucide-react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,6 +18,7 @@ import { trpc } from '@/trpc/client'
 
 const menuItems = [
 	{ label: 'Domů', href: '/', icon: Home },
+	{ label: 'Můj feed', href: '/feed', icon: Rss },
 	{ label: 'Procházet události', href: '/events', icon: MapPin },
 	{ label: 'Vytvořit událost', href: '/events/new', icon: Plus },
 	{ label: 'Moje události', href: '/my-events', icon: CalendarDays },
@@ -39,7 +40,7 @@ export function AppSideBar() {
 			<SidebarHeader className="border-b border-border p-4">
 				<Link to="/" className="inline-flex items-center gap-1.5 group">
 					<span className="font-display font-bold text-xl tracking-tight">
-						blizko
+						zokoli
 					</span>
 					<span className="w-1.5 h-1.5 rounded-full bg-primary group-hover:scale-125 transition-transform" />
 				</Link>

@@ -1,8 +1,8 @@
-import { Errors } from '@blizko/shared'
+import { Errors } from '@zokoli/shared'
 import { z } from 'zod'
-import { env } from '../../utils/env.js'
+import { EventStatus, NotificationType } from '../../generated/prisma/client.js'
 import { newFollowerEmail } from '../../lib/email-templates.js'
-import { NotificationType } from '../../generated/prisma/client.js'
+import { env } from '../../utils/env.js'
 import { ensureExists } from '../lib/crud-helpers.js'
 import { protectedProcedure, publicProcedure, router } from '../trpc.js'
 
@@ -32,6 +32,11 @@ const getFollowingSchema = z.object({
 
 const getCountsSchema = z.object({
 	userId: z.string(),
+})
+
+const getFeedSchema = z.object({
+	cursor: z.string().optional(),
+	limit: z.number().min(1).max(100).default(20),
 })
 
 // =============================================================================
@@ -103,7 +108,8 @@ export const followsRouter = router({
 			})
 
 			// Send email notification
-			const appUrl = env.CLIENT_URL || env.FRONTEND_URL || 'http://localhost:5173'
+			const appUrl =
+				env.CLIENT_URL || env.FRONTEND_URL || 'http://localhost:5173'
 			await newFollowerEmail({
 				to: userToFollow.email,
 				userName: userToFollow.name || 'uživateli',
@@ -248,5 +254,48 @@ export const followsRouter = router({
 				followersCount,
 				followingCount,
 			}
+		}),
+
+	/**
+	 * Get feed of upcoming events from followed organizers
+	 */
+	getFeed: protectedProcedure
+		.input(getFeedSchema)
+		.query(async ({ ctx, input }) => {
+			const { cursor, limit } = input
+
+			// Get list of users that the current user follows
+			const following = await ctx.prisma.follow.findMany({
+				where: { followerId: ctx.userId },
+				select: { followingId: true },
+			})
+
+			const followingIds = following.map((f) => f.followingId)
+
+			if (followingIds.length === 0) {
+				return { items: [], nextCursor: undefined }
+			}
+
+			// Get upcoming published events from followed organizers
+			const events = await ctx.prisma.event.findMany({
+				where: {
+					organizerId: { in: followingIds },
+					status: EventStatus.PUBLISHED,
+					date: { gte: new Date() },
+					...(cursor && { id: { gt: cursor } }),
+				},
+				orderBy: { date: 'asc' },
+				take: limit + 1,
+				include: {
+					organizer: { select: { id: true, name: true } },
+					_count: { select: { participants: true } },
+				},
+			})
+
+			const hasMore = events.length > limit
+			const items = hasMore ? events.slice(0, limit) : events
+			const nextCursor = hasMore ? items[items.length - 1]?.id : undefined
+
+			return { items, nextCursor }
 		}),
 })
