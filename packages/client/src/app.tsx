@@ -38,6 +38,9 @@ const EventsNewPage = lazy(() =>
 const EventsEditPage = lazy(() =>
 	import('@/routes/events').then((m) => ({ default: m.EventsEditPage })),
 )
+const EventsPreviewPage = lazy(() =>
+	import('@/routes/events').then((m) => ({ default: m.EventsPreviewPage })),
+)
 const MyEventsPage = lazy(() =>
 	import('@/routes/events').then((m) => ({ default: m.MyEventsPage })),
 )
@@ -100,6 +103,7 @@ export default function App() {
 						<Route path="/events/new" element={<EventsNewPage />} />
 						<Route path="/events/:id" element={<EventsDetailPage />} />
 						<Route path="/events/:id/edit" element={<EventsEditPage />} />
+						<Route path="/events/:id/preview" element={<EventsPreviewPage />} />
 						<Route path="/my-events" element={<MyEventsPage />} />
 
 						{/* Profile */}

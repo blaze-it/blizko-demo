@@ -77,7 +77,13 @@ export function EventsDetailPage() {
 			toast.info('Platba byla zrušena')
 			setSearchParams({}, { replace: true })
 		}
-	}, [searchParams, setSearchParams, refetchPaymentStatus, utils.events.getById, id])
+	}, [
+		searchParams,
+		setSearchParams,
+		refetchPaymentStatus,
+		utils.events.getById,
+		id,
+	])
 
 	usePageTitle(event?.title ?? 'Událost')
 
@@ -106,6 +112,25 @@ export function EventsDetailPage() {
 	const isFull = confirmedCount >= event.capacity
 	const isPaidEvent = event.price > 0
 	const hasPaid = paymentStatus?.hasPaid ?? false
+	const isDraft = event.status === 'DRAFT'
+
+	// Redirect organizer to preview page for drafts
+	if (isDraft && isOrganizer) {
+		navigate(`/events/${id}/preview`, { replace: true })
+		return null
+	}
+
+	// Non-organizers cannot view draft events
+	if (isDraft && !isOrganizer) {
+		return (
+			<div className="container text-center py-12">
+				<p className="text-muted-foreground">Událost nenalezena</p>
+				<Button variant="ghost" onClick={() => navigate('/events')}>
+					Zpět na události
+				</Button>
+			</div>
+		)
+	}
 
 	return (
 		<div className="container max-w-3xl">
@@ -126,12 +151,12 @@ export function EventsDetailPage() {
 							<div className="flex flex-wrap gap-2 mb-2">
 								<Badge>{event.category}</Badge>
 								{event.status === 'CANCELLED' && (
-									<Badge variant="destructive">
-										Zrušeno
-									</Badge>
+									<Badge variant="destructive">Zrušeno</Badge>
 								)}
 							</div>
-							<CardTitle className="text-xl sm:text-2xl">{event.title}</CardTitle>
+							<CardTitle className="text-xl sm:text-2xl">
+								{event.title}
+							</CardTitle>
 						</div>
 						<div className="sm:text-right shrink-0">
 							<p className="text-xl sm:text-2xl font-bold text-primary">
@@ -262,7 +287,9 @@ export function EventsDetailPage() {
 										onClick={() => leaveMutation.mutate({ eventId: event.id })}
 										disabled={leaveMutation.isPending}
 									>
-										{leaveMutation.isPending ? 'Odcházení...' : 'Odejít z události'}
+										{leaveMutation.isPending
+											? 'Odcházení...'
+											: 'Odejít z události'}
 									</Button>
 								)}
 							</>

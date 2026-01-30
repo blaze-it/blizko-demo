@@ -1,8 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowLeft } from 'lucide-react'
-import { useEffect } from 'react'
+import { ArrowLeft, Eye, Save, Send } from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate, useParams } from 'react-router-dom'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -55,16 +56,45 @@ export function EventsEditPage() {
 	const { id } = useParams<{ id: string }>()
 	const navigate = useNavigate()
 	const utils = trpc.useUtils()
+	const [submitAction, setSubmitAction] = useState<'save' | 'publish'>('save')
 
 	const { data: event, isLoading } = trpc.events.getById.useQuery(
 		{ id: id! },
 		{ enabled: !!id },
 	)
 
+	const isDraft = event?.status === 'DRAFT'
+
 	const updateMutation = trpc.events.update.useMutation({
 		onSuccess: () => {
+			toast.success('Změny byly uloženy')
+			utils.events.getById.invalidate({ id: id! })
+			navigate(isDraft ? `/events/${id}/preview` : `/events/${id}`)
+		},
+		onError: (error) => {
+			toast.error(error.message || 'Nepodařilo se uložit změny')
+		},
+	})
+
+	const saveDraftMutation = trpc.events.saveDraft.useMutation({
+		onSuccess: () => {
+			toast.success('Koncept byl uložen')
+			utils.events.getById.invalidate({ id: id! })
+			navigate(`/events/${id}/preview`)
+		},
+		onError: (error) => {
+			toast.error(error.message || 'Nepodařilo se uložit koncept')
+		},
+	})
+
+	const publishMutation = trpc.events.publish.useMutation({
+		onSuccess: () => {
+			toast.success('Událost byla publikována!')
 			utils.events.getById.invalidate({ id: id! })
 			navigate(`/events/${id}`)
+		},
+		onError: (error) => {
+			toast.error(error.message || 'Nepodařilo se publikovat událost')
 		},
 	})
 
@@ -99,14 +129,42 @@ export function EventsEditPage() {
 	}, [event, reset])
 
 	const onSubmit = (data: EditEventFormData) => {
-		updateMutation.mutate({
+		const eventData = {
 			id: id!,
 			...data,
 			category: data.category as never,
 			endTime: data.endTime || undefined,
 			durationMinutes: data.durationMinutes || undefined,
-		})
+		}
+
+		if (isDraft) {
+			if (submitAction === 'publish') {
+				// Save changes first, then publish
+				saveDraftMutation.mutate(eventData, {
+					onSuccess: () => {
+						publishMutation.mutate({ id: id! })
+					},
+				})
+			} else {
+				saveDraftMutation.mutate(eventData)
+			}
+		} else {
+			updateMutation.mutate(eventData)
+		}
 	}
+
+	const handleSave = () => {
+		setSubmitAction('save')
+	}
+
+	const handlePublish = () => {
+		setSubmitAction('publish')
+	}
+
+	const isPending =
+		updateMutation.isPending ||
+		saveDraftMutation.isPending ||
+		publishMutation.isPending
 
 	if (isLoading) {
 		return (
@@ -255,21 +313,60 @@ export function EventsEditPage() {
 							</div>
 						</div>
 
-						{updateMutation.error && (
+						{(updateMutation.error ||
+							saveDraftMutation.error ||
+							publishMutation.error) && (
 							<div className="p-3 rounded-lg bg-destructive/20 border border-destructive/30">
 								<p className="text-destructive text-sm">
-									{updateMutation.error.message}
+									{updateMutation.error?.message ||
+										saveDraftMutation.error?.message ||
+										publishMutation.error?.message}
 								</p>
 							</div>
 						)}
 
-						<Button
-							type="submit"
-							className="w-full"
-							disabled={updateMutation.isPending}
-						>
-							{updateMutation.isPending ? 'Ukládání...' : 'Uložit změny'}
-						</Button>
+						{isDraft ? (
+							<>
+								<div className="flex flex-col gap-3 sm:flex-row">
+									<Button
+										type="submit"
+										variant="outline"
+										className="flex-1"
+										disabled={isPending}
+										onClick={handleSave}
+									>
+										<Save className="h-4 w-4 mr-2" />
+										{isPending && submitAction === 'save'
+											? 'Ukládání...'
+											: 'Uložit koncept'}
+									</Button>
+									<Button
+										type="submit"
+										className="flex-1"
+										disabled={isPending}
+										onClick={handlePublish}
+									>
+										<Send className="h-4 w-4 mr-2" />
+										{isPending && submitAction === 'publish'
+											? 'Publikování...'
+											: 'Publikovat'}
+									</Button>
+								</div>
+								<p className="text-sm text-muted-foreground text-center">
+									<Eye className="inline h-4 w-4 mr-1" />
+									Koncept můžete před publikováním zkontrolovat v náhledu
+								</p>
+							</>
+						) : (
+							<Button
+								type="submit"
+								className="w-full"
+								disabled={isPending}
+								onClick={handleSave}
+							>
+								{isPending ? 'Ukládání...' : 'Uložit změny'}
+							</Button>
+						)}
 					</form>
 				</CardContent>
 			</Card>

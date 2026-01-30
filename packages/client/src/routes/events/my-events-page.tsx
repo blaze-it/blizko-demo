@@ -23,7 +23,10 @@ export function MyEventsPage() {
 		<div className="container">
 			<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
 				<h1 className="text-2xl font-bold">Moje události</h1>
-				<Button onClick={() => navigate('/events/new')} className="w-full sm:w-auto">
+				<Button
+					onClick={() => navigate('/events/new')}
+					className="w-full sm:w-auto"
+				>
 					<Plus className="h-4 w-4 mr-2" />
 					Vytvořit událost
 				</Button>
@@ -59,20 +62,19 @@ export function MyEventsPage() {
 				) : (
 					<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 						{myEvents.map((event) => (
-							<Link key={event.id} to={`/events/${event.id}`}>
+							<Link
+								key={event.id}
+								to={
+									event.status === 'DRAFT'
+										? `/events/${event.id}/preview`
+										: `/events/${event.id}`
+								}
+							>
 								<Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
 									<CardContent className="p-5">
 										<div className="flex items-start justify-between gap-2 mb-3">
 											<Badge>{event.category}</Badge>
-											<Badge
-												variant={
-													event.status === 'CANCELLED'
-														? 'destructive'
-														: 'secondary'
-												}
-											>
-												{event.status}
-											</Badge>
+											<StatusBadge status={event.status} />
 										</div>
 										<h3 className="text-lg font-semibold mb-2 line-clamp-2">
 											{event.title}
@@ -182,4 +184,37 @@ function EventMeta({
 			</div>
 		</div>
 	)
+}
+
+const STATUS_LABELS: Record<string, string> = {
+	DRAFT: 'Koncept',
+	PUBLISHED: 'Publikováno',
+	CANCELLED: 'Zrušeno',
+	COMPLETED: 'Dokončeno',
+}
+
+function StatusBadge({ status }: { status: string }) {
+	const label = STATUS_LABELS[status] || status
+
+	if (status === 'DRAFT') {
+		return (
+			<Badge variant="outline" className="border-amber-500 text-amber-500">
+				{label}
+			</Badge>
+		)
+	}
+
+	if (status === 'CANCELLED') {
+		return <Badge variant="destructive">{label}</Badge>
+	}
+
+	if (status === 'PUBLISHED') {
+		return (
+			<Badge variant="outline" className="border-green-500 text-green-500">
+				{label}
+			</Badge>
+		)
+	}
+
+	return <Badge variant="secondary">{label}</Badge>
 }

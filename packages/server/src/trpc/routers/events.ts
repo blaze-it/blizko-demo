@@ -1,4 +1,4 @@
-import { Errors } from '@blizko/shared'
+import { Errors } from '@zokoli/shared'
 import { z } from 'zod'
 import {
 	EventCategory,
@@ -119,7 +119,10 @@ export const eventsRouter = router({
 				: {
 						...(priceMin !== undefined && { price: { gte: priceMin } }),
 						...(priceMax !== undefined && {
-							price: { ...(priceMin !== undefined ? { gte: priceMin } : {}), lte: priceMax },
+							price: {
+								...(priceMin !== undefined ? { gte: priceMin } : {}),
+								lte: priceMax,
+							},
 						}),
 					}
 
@@ -231,8 +234,63 @@ export const eventsRouter = router({
 				data: {
 					...input,
 					organizerId: ctx.userId,
-					status: EventStatus.PUBLISHED,
+					status: EventStatus.DRAFT,
 				},
+			})
+
+			return event
+		}),
+
+	saveDraft: protectedProcedure
+		.input(updateEventSchema)
+		.mutation(async ({ ctx, input }) => {
+			const { id, ...data } = input
+
+			const existing = await ensureExists(
+				ctx.prisma.event.findFirst({ where: { id } }),
+				'Event',
+				id,
+			)
+
+			if (existing.organizerId !== ctx.userId) {
+				throw Errors.forbidden('You can only update your own events')
+			}
+
+			if (existing.status !== EventStatus.DRAFT) {
+				throw Errors.conflict('Only draft events can be saved as draft')
+			}
+
+			const event = await ctx.prisma.event.update({
+				where: { id },
+				data: {
+					...data,
+					status: EventStatus.DRAFT,
+				},
+			})
+
+			return event
+		}),
+
+	publish: protectedProcedure
+		.input(z.object({ id: z.string() }))
+		.mutation(async ({ ctx, input }) => {
+			const existing = await ensureExists(
+				ctx.prisma.event.findFirst({ where: { id: input.id } }),
+				'Event',
+				input.id,
+			)
+
+			if (existing.organizerId !== ctx.userId) {
+				throw Errors.forbidden('You can only publish your own events')
+			}
+
+			if (existing.status !== EventStatus.DRAFT) {
+				throw Errors.conflict('Only draft events can be published')
+			}
+
+			const event = await ctx.prisma.event.update({
+				where: { id: input.id },
+				data: { status: EventStatus.PUBLISHED },
 			})
 
 			return event
@@ -354,6 +412,21 @@ export const eventsRouter = router({
 		const events = await ctx.prisma.event.findMany({
 			where: { organizerId: ctx.userId },
 			orderBy: { date: 'asc' },
+			include: {
+				_count: { select: { participants: true } },
+			},
+		})
+
+		return events
+	}),
+
+	myDrafts: protectedProcedure.query(async ({ ctx }) => {
+		const events = await ctx.prisma.event.findMany({
+			where: {
+				organizerId: ctx.userId,
+				status: EventStatus.DRAFT,
+			},
+			orderBy: { updatedAt: 'desc' },
 			include: {
 				_count: { select: { participants: true } },
 			},

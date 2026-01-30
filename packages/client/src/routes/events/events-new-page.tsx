@@ -1,7 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowLeft } from 'lucide-react'
+import { ArrowLeft, Eye, Save, Send } from 'lucide-react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
+import { toast } from 'sonner'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -52,10 +54,30 @@ type CreateEventFormData = z.infer<typeof CreateEventSchema>
 export function EventsNewPage() {
 	usePageTitle('Vytvořit událost')
 	const navigate = useNavigate()
+	const [submitAction, setSubmitAction] = useState<'draft' | 'publish'>('draft')
 
 	const createMutation = trpc.events.create.useMutation({
 		onSuccess: (event) => {
+			if (submitAction === 'publish') {
+				// Immediately publish after creating
+				publishMutation.mutate({ id: event.id })
+			} else {
+				toast.success('Koncept byl uložen')
+				navigate(`/events/${event.id}/preview`)
+			}
+		},
+		onError: (error) => {
+			toast.error(error.message || 'Nepodařilo se vytvořit událost')
+		},
+	})
+
+	const publishMutation = trpc.events.publish.useMutation({
+		onSuccess: (event) => {
+			toast.success('Událost byla publikována!')
 			navigate(`/events/${event.id}`)
+		},
+		onError: (error) => {
+			toast.error(error.message || 'Nepodařilo se publikovat událost')
 		},
 	})
 
@@ -81,6 +103,16 @@ export function EventsNewPage() {
 			durationMinutes: data.durationMinutes || undefined,
 		})
 	}
+
+	const handleSaveDraft = () => {
+		setSubmitAction('draft')
+	}
+
+	const handlePublish = () => {
+		setSubmitAction('publish')
+	}
+
+	const isPending = createMutation.isPending || publishMutation.isPending
 
 	return (
 		<div className="container max-w-2xl">
@@ -278,23 +310,45 @@ export function EventsNewPage() {
 							</div>
 						</div>
 
-						{createMutation.error && (
+						{(createMutation.error || publishMutation.error) && (
 							<div className="p-3 rounded-lg bg-destructive/20 border border-destructive/30">
 								<p className="text-destructive text-sm">
-									{createMutation.error.message}
+									{createMutation.error?.message ||
+										publishMutation.error?.message}
 								</p>
 							</div>
 						)}
 
-						<Button
-							type="submit"
-							className="w-full"
-							disabled={createMutation.isPending}
-						>
-							{createMutation.isPending
-								? 'Vytváření události...'
-								: 'Vytvořit událost'}
-						</Button>
+						<div className="flex flex-col gap-3 sm:flex-row">
+							<Button
+								type="submit"
+								variant="outline"
+								className="flex-1"
+								disabled={isPending}
+								onClick={handleSaveDraft}
+							>
+								<Save className="h-4 w-4 mr-2" />
+								{isPending && submitAction === 'draft'
+									? 'Ukládání...'
+									: 'Uložit koncept'}
+							</Button>
+							<Button
+								type="submit"
+								className="flex-1"
+								disabled={isPending}
+								onClick={handlePublish}
+							>
+								<Send className="h-4 w-4 mr-2" />
+								{isPending && submitAction === 'publish'
+									? 'Publikování...'
+									: 'Publikovat'}
+							</Button>
+						</div>
+
+						<p className="text-sm text-muted-foreground text-center">
+							<Eye className="inline h-4 w-4 mr-1" />
+							Koncept můžete před publikováním zkontrolovat v náhledu
+						</p>
 					</form>
 				</CardContent>
 			</Card>
