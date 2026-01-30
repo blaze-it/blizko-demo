@@ -2,15 +2,20 @@ import 'leaflet/dist/leaflet.css'
 import {
 	ArrowLeft,
 	CalendarDays,
+	CheckCircle,
+	CreditCard,
 	Edit,
 	MapPin,
 	Users,
 	XCircle,
 } from 'lucide-react'
+import { useEffect } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { toast } from 'sonner'
 import { ReviewForm } from '@/components/reviews/review-form'
 import { ReviewList } from '@/components/reviews/review-list'
+import { ShareEvent } from '@/components/share-event'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,6 +24,7 @@ import { trpc } from '@/trpc/client'
 
 export function EventsDetailPage() {
 	const { id } = useParams<{ id: string }>()
+	const [searchParams, setSearchParams] = useSearchParams()
 	const navigate = useNavigate()
 	const utils = trpc.useUtils()
 
@@ -28,6 +34,13 @@ export function EventsDetailPage() {
 	)
 
 	const { data: user } = trpc.user.me.useQuery()
+
+	// Payment status for paid events
+	const { data: paymentStatus, refetch: refetchPaymentStatus } =
+		trpc.stripe.getPaymentStatus.useQuery(
+			{ eventId: id! },
+			{ enabled: !!id && !!user },
+		)
 
 	const joinMutation = trpc.events.join.useMutation({
 		onSuccess: () => utils.events.getById.invalidate({ id: id! }),
@@ -40,6 +53,31 @@ export function EventsDetailPage() {
 	const cancelMutation = trpc.events.update.useMutation({
 		onSuccess: () => utils.events.getById.invalidate({ id: id! }),
 	})
+
+	const checkoutMutation = trpc.stripe.createCheckoutSession.useMutation({
+		onSuccess: (data) => {
+			if (data.url) {
+				window.location.href = data.url
+			}
+		},
+		onError: (error) => {
+			toast.error(error.message || 'Nepodařilo se vytvořit platbu')
+		},
+	})
+
+	// Handle payment return
+	useEffect(() => {
+		const paymentParam = searchParams.get('payment')
+		if (paymentParam === 'success') {
+			toast.success('Platba proběhla úspěšně!')
+			refetchPaymentStatus()
+			utils.events.getById.invalidate({ id: id! })
+			setSearchParams({}, { replace: true })
+		} else if (paymentParam === 'cancelled') {
+			toast.info('Platba byla zrušena')
+			setSearchParams({}, { replace: true })
+		}
+	}, [searchParams, setSearchParams, refetchPaymentStatus, utils.events.getById, id])
 
 	usePageTitle(event?.title ?? 'Událost')
 
@@ -66,6 +104,8 @@ export function EventsDetailPage() {
 	const isParticipant = event.participants.some((p) => p.userId === user?.id)
 	const confirmedCount = event.participants.length
 	const isFull = confirmedCount >= event.capacity
+	const isPaidEvent = event.price > 0
+	const hasPaid = paymentStatus?.hasPaid ?? false
 
 	return (
 		<div className="container max-w-3xl">
@@ -172,7 +212,12 @@ export function EventsDetailPage() {
 					{/* Organizer */}
 					<div className="border-t border-border pt-4">
 						<p className="text-sm text-muted-foreground mb-1">Organizuje</p>
-						<p className="font-medium">{event.organizer.name ?? 'Anonymní'}</p>
+						<Link
+							to={`/users/${event.organizerId}`}
+							className="font-medium hover:text-primary transition-colors"
+						>
+							{event.organizer.name ?? 'Anonymni'}
+						</Link>
 					</div>
 
 					{/* Actions */}
@@ -200,18 +245,43 @@ export function EventsDetailPage() {
 									</Button>
 								)}
 							</>
-						) : isParticipant ? (
+						) : isParticipant || hasPaid ? (
+							<>
+								{hasPaid && (
+									<Badge
+										variant="secondary"
+										className="flex items-center gap-1 bg-green-100 text-green-700"
+									>
+										<CheckCircle className="h-4 w-4" />
+										Zaplaceno
+									</Badge>
+								)}
+								{isParticipant && (
+									<Button
+										variant="outline"
+										onClick={() => leaveMutation.mutate({ eventId: event.id })}
+										disabled={leaveMutation.isPending}
+									>
+										{leaveMutation.isPending ? 'Odcházení...' : 'Odejít z události'}
+									</Button>
+								)}
+							</>
+						) : isPaidEvent ? (
 							<Button
-								variant="outline"
-								onClick={() => leaveMutation.mutate({ eventId: event.id })}
-								disabled={leaveMutation.isPending}
+								onClick={() => checkoutMutation.mutate({ eventId: event.id })}
+								disabled={checkoutMutation.isPending || isFull}
 							>
-								{leaveMutation.isPending ? 'Odcházení...' : 'Odejít z události'}
+								<CreditCard className="h-4 w-4 mr-2" />
+								{checkoutMutation.isPending
+									? 'Přesměrování...'
+									: isFull
+										? 'Událost je plná'
+										: `Zaplatit ${event.price} ${event.currency}`}
 							</Button>
 						) : (
 							<Button
 								onClick={() => joinMutation.mutate({ eventId: event.id })}
-								disabled={joinMutation.isPending || (isFull && !isOrganizer)}
+								disabled={joinMutation.isPending || isFull}
 							>
 								{joinMutation.isPending
 									? 'Připojování...'
@@ -220,6 +290,7 @@ export function EventsDetailPage() {
 										: 'Připojit se'}
 							</Button>
 						)}
+						<ShareEvent eventId={event.id} eventTitle={event.title} />
 					</div>
 
 					{/* Participants */}

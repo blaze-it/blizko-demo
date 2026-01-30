@@ -1,7 +1,32 @@
 import { z } from 'zod'
+import { ensureExists } from '../lib/crud-helpers.js'
 import { protectedProcedure, publicProcedure, router } from '../trpc.js'
 
 export const userRouter = router({
+	/**
+	 * Get public user profile by ID
+	 */
+	getById: publicProcedure
+		.input(z.object({ id: z.string() }))
+		.query(async ({ ctx, input }) => {
+			const user = await ensureExists(
+				ctx.prisma.user.findUnique({
+					where: { id: input.id },
+					select: {
+						id: true,
+						name: true,
+						neighborhood: true,
+						bio: true,
+						createdAt: true,
+					},
+				}),
+				'User',
+				input.id,
+			)
+
+			return user
+		}),
+
 	me: publicProcedure.query(async ({ ctx }) => {
 		if (!ctx.userId) {
 			return null
