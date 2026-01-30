@@ -87,7 +87,9 @@ export function ReviewForm({ eventId, onSuccess }: ReviewFormProps) {
 						type="submit"
 						disabled={rating === 0 || createReviewMutation.isPending}
 					>
-						{createReviewMutation.isPending ? 'Odesilani...' : 'Odeslat hodnoceni'}
+						{createReviewMutation.isPending
+							? 'Odesilani...'
+							: 'Odeslat hodnoceni'}
 					</Button>
 				</form>
 			</CardContent>

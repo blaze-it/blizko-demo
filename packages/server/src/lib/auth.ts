@@ -53,7 +53,7 @@ export const auth = betterAuth({
 	},
 	plugins: [username()],
 	advanced: {
-		cookiePrefix: 'blizko',
+		cookiePrefix: 'zokoli',
 		useSecureCookies: IS_PROD,
 		crossSubDomainCookies: {
 			enabled: !!env.COOKIE_DOMAIN,

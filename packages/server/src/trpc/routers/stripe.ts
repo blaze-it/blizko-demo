@@ -1,4 +1,4 @@
-import { Errors } from '@blizko/shared'
+import { Errors } from '@zokoli/shared'
 import { z } from 'zod'
 import { PaymentStatus } from '../../generated/prisma/client.js'
 import { calculatePlatformFee, stripe } from '../../lib/stripe.js'
@@ -163,9 +163,7 @@ export const stripeRouter = router({
 
 			// Check if organizer has Stripe account
 			if (!event.organizer.stripeAccountId) {
-				throw Errors.validation(
-					'Organizer has not set up payment processing',
-				)
+				throw Errors.validation('Organizer has not set up payment processing')
 			}
 
 			// Check if user already paid

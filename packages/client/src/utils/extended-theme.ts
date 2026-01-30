@@ -54,7 +54,7 @@ export const extendedTheme = {
 			border: 'var(--sidebar-border)',
 			ring: 'var(--sidebar-ring)',
 		},
-		// Blizko Extended Palette
+		// Zokoli Extended Palette
 		terracotta: {
 			DEFAULT: 'var(--terracotta)',
 			light: 'var(--terracotta-light)',

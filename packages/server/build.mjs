@@ -5,12 +5,12 @@ import * as esbuild from 'esbuild'
 // Read package.json to get dependencies
 const pkg = JSON.parse(readFileSync('./package.json', 'utf-8'))
 
-// Get all dependencies except @blizko/* (workspace packages should be bundled)
+// Get all dependencies except @zokoli/* (workspace packages should be bundled)
 const externalDeps = Object.keys(pkg.dependencies || {})
-	.filter((dep) => !dep.startsWith('@blizko/'))
+	.filter((dep) => !dep.startsWith('@zokoli/'))
 	.concat(
 		Object.keys(pkg.devDependencies || {}).filter(
-			(dep) => !dep.startsWith('@blizko/'),
+			(dep) => !dep.startsWith('@zokoli/'),
 		),
 	)
 

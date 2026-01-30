@@ -1,4 +1,4 @@
-import { Errors } from '@blizko/shared'
+import { Errors } from '@zokoli/shared'
 import { z } from 'zod'
 import {
 	deleteFile,
@@ -30,7 +30,10 @@ function validateBase64Image(data: string): {
 	const match = data.match(/^data:(image\/[a-zA-Z+]+);base64,(.+)$/)
 
 	if (!match) {
-		return { valid: false, error: 'Invalid image format. Expected base64 data URL.' }
+		return {
+			valid: false,
+			error: 'Invalid image format. Expected base64 data URL.',
+		}
 	}
 
 	const mimeType = match[1]

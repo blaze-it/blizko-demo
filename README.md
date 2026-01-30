@@ -1,10 +1,10 @@
-# Blizko
+# Zokoli
 
 Platform for fast local micro-events in your neighborhood.
 
-## What is Blizko?
+## What is Zokoli?
 
-Blizko connects neighbors through live micro-events — workouts, workshops, kids activities, meetups, lectures, and shared leisure activities. Organizers create events in minutes, participants discover and join nearby events effortlessly.
+Zokoli connects neighbors through live micro-events — workouts, workshops, kids activities, meetups, lectures, and shared leisure activities. Organizers create events in minutes, participants discover and join nearby events effortlessly.
 
 ## Tech Stack
 

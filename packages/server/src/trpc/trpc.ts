@@ -1,5 +1,5 @@
-import { AppError, appErrorToTrpcCode, Errors } from '@blizko/shared'
 import { initTRPC, TRPCError } from '@trpc/server'
+import { AppError, appErrorToTrpcCode, Errors } from '@zokoli/shared'
 import superjson from 'superjson'
 import type { Context } from './context.js'
 

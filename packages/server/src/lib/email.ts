@@ -18,7 +18,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<boolean> {
 
 	try {
 		await resend.emails.send({
-			from: 'Blizko <noreply@blizko.cz>',
+			from: 'Zokoli <noreply@zokoli.cz>',
 			to: options.to,
 			subject: options.subject,
 			html: options.html,

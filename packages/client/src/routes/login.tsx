@@ -72,7 +72,7 @@ export function LoginPage() {
 				<div className="text-center mb-8">
 					<Link to="/" className="inline-flex items-center gap-1.5 group">
 						<span className="font-display font-bold text-3xl tracking-tight">
-							blizko
+							zokoli
 						</span>
 						<span className="w-2.5 h-2.5 rounded-full bg-primary group-hover:scale-125 transition-transform" />
 					</Link>

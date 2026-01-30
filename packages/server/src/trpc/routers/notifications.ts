@@ -1,4 +1,4 @@
-import { Errors } from '@blizko/shared'
+import { Errors } from '@zokoli/shared'
 import { z } from 'zod'
 import { protectedProcedure, router } from '../trpc.js'
 
@@ -28,30 +28,28 @@ export const notificationsRouter = router({
 	/**
 	 * List paginated notifications for current user
 	 */
-	list: protectedProcedure
-		.input(listSchema)
-		.query(async ({ ctx, input }) => {
-			const { cursor, limit, unreadOnly } = input
+	list: protectedProcedure.input(listSchema).query(async ({ ctx, input }) => {
+		const { cursor, limit, unreadOnly } = input
 
-			const notifications = await ctx.prisma.notification.findMany({
-				where: {
-					userId: ctx.userId,
-					...(unreadOnly && { read: false }),
-					...(cursor && { id: { lt: cursor } }),
-				},
-				orderBy: { createdAt: 'desc' },
-				take: limit + 1,
-			})
+		const notifications = await ctx.prisma.notification.findMany({
+			where: {
+				userId: ctx.userId,
+				...(unreadOnly && { read: false }),
+				...(cursor && { id: { lt: cursor } }),
+			},
+			orderBy: { createdAt: 'desc' },
+			take: limit + 1,
+		})
 
-			const hasMore = notifications.length > limit
-			const items = hasMore ? notifications.slice(0, limit) : notifications
-			const nextCursor = hasMore ? items[items.length - 1]?.id : undefined
+		const hasMore = notifications.length > limit
+		const items = hasMore ? notifications.slice(0, limit) : notifications
+		const nextCursor = hasMore ? items[items.length - 1]?.id : undefined
 
-			return {
-				items,
-				nextCursor,
-			}
-		}),
+		return {
+			items,
+			nextCursor,
+		}
+	}),
 
 	/**
 	 * Get count of unread notifications

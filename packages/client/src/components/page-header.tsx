@@ -53,7 +53,11 @@ export function PageHeader({
 			<div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-start">
 				<div>
 					<h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
-						{Icon && <Icon className={`h-7 w-7 sm:h-8 sm:w-8 ${iconClassName || ''}`} />}
+						{Icon && (
+							<Icon
+								className={`h-7 w-7 sm:h-8 sm:w-8 ${iconClassName || ''}`}
+							/>
+						)}
 						{title}
 					</h1>
 					{description && (
@@ -104,7 +108,9 @@ export function MainPageHeader({
 		<div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center mb-6">
 			<div>
 				<h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-2">
-					{Icon && <Icon className={`h-7 w-7 sm:h-8 sm:w-8 ${iconClassName || ''}`} />}
+					{Icon && (
+						<Icon className={`h-7 w-7 sm:h-8 sm:w-8 ${iconClassName || ''}`} />
+					)}
 					{title}
 				</h1>
 				{description && <p className="text-muted-foreground">{description}</p>}

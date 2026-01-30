@@ -1,4 +1,4 @@
-/* Blizko Brand — Warm Neighborhood Design System */
+/* Zokoli Brand — Warm Neighborhood Design System */
 
 /* Display Font: Borna — geometric humanist sans-serif */
 @font-face {
@@ -104,7 +104,7 @@
 
 @layer base {
 	:root {
-		/* Blizko — Light Mode (Default) */
+		/* Zokoli — Light Mode (Default) */
 		font-family: "Source Sans 3", system-ui, sans-serif;
 
 		/* Warm sand base */

@@ -38,11 +38,12 @@ test.describe('Event CRUD', () => {
 		await expect(page).toHaveURL(/\/events\/.*\/edit/)
 
 		// Wait for form to load with existing data
-		await expect(
-			page.getByLabel('Název', { exact: true }),
-		).toHaveValue('Edit Me Event', {
-			timeout: 10_000,
-		})
+		await expect(page.getByLabel('Název', { exact: true })).toHaveValue(
+			'Edit Me Event',
+			{
+				timeout: 10_000,
+			},
+		)
 
 		// Change title
 		const titleInput = page.getByLabel('Název', { exact: true })
@@ -69,7 +70,9 @@ test.describe('Event CRUD', () => {
 
 	test('creates event with empty optional duration field', async ({ page }) => {
 		await page.goto('/events/new')
-		await page.getByLabel('Název', { exact: true }).fill(`Duration Test ${Date.now()}`)
+		await page
+			.getByLabel('Název', { exact: true })
+			.fill(`Duration Test ${Date.now()}`)
 		await page.getByLabel('Popis').fill('Testing empty duration field')
 		await page.getByRole('combobox').click()
 		await page.getByRole('option', { name: 'Setkání' }).click()

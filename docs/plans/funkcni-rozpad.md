@@ -1,4 +1,16 @@
-# Blizko - Rozpad funkcí
+# Zokoli - Rozpad funkcí
+
+## Tech stack
+
+- Frontend: React 19, React Router 7, Vite, Tailwind, Radix UI
+- Backend: Hono, tRPC, Prisma, PostgreSQL
+- Auth: BetterAuth (session-based)
+- Platby: Stripe Connect
+- Mapy: Leaflet + OpenStreetMap
+- Emaily: Resend
+- Storage: Cloudflare R2
+
+---
 
 ## Co už máme
 - Základní CRUD eventů
@@ -16,7 +28,7 @@ Vytvoření eventu:
 - Draft stavy
 
 Propagace:
-- OG meta tagy aby se to hezky sdílelo
+- OG meta tagy
 - Share buttony (FB, WhatsApp, link)
 - QR kód
 
@@ -26,11 +38,6 @@ Platby přes Stripe:
 - Webhook - po platbě se přidá jako účastník
 - Split - platforma si bere procento, zbytek organizátorovi
 - Refundy
-
-Služby co budeme potřebovat:
-- Stripe (platby)
-- R2 (obrázky)
-- Resend (emaily)
 
 ---
 
@@ -99,10 +106,3 @@ Profily:
 - Bio
 
 ---
-
-## Pořadí
-
-1. Platby (Stripe Connect, checkout, webhook)
-2. Mapa a filtry
-3. Hodnocení
-4. Social

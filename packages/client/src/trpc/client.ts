@@ -1,6 +1,7 @@
 // Import the AppRouter type from the API package
-import type { AppRouter } from '@blizko/server/trpc'
+
 import { createTRPCReact, httpBatchLink } from '@trpc/react-query'
+import type { AppRouter } from '@zokoli/server/trpc'
 import superjson from 'superjson'
 import { API_URL } from '@/config'
 

@@ -4,14 +4,14 @@ services:
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
-      POSTGRES_DB: ${POSTGRES_DB:-blizko}
+      POSTGRES_DB: ${POSTGRES_DB:-zokoli}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-blizko}",
+          "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-zokoli}",
         ]
       interval: 10s
       timeout: 5s
@@ -27,11 +27,11 @@ services:
       db:
         condition: service_healthy
     environment:
-      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-blizko}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-postgres}:${POSTGRES_PASSWORD:-postgres}@db:5432/${POSTGRES_DB:-zokoli}
       - NODE_ENV=production
       - BETTER_AUTH_SECRET
-      - BETTER_AUTH_URL=${SERVICE_URL_SERVER:-https://blizko-api.blaze.codes}
-      - FRONTEND_URL=${SERVICE_URL_CLIENT:-https://blizko.blaze.codes}
+      - BETTER_AUTH_URL=${SERVICE_URL_SERVER:-https://zokoli-api.blaze.codes}
+      - FRONTEND_URL=${SERVICE_URL_CLIENT:-https://zokoli.blaze.codes}
       - SENTRY_DSN
     expose:
       - 4000
@@ -57,7 +57,7 @@ services:
       dockerfile: packages/client/Dockerfile
       target: production
       args:
-        - VITE_API_URL=${VITE_API_URL:-https://blizko-api.blaze.codes}
+        - VITE_API_URL=${VITE_API_URL:-https://zokoli-api.blaze.codes}
     depends_on:
       server:
         condition: service_healthy

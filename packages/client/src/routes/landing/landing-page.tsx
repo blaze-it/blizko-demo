@@ -82,7 +82,7 @@ export function LandingPage() {
 			<header className="container flex items-center justify-between py-5">
 				<Link to="/" className="inline-flex items-center gap-1.5 group">
 					<span className="font-display font-bold text-2xl tracking-tight">
-						blizko
+						zokoli
 					</span>
 					<span className="w-2 h-2 rounded-full bg-primary group-hover:scale-125 transition-transform" />
 				</Link>
@@ -97,209 +97,208 @@ export function LandingPage() {
 			</header>
 
 			<main>
-			{/* Hero */}
-			<section className="container relative pt-16 pb-24 md:pt-24 md:pb-32">
-				{/* Decorative background blob */}
-				<div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] opacity-30 pointer-events-none">
-					<div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 via-coral/10 to-transparent blur-3xl" />
-				</div>
-
-				<div className="relative max-w-3xl mx-auto text-center">
-					<div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary mb-8 animate-fade-in">
-						<Sparkles className="h-3.5 w-3.5" />
-						<span>Události probíhající právě teď ve vašem okolí</span>
+				{/* Hero */}
+				<section className="container relative pt-16 pb-24 md:pt-24 md:pb-32">
+					{/* Decorative background blob */}
+					<div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] opacity-30 pointer-events-none">
+						<div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary/20 via-coral/10 to-transparent blur-3xl" />
 					</div>
 
-					<h1 className="font-display font-bold text-5xl md:text-7xl leading-[1.08] tracking-tight mb-6 animate-fade-in-up">
-						Vaše sousedství
-						<br />
-						<span className="text-gradient-terracotta">ožívá</span>
-					</h1>
+					<div className="relative max-w-3xl mx-auto text-center">
+						<div className="inline-flex items-center gap-2 rounded-full bg-primary/10 px-4 py-1.5 text-sm font-medium text-primary mb-8 animate-fade-in">
+							<Sparkles className="h-3.5 w-3.5" />
+							<span>Události probíhající právě teď ve vašem okolí</span>
+						</div>
 
-					<p
-						className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-10 animate-fade-in-up"
-						style={{ animationDelay: '100ms', animationFillMode: 'both' }}
-					>
-						Mikro-události od vašich sousedů. Cvičení na dvoře, workshopy za
-						rohem, herna přes ulici.
-					</p>
+						<h1 className="font-display font-bold text-5xl md:text-7xl leading-[1.08] tracking-tight mb-6 animate-fade-in-up">
+							Vaše sousedství
+							<br />
+							<span className="text-gradient-terracotta">ožívá</span>
+						</h1>
 
-					<div
-						className="flex gap-3 justify-center flex-wrap animate-fade-in-up"
-						style={{ animationDelay: '200ms', animationFillMode: 'both' }}
-					>
-						<Button size="lg" className="gap-2 text-base px-6" asChild>
-							<Link to="/events">
-								Procházet události
-								<ArrowRight className="h-4 w-4" />
-							</Link>
-						</Button>
-						<Button
-							size="lg"
-							variant="outline"
-							className="text-base px-6"
-							asChild
+						<p
+							className="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto mb-10 animate-fade-in-up"
+							style={{ animationDelay: '100ms', animationFillMode: 'both' }}
 						>
-							<Link to="/events/new">Vytvořit událost</Link>
-						</Button>
-					</div>
-				</div>
-			</section>
-
-			{/* Categories */}
-			<section className="container pb-24">
-				<div className="text-center mb-12">
-					<h2 className="font-display font-bold text-3xl md:text-4xl tracking-tight mb-3">
-						Co se děje poblíž?
-					</h2>
-					<p className="text-muted-foreground">
-						Každý den lidé kolem vás organizují něco, co stojí za to.
-					</p>
-				</div>
-
-				<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
-					{categories.map((cat, i) => (
-						<div
-							key={cat.label}
-							className={`rounded-2xl ${cat.color} p-5 text-center hover:scale-[1.03] transition-all duration-300 cursor-default animate-fade-in-up`}
-							style={{
-								animationDelay: `${i * 60}ms`,
-								animationFillMode: 'both',
-							}}
-						>
-							<div className="text-4xl mb-2.5">{cat.emoji}</div>
-							<h3 className="font-display font-semibold text-sm mb-0.5">
-								{cat.label}
-							</h3>
-							<p className="text-xs text-muted-foreground leading-snug">
-								{cat.desc}
-							</p>
-						</div>
-					))}
-				</div>
-			</section>
-
-			{/* Features */}
-			<section className="container pb-24">
-				<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-					{features.map((f, i) => (
-						<div
-							key={f.title}
-							className="group rounded-2xl border border-border bg-card p-6 hover:border-primary/30 hover:shadow-warm-lg transition-all duration-300 animate-fade-in-up"
-							style={{
-								animationDelay: `${i * 80}ms`,
-								animationFillMode: 'both',
-							}}
-						>
-							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-								<f.icon className="h-5 w-5 text-primary" />
-							</div>
-							<h3 className="font-display font-bold text-lg mb-1.5">
-								{f.title}
-							</h3>
-							<p className="text-sm text-muted-foreground leading-relaxed">
-								{f.desc}
-							</p>
-						</div>
-					))}
-				</div>
-			</section>
-
-			{/* Two Columns */}
-			<section className="container pb-24">
-				<div className="grid md:grid-cols-2 gap-4">
-					<div className="rounded-2xl border border-border bg-card p-8 md:p-10">
-						<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-5">
-							<Calendar className="h-5 w-5 text-primary" />
-						</div>
-						<h3 className="font-display font-bold text-xl mb-4">
-							Pro účastníky
-						</h3>
-						<ul className="space-y-3 text-muted-foreground text-sm">
-							<li className="flex items-start gap-2">
-								<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-								Najděte aktivity na dosah pěšky
-							</li>
-							<li className="flex items-start gap-2">
-								<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-								Poznejte své skutečné sousedy
-							</li>
-							<li className="flex items-start gap-2">
-								<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-								Smysluplné vyžití pro děti
-							</li>
-							<li className="flex items-start gap-2">
-								<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-								Rozbijte svou denní rutinu
-							</li>
-							<li className="flex items-start gap-2">
-								<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
-								Přidejte se za minutu
-							</li>
-						</ul>
-					</div>
-					<div className="rounded-2xl border border-border bg-card p-8 md:p-10">
-						<div className="w-10 h-10 rounded-xl bg-coral/10 flex items-center justify-center mb-5">
-							<Sparkles className="h-5 w-5 text-coral" />
-						</div>
-						<h3 className="font-display font-bold text-xl mb-4">
-							Pro organizátory
-						</h3>
-						<ul className="space-y-3 text-muted-foreground text-sm">
-							<li className="flex items-start gap-2">
-								<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
-								Vytvořte událost za pár minut
-							</li>
-							<li className="flex items-start gap-2">
-								<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
-								Nastavte formát, cenu, čas a kapacitu
-							</li>
-							<li className="flex items-start gap-2">
-								<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
-								Vybudujte si nový zdroj příjmů
-							</li>
-							<li className="flex items-start gap-2">
-								<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
-								Platby řeší platforma
-							</li>
-							<li className="flex items-start gap-2">
-								<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
-								Rozvíjejte svou lokální komunitu
-							</li>
-						</ul>
-					</div>
-				</div>
-			</section>
-
-			{/* CTA */}
-			<section className="container pb-24 text-center">
-				<div className="relative rounded-3xl bg-gradient-to-br from-primary to-coral p-12 md:p-16 overflow-hidden">
-					{/* Decorative circles */}
-					<div className="absolute top-4 right-8 w-32 h-32 rounded-full bg-white/10 blur-xl" />
-					<div className="absolute bottom-4 left-12 w-24 h-24 rounded-full bg-white/5 blur-lg" />
-
-					<div className="relative">
-						<h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4 tracking-tight">
-							Připraveni prozkoumat své okolí?
-						</h2>
-						<p className="text-white/80 mb-8 max-w-md mx-auto">
-							Připojit se k události poblíž je snadné jako poslat zprávu.
+							Mikro-události od vašich sousedů. Cvičení na dvoře, workshopy za
+							rohem, herna přes ulici.
 						</p>
-						<Button
-							size="lg"
-							variant="secondary"
-							className="bg-white !text-gray-900 hover:bg-white/90 gap-2 text-base px-6"
-							asChild
-						>
-							<Link to="/register">
-								Začít zdarma
-								<ArrowRight className="h-4 w-4" />
-							</Link>
-						</Button>
-					</div>
-				</div>
-			</section>
 
+						<div
+							className="flex gap-3 justify-center flex-wrap animate-fade-in-up"
+							style={{ animationDelay: '200ms', animationFillMode: 'both' }}
+						>
+							<Button size="lg" className="gap-2 text-base px-6" asChild>
+								<Link to="/events">
+									Procházet události
+									<ArrowRight className="h-4 w-4" />
+								</Link>
+							</Button>
+							<Button
+								size="lg"
+								variant="outline"
+								className="text-base px-6"
+								asChild
+							>
+								<Link to="/events/new">Vytvořit událost</Link>
+							</Button>
+						</div>
+					</div>
+				</section>
+
+				{/* Categories */}
+				<section className="container pb-24">
+					<div className="text-center mb-12">
+						<h2 className="font-display font-bold text-3xl md:text-4xl tracking-tight mb-3">
+							Co se děje poblíž?
+						</h2>
+						<p className="text-muted-foreground">
+							Každý den lidé kolem vás organizují něco, co stojí za to.
+						</p>
+					</div>
+
+					<div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+						{categories.map((cat, i) => (
+							<div
+								key={cat.label}
+								className={`rounded-2xl ${cat.color} p-5 text-center hover:scale-[1.03] transition-all duration-300 cursor-default animate-fade-in-up`}
+								style={{
+									animationDelay: `${i * 60}ms`,
+									animationFillMode: 'both',
+								}}
+							>
+								<div className="text-4xl mb-2.5">{cat.emoji}</div>
+								<h3 className="font-display font-semibold text-sm mb-0.5">
+									{cat.label}
+								</h3>
+								<p className="text-xs text-muted-foreground leading-snug">
+									{cat.desc}
+								</p>
+							</div>
+						))}
+					</div>
+				</section>
+
+				{/* Features */}
+				<section className="container pb-24">
+					<div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+						{features.map((f, i) => (
+							<div
+								key={f.title}
+								className="group rounded-2xl border border-border bg-card p-6 hover:border-primary/30 hover:shadow-warm-lg transition-all duration-300 animate-fade-in-up"
+								style={{
+									animationDelay: `${i * 80}ms`,
+									animationFillMode: 'both',
+								}}
+							>
+								<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
+									<f.icon className="h-5 w-5 text-primary" />
+								</div>
+								<h3 className="font-display font-bold text-lg mb-1.5">
+									{f.title}
+								</h3>
+								<p className="text-sm text-muted-foreground leading-relaxed">
+									{f.desc}
+								</p>
+							</div>
+						))}
+					</div>
+				</section>
+
+				{/* Two Columns */}
+				<section className="container pb-24">
+					<div className="grid md:grid-cols-2 gap-4">
+						<div className="rounded-2xl border border-border bg-card p-8 md:p-10">
+							<div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center mb-5">
+								<Calendar className="h-5 w-5 text-primary" />
+							</div>
+							<h3 className="font-display font-bold text-xl mb-4">
+								Pro účastníky
+							</h3>
+							<ul className="space-y-3 text-muted-foreground text-sm">
+								<li className="flex items-start gap-2">
+									<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+									Najděte aktivity na dosah pěšky
+								</li>
+								<li className="flex items-start gap-2">
+									<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+									Poznejte své skutečné sousedy
+								</li>
+								<li className="flex items-start gap-2">
+									<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+									Smysluplné vyžití pro děti
+								</li>
+								<li className="flex items-start gap-2">
+									<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+									Rozbijte svou denní rutinu
+								</li>
+								<li className="flex items-start gap-2">
+									<span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 shrink-0" />
+									Přidejte se za minutu
+								</li>
+							</ul>
+						</div>
+						<div className="rounded-2xl border border-border bg-card p-8 md:p-10">
+							<div className="w-10 h-10 rounded-xl bg-coral/10 flex items-center justify-center mb-5">
+								<Sparkles className="h-5 w-5 text-coral" />
+							</div>
+							<h3 className="font-display font-bold text-xl mb-4">
+								Pro organizátory
+							</h3>
+							<ul className="space-y-3 text-muted-foreground text-sm">
+								<li className="flex items-start gap-2">
+									<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
+									Vytvořte událost za pár minut
+								</li>
+								<li className="flex items-start gap-2">
+									<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
+									Nastavte formát, cenu, čas a kapacitu
+								</li>
+								<li className="flex items-start gap-2">
+									<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
+									Vybudujte si nový zdroj příjmů
+								</li>
+								<li className="flex items-start gap-2">
+									<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
+									Platby řeší platforma
+								</li>
+								<li className="flex items-start gap-2">
+									<span className="w-1.5 h-1.5 rounded-full bg-coral mt-1.5 shrink-0" />
+									Rozvíjejte svou lokální komunitu
+								</li>
+							</ul>
+						</div>
+					</div>
+				</section>
+
+				{/* CTA */}
+				<section className="container pb-24 text-center">
+					<div className="relative rounded-3xl bg-gradient-to-br from-primary to-coral p-12 md:p-16 overflow-hidden">
+						{/* Decorative circles */}
+						<div className="absolute top-4 right-8 w-32 h-32 rounded-full bg-white/10 blur-xl" />
+						<div className="absolute bottom-4 left-12 w-24 h-24 rounded-full bg-white/5 blur-lg" />
+
+						<div className="relative">
+							<h2 className="font-display font-bold text-3xl md:text-4xl text-white mb-4 tracking-tight">
+								Připraveni prozkoumat své okolí?
+							</h2>
+							<p className="text-white/80 mb-8 max-w-md mx-auto">
+								Připojit se k události poblíž je snadné jako poslat zprávu.
+							</p>
+							<Button
+								size="lg"
+								variant="secondary"
+								className="bg-white !text-gray-900 hover:bg-white/90 gap-2 text-base px-6"
+								asChild
+							>
+								<Link to="/register">
+									Začít zdarma
+									<ArrowRight className="h-4 w-4" />
+								</Link>
+							</Button>
+						</div>
+					</div>
+				</section>
 			</main>
 
 			{/* Footer */}
@@ -307,7 +306,7 @@ export function LandingPage() {
 				<div className="border-t border-border pt-8 flex flex-col items-center gap-4">
 					<div className="inline-flex items-center gap-1.5">
 						<span className="font-display font-bold text-lg tracking-tight text-muted-foreground">
-							blizko
+							zokoli
 						</span>
 						<span className="w-1.5 h-1.5 rounded-full bg-primary" />
 					</div>

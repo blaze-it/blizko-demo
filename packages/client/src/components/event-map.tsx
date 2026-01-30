@@ -1,14 +1,20 @@
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
-import { useCallback, useEffect, useMemo } from 'react'
-import { MapContainer, Marker, Popup, TileLayer, useMap, useMapEvents } from 'react-leaflet'
-import MarkerClusterGroup from 'react-leaflet-cluster'
-import { Link } from 'react-router-dom'
-
+import markerIcon from 'leaflet/dist/images/marker-icon.png'
 // Fix for default marker icons in Leaflet with bundlers
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png'
-import markerIcon from 'leaflet/dist/images/marker-icon.png'
 import markerShadow from 'leaflet/dist/images/marker-shadow.png'
+import { useCallback, useEffect, useMemo } from 'react'
+import {
+	MapContainer,
+	Marker,
+	Popup,
+	TileLayer,
+	useMap,
+	useMapEvents,
+} from 'react-leaflet'
+import MarkerClusterGroup from 'react-leaflet-cluster'
+import { Link } from 'react-router-dom'
 
 // @ts-expect-error Leaflet's default icon needs manual setup with bundlers
 delete L.Icon.Default.prototype._getIconUrl
@@ -53,7 +59,11 @@ function formatDate(dateStr: string | Date) {
 }
 
 // Component to handle map events and bounds changes
-function MapEventHandler({ onBoundsChange }: { onBoundsChange?: (bounds: MapBounds) => void }) {
+function MapEventHandler({
+	onBoundsChange,
+}: {
+	onBoundsChange?: (bounds: MapBounds) => void
+}) {
 	const map = useMapEvents({
 		moveend: () => {
 			if (onBoundsChange) {
@@ -96,7 +106,11 @@ function MapEventHandler({ onBoundsChange }: { onBoundsChange?: (bounds: MapBoun
 }
 
 // Component to recenter map when user location changes
-function RecenterMap({ userLocation }: { userLocation?: { lat: number; lng: number } | null }) {
+function RecenterMap({
+	userLocation,
+}: {
+	userLocation?: { lat: number; lng: number } | null
+}) {
 	const map = useMap()
 
 	useEffect(() => {
@@ -144,7 +158,9 @@ export function EventMap({
 	)
 
 	return (
-		<div className={`w-full rounded-xl overflow-hidden border border-border ${className}`}>
+		<div
+			className={`w-full rounded-xl overflow-hidden border border-border ${className}`}
+		>
 			<MapContainer
 				center={userLocation ? [userLocation.lat, userLocation.lng] : center}
 				zoom={zoom}
@@ -176,12 +192,12 @@ export function EventMap({
 					showCoverageOnHover={false}
 				>
 					{mappableEvents.map((event) => (
-						<Marker
-							key={event.id}
-							position={[event.latitude, event.longitude]}
-						>
+						<Marker key={event.id} position={[event.latitude, event.longitude]}>
 							<Popup>
-								<Link to={`/events/${event.id}`} className="font-semibold hover:underline">
+								<Link
+									to={`/events/${event.id}`}
+									className="font-semibold hover:underline"
+								>
 									{event.title}
 								</Link>
 								<br />

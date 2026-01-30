@@ -1,4 +1,4 @@
-import { Errors } from '@blizko/shared'
+import { Errors } from '@zokoli/shared'
 import { z } from 'zod'
 
 const schema = z.object({

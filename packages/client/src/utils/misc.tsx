@@ -6,7 +6,7 @@ export {
 	cn,
 	formatHoursAndMinutes,
 	getErrorMessage,
-} from '@blizko/shared'
+} from '@zokoli/shared'
 
 export function getUserImgSrc(imageId?: string | null) {
 	return imageId

@@ -29,10 +29,10 @@ export function TermsPage() {
 							1. Úvodní ustanovení
 						</h2>
 						<p className="text-sm leading-relaxed text-muted-foreground">
-							Tyto obchodní podmínky upravují práva a povinnosti
-							uživatelů platformy Blizko (dále jen „platforma"),
-							provozované společností Blaze (dále jen „provozovatel").
-							Používáním platformy souhlasíte s těmito podmínkami.
+							Tyto obchodní podmínky upravují práva a povinnosti uživatelů
+							platformy Zokoli (dále jen „platforma"), provozované společností
+							Blaze (dále jen „provozovatel"). Používáním platformy souhlasíte s
+							těmito podmínkami.
 						</p>
 					</section>
 
@@ -41,10 +41,9 @@ export function TermsPage() {
 							2. Popis služby
 						</h2>
 						<p className="text-sm leading-relaxed text-muted-foreground">
-							Platforma Blizko umožňuje uživatelům vytvářet, objevovat
-							a účastnit se lokálních mikro-událostí. Služba zahrnuje
-							možnost registrace jako účastník nebo organizátor událostí
-							v okolí.
+							Platforma Zokoli umožňuje uživatelům vytvářet, objevovat a
+							účastnit se lokálních mikro-událostí. Služba zahrnuje možnost
+							registrace jako účastník nebo organizátor událostí v okolí.
 						</p>
 					</section>
 
@@ -53,11 +52,10 @@ export function TermsPage() {
 							3. Registrace a uživatelský účet
 						</h2>
 						<p className="text-sm leading-relaxed text-muted-foreground">
-							Pro využívání služeb platformy je nutná registrace.
-							Uživatel je povinen uvést pravdivé a aktuální údaje.
-							Uživatel je odpovědný za zabezpečení svého účtu
-							a přístupových údajů. Provozovatel si vyhrazuje právo
-							zrušit účet, který porušuje tyto podmínky.
+							Pro využívání služeb platformy je nutná registrace. Uživatel je
+							povinen uvést pravdivé a aktuální údaje. Uživatel je odpovědný za
+							zabezpečení svého účtu a přístupových údajů. Provozovatel si
+							vyhrazuje právo zrušit účet, který porušuje tyto podmínky.
 						</p>
 					</section>
 
@@ -66,11 +64,10 @@ export function TermsPage() {
 							4. Práva a povinnosti organizátorů
 						</h2>
 						<p className="text-sm leading-relaxed text-muted-foreground">
-							Organizátor je odpovědný za správnost informací o události,
-							včetně popisu, místa, času a ceny. Organizátor se zavazuje
-							zajistit průběh události v souladu s uvedenými informacemi.
-							Provozovatel nenese odpovědnost za průběh ani kvalitu
-							jednotlivých událostí.
+							Organizátor je odpovědný za správnost informací o události, včetně
+							popisu, místa, času a ceny. Organizátor se zavazuje zajistit
+							průběh události v souladu s uvedenými informacemi. Provozovatel
+							nenese odpovědnost za průběh ani kvalitu jednotlivých událostí.
 						</p>
 					</section>
 
@@ -79,23 +76,20 @@ export function TermsPage() {
 							5. Práva a povinnosti účastníků
 						</h2>
 						<p className="text-sm leading-relaxed text-muted-foreground">
-							Účastník bere na vědomí, že se událostí účastní
-							na vlastní odpovědnost. Účastník se zavazuje dodržovat
-							pravidla stanovená organizátorem. Zrušení účasti je možné
-							v souladu s podmínkami konkrétní události.
+							Účastník bere na vědomí, že se událostí účastní na vlastní
+							odpovědnost. Účastník se zavazuje dodržovat pravidla stanovená
+							organizátorem. Zrušení účasti je možné v souladu s podmínkami
+							konkrétní události.
 						</p>
 					</section>
 
 					<section>
-						<h2 className="font-display font-bold text-xl mb-3">
-							6. Platby
-						</h2>
+						<h2 className="font-display font-bold text-xl mb-3">6. Platby</h2>
 						<p className="text-sm leading-relaxed text-muted-foreground">
-							Některé události mohou být zpoplatněny. Cena je vždy
-							uvedena u konkrétní události. Platba probíhá
-							prostřednictvím platební brány integrované v platformě.
-							Podmínky vrácení platby se řídí podmínkami konkrétní
-							události a platnými právními předpisy.
+							Některé události mohou být zpoplatněny. Cena je vždy uvedena u
+							konkrétní události. Platba probíhá prostřednictvím platební brány
+							integrované v platformě. Podmínky vrácení platby se řídí
+							podmínkami konkrétní události a platnými právními předpisy.
 						</p>
 					</section>
 
@@ -104,10 +98,10 @@ export function TermsPage() {
 							7. Odpovědnost
 						</h2>
 						<p className="text-sm leading-relaxed text-muted-foreground">
-							Provozovatel poskytuje platformu „jak je" a neručí
-							za dostupnost služby ani za obsah vytvořený uživateli.
-							Provozovatel neodpovídá za škody vzniklé v souvislosti
-							s účastí na událostech zprostředkovaných platformou.
+							Provozovatel poskytuje platformu „jak je" a neručí za dostupnost
+							služby ani za obsah vytvořený uživateli. Provozovatel neodpovídá
+							za škody vzniklé v souvislosti s účastí na událostech
+							zprostředkovaných platformou.
 						</p>
 					</section>
 
@@ -116,18 +110,15 @@ export function TermsPage() {
 							8. Závěrečná ustanovení
 						</h2>
 						<p className="text-sm leading-relaxed text-muted-foreground">
-							Provozovatel si vyhrazuje právo tyto podmínky kdykoliv
-							změnit. O změnách bude uživatel informován
-							prostřednictvím platformy. Tyto podmínky se řídí právním
-							řádem České republiky. V případě sporů je příslušný soud
-							v České republice.
+							Provozovatel si vyhrazuje právo tyto podmínky kdykoliv změnit. O
+							změnách bude uživatel informován prostřednictvím platformy. Tyto
+							podmínky se řídí právním řádem České republiky. V případě sporů je
+							příslušný soud v České republice.
 						</p>
 					</section>
 
 					<section>
-						<h2 className="font-display font-bold text-xl mb-3">
-							9. Kontakt
-						</h2>
+						<h2 className="font-display font-bold text-xl mb-3">9. Kontakt</h2>
 						<p className="text-sm leading-relaxed text-muted-foreground">
 							V případě dotazů nás kontaktujte prostřednictvím{' '}
 							<a

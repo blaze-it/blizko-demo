@@ -1,11 +1,11 @@
 /**
  * tRPC query invalidation helpers
  *
- * Uses the shared invalidation configuration from @blizko/shared.
+ * Uses the shared invalidation configuration from @zokoli/shared.
  * This ensures consistent cache updates after mutations.
  */
 
-import { createInvalidationHelpers } from '@blizko/shared'
+import { createInvalidationHelpers } from '@zokoli/shared'
 import type { trpc } from '@/trpc/client'
 
 type TrpcUtils = ReturnType<typeof trpc.useUtils>

@@ -65,7 +65,7 @@ export function RegisterPage() {
 				<div className="text-center mb-8">
 					<Link to="/" className="inline-flex items-center gap-1.5 group">
 						<span className="font-display font-bold text-3xl tracking-tight">
-							blizko
+							zokoli
 						</span>
 						<span className="w-2.5 h-2.5 rounded-full bg-primary group-hover:scale-125 transition-transform" />
 					</Link>
@@ -74,7 +74,7 @@ export function RegisterPage() {
 				<Card className="border-border shadow-warm-lg">
 					<CardHeader className="space-y-1 text-center pb-2">
 						<h1 className="font-display font-bold text-2xl">
-							Přidejte se k Blizko
+							Přidejte se k Zokoli
 						</h1>
 						<p className="text-sm text-muted-foreground">
 							Vytvořte si účet a objevujte a organizujte lokální události

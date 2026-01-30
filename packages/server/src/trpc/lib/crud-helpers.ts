@@ -1,4 +1,4 @@
-import { Errors } from '@blizko/shared'
+import { Errors } from '@zokoli/shared'
 
 /**
  * Ensures a record exists. Throws NOT_FOUND if null.

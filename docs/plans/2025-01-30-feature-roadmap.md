@@ -1,4 +1,4 @@
-# Blizko - Projektový plán funkcí
+# Zokoli - Projektový plán funkcí
 
 > Vytvořeno: 2025-01-30
 > Kontext: Mix komunitních a komerčních eventů, kompletní propagační systém, Stripe platby

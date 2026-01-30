@@ -9,7 +9,7 @@ FROM base AS builder
 WORKDIR /app
 
 # Build argument for API URL
-ARG VITE_API_URL=https://blizko-api.blaze.codes
+ARG VITE_API_URL=https://zokoli-api.blaze.codes
 ENV VITE_API_URL=${VITE_API_URL}
 
 # Copy workspace config, lockfile, and package files
@@ -26,7 +26,7 @@ RUN pnpm install --frozen-lockfile --ignore-scripts
 
 # Copy shared package source and build it
 COPY packages/shared ./packages/shared
-RUN pnpm --filter @blizko/shared build
+RUN pnpm --filter @zokoli/shared build
 
 # Copy server source (needed for type imports)
 COPY packages/server ./packages/server

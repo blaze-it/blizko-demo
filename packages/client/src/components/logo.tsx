@@ -11,7 +11,7 @@ export function Logo({ className }: { className?: string }) {
 			)}
 		>
 			<span className="font-display font-bold text-2xl tracking-tight text-foreground group-hover:text-primary transition-colors">
-				blizko
+				zokoli
 			</span>
 			<span className="w-2 h-2 rounded-full bg-primary group-hover:scale-125 transition-transform" />
 		</Link>

@@ -1,4 +1,4 @@
-# Blizko Full Feature Implementation Plan
+# Zokoli Full Feature Implementation Plan
 
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
@@ -65,7 +65,7 @@ export async function sendEmail(options: SendEmailOptions): Promise<boolean> {
 
   try {
     await resend.emails.send({
-      from: 'Blizko <noreply@blizko.cz>',
+      from: 'Zokoli <noreply@zokoli.cz>',
       to: options.to,
       subject: options.subject,
       html: options.html,
@@ -148,17 +148,17 @@ export function newFollowerEmail(params: {
     html: `
       <h1>Máš nového sledujícího!</h1>
       <p>Ahoj ${params.userName},</p>
-      <p><strong>${params.followerName}</strong> tě začal sledovat na Blizko.</p>
+      <p><strong>${params.followerName}</strong> tě začal sledovat na Zokoli.</p>
       <p><a href="${params.profileUrl}">Zobrazit profil</a></p>
     `,
-    text: `Ahoj ${params.userName}, ${params.followerName} tě začal sledovat na Blizko.`,
+    text: `Ahoj ${params.userName}, ${params.followerName} tě začal sledovat na Zokoli.`,
   }
 }
 ```
 
 **Step 4: Install Resend**
 
-Run: `pnpm add resend --filter @blizko/server`
+Run: `pnpm add resend --filter @zokoli/server`
 
 **Step 5: Update .env.example**
 
@@ -252,7 +252,7 @@ export async function deleteFile(url: string): Promise<boolean> {
 
 **Step 3: Install AWS SDK**
 
-Run: `pnpm add @aws-sdk/client-s3 --filter @blizko/server`
+Run: `pnpm add @aws-sdk/client-s3 --filter @zokoli/server`
 
 **Step 4: Update .env.example**
 
@@ -261,8 +261,8 @@ Add:
 R2_ACCOUNT_ID=
 R2_ACCESS_KEY_ID=
 R2_SECRET_ACCESS_KEY=
-R2_BUCKET_NAME=blizko
-R2_PUBLIC_URL=https://cdn.blizko.cz
+R2_BUCKET_NAME=zokoli
+R2_PUBLIC_URL=https://cdn.zokoli.cz
 ```
 
 **Step 5: Commit**
@@ -287,7 +287,7 @@ Create `packages/server/src/trpc/routers/upload.ts`:
 import { z } from 'zod'
 import { router, protectedProcedure } from '../trpc.js'
 import { uploadFile, deleteFile } from '../../lib/storage.js'
-import { Errors } from '@blizko/shared'
+import { Errors } from '@zokoli/shared'
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024 // 5MB
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp']
@@ -480,7 +480,7 @@ export function calculatePlatformFee(amount: number): number {
 
 **Step 3: Install Stripe**
 
-Run: `pnpm add stripe --filter @blizko/server`
+Run: `pnpm add stripe --filter @zokoli/server`
 
 **Step 4: Update .env.example**
 
@@ -513,7 +513,7 @@ Create `packages/server/src/trpc/routers/stripe.ts`:
 import { z } from 'zod'
 import { router, protectedProcedure } from '../trpc.js'
 import { stripe, calculatePlatformFee } from '../../lib/stripe.js'
-import { Errors } from '@blizko/shared'
+import { Errors } from '@zokoli/shared'
 import { env } from '../../utils/env.js'
 
 export const stripeRouter = router({
@@ -1027,7 +1027,7 @@ git commit -m "feat: add Stripe checkout to event detail page"
 
 **Step 1: Install Leaflet clustering**
 
-Run: `pnpm add react-leaflet-cluster --filter @blizko/client`
+Run: `pnpm add react-leaflet-cluster --filter @zokoli/client`
 
 **Step 2: Create EventMap component**
 
@@ -1036,9 +1036,9 @@ Create `packages/client/src/components/event-map.tsx`:
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-cluster'
 import { Icon, LatLngBounds } from 'leaflet'
-import { Event } from '@blizko/shared'
+import { Event } from '@zokoli/shared'
 import { Link } from 'react-router-dom'
-import { formatDate } from '@blizko/shared'
+import { formatDate } from '@zokoli/shared'
 
 interface EventMapProps {
   events: Event[]
@@ -1358,7 +1358,7 @@ Create `packages/server/src/trpc/routers/reviews.ts`:
 ```typescript
 import { z } from 'zod'
 import { router, protectedProcedure, publicProcedure } from '../trpc.js'
-import { Errors } from '@blizko/shared'
+import { Errors } from '@zokoli/shared'
 
 export const reviewsRouter = router({
   // Create review (only past participants)
@@ -1576,7 +1576,7 @@ Create `packages/client/src/components/reviews/review-list.tsx`:
 ```typescript
 import { trpc } from '@/trpc/client'
 import { StarRating } from '@/components/ui/star-rating'
-import { formatDate } from '@blizko/shared'
+import { formatDate } from '@zokoli/shared'
 
 interface ReviewListProps {
   eventId: string
@@ -1756,7 +1756,7 @@ Create `packages/server/src/trpc/routers/follows.ts`:
 ```typescript
 import { z } from 'zod'
 import { router, protectedProcedure, publicProcedure } from '../trpc.js'
-import { Errors } from '@blizko/shared'
+import { Errors } from '@zokoli/shared'
 import { sendEmail } from '../../lib/email.js'
 import { newFollowerEmail } from '../../lib/email-templates.js'
 import { env } from '../../utils/env.js'
@@ -2041,7 +2041,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { formatDate } from '@blizko/shared'
+import { formatDate } from '@zokoli/shared'
 import { Link } from 'react-router-dom'
 
 export function NotificationBell() {

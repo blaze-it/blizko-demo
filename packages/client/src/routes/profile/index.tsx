@@ -92,7 +92,12 @@ export function ProfilePage() {
 			createConnectMutation.mutate()
 			setSearchParams({}, { replace: true })
 		}
-	}, [searchParams, setSearchParams, refetchStripeStatus, createConnectMutation])
+	}, [
+		searchParams,
+		setSearchParams,
+		refetchStripeStatus,
+		createConnectMutation,
+	])
 
 	const updateProfileMutation = trpc.user.updateProfile.useMutation({
 		onSuccess: () => {
@@ -169,7 +174,9 @@ export function ProfilePage() {
 						<User className="h-7 w-7 sm:h-8 sm:w-8 text-primary" />
 					</div>
 					<div className="min-w-0">
-						<h1 className="text-2xl sm:text-3xl font-bold truncate">{user.name || 'Profil'}</h1>
+						<h1 className="text-2xl sm:text-3xl font-bold truncate">
+							{user.name || 'Profil'}
+						</h1>
 						<p className="text-muted-foreground truncate">{user.email}</p>
 					</div>
 				</div>
@@ -191,9 +198,7 @@ export function ProfilePage() {
 						<div className="space-y-4">
 							<div className="flex items-center gap-2 text-green-600">
 								<CheckCircle className="h-5 w-5" />
-								<span className="font-medium">
-									Stripe ucet je aktivni
-								</span>
+								<span className="font-medium">Stripe ucet je aktivni</span>
 							</div>
 							<p className="text-sm text-muted-foreground">
 								Muzete poridat placene akce a prijimat platby od ucastniku.
@@ -212,8 +217,8 @@ export function ProfilePage() {
 					) : (
 						<div className="space-y-4">
 							<p className="text-sm text-muted-foreground">
-								Pro prijem plateb za placene akce si musite nastavit Stripe ucet.
-								Proces trva jen par minut.
+								Pro prijem plateb za placene akce si musite nastavit Stripe
+								ucet. Proces trva jen par minut.
 							</p>
 							<Button
 								onClick={() => createConnectMutation.mutate()}
@@ -237,7 +242,12 @@ export function ProfilePage() {
 							<User className="h-5 w-5 text-blue-500" />
 							Informace o účtu
 						</CardTitle>
-						<Button variant="ghost" size="sm" onClick={handleOpenEditDialog} className="w-full sm:w-auto">
+						<Button
+							variant="ghost"
+							size="sm"
+							onClick={handleOpenEditDialog}
+							className="w-full sm:w-auto"
+						>
 							<Pencil className="mr-2 h-4 w-4" />
 							Upravit
 						</Button>

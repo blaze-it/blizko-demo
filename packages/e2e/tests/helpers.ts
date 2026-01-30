@@ -8,7 +8,7 @@ export function uniqueUser() {
 	return {
 		name: `Test User ${ts}`,
 		username: `testuser${ts}${userCounter}`,
-		email: `test${ts}${userCounter}@blizko.cz`,
+		email: `test${ts}${userCounter}@zokoli.cz`,
 		password: 'TestPass123!',
 	}
 }

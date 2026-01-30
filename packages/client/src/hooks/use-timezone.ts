@@ -1,4 +1,4 @@
-import { getBrowserTimezone } from '@blizko/shared'
+import { getBrowserTimezone } from '@zokoli/shared'
 import { useMemo } from 'react'
 
 /**

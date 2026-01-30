@@ -1,11 +1,4 @@
-import {
-	ArrowLeft,
-	Calendar,
-	MapPin,
-	Star,
-	User,
-	Users,
-} from 'lucide-react'
+import { ArrowLeft, Calendar, MapPin, Star, User, Users } from 'lucide-react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { FollowButton } from '@/components/follow-button'
 import { Badge } from '@/components/ui/badge'
@@ -32,8 +25,10 @@ export function UserProfilePage() {
 		{ enabled: !!id },
 	)
 
-	const { data: counts } =
-		trpc.follows.getCounts.useQuery({ userId: id! }, { enabled: !!id })
+	const { data: counts } = trpc.follows.getCounts.useQuery(
+		{ userId: id! },
+		{ enabled: !!id },
+	)
 
 	const { data: rating } = trpc.reviews.getOrganizerRating.useQuery(
 		{ organizerId: id! },
@@ -117,9 +112,7 @@ export function UserProfilePage() {
 								)}
 							</div>
 						</div>
-						{!isOwnProfile && currentUser && (
-							<FollowButton userId={id!} />
-						)}
+						{!isOwnProfile && currentUser && <FollowButton userId={id!} />}
 					</div>
 				</CardHeader>
 				<CardContent className="space-y-4">
@@ -173,7 +166,9 @@ export function UserProfilePage() {
 			{organizerEvents.length > 0 && (
 				<Card>
 					<CardHeader>
-						<CardTitle className="text-lg">Udalosti od tohoto organizatora</CardTitle>
+						<CardTitle className="text-lg">
+							Udalosti od tohoto organizatora
+						</CardTitle>
 					</CardHeader>
 					<CardContent>
 						<div className="space-y-3">

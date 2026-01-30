@@ -1,6 +1,9 @@
-import { Errors } from '@blizko/shared'
+import { Errors } from '@zokoli/shared'
 import { z } from 'zod'
-import { EventStatus, ParticipantStatus } from '../../generated/prisma/client.js'
+import {
+	EventStatus,
+	ParticipantStatus,
+} from '../../generated/prisma/client.js'
 import { ensureExists } from '../lib/crud-helpers.js'
 import { protectedProcedure, publicProcedure, router } from '../trpc.js'
 
@@ -57,9 +60,7 @@ export const reviewsRouter = router({
 				new Date(event.date) < new Date()
 
 			if (!isPastEvent) {
-				throw Errors.forbidden(
-					'Hodnotit lze pouze uplynulé události',
-				)
+				throw Errors.forbidden('Hodnotit lze pouze uplynulé události')
 			}
 
 			// Check if user participated in the event
@@ -72,10 +73,11 @@ export const reviewsRouter = router({
 				},
 			})
 
-			if (!participation || participation.status !== ParticipantStatus.CONFIRMED) {
-				throw Errors.forbidden(
-					'Hodnotit mohou pouze potvrzení účastníci',
-				)
+			if (
+				!participation ||
+				participation.status !== ParticipantStatus.CONFIRMED
+			) {
+				throw Errors.forbidden('Hodnotit mohou pouze potvrzení účastníci')
 			}
 
 			// Check if user already reviewed
@@ -216,7 +218,10 @@ export const reviewsRouter = router({
 				},
 			})
 
-			if (!participation || participation.status !== ParticipantStatus.CONFIRMED) {
+			if (
+				!participation ||
+				participation.status !== ParticipantStatus.CONFIRMED
+			) {
 				return { canReview: false, reason: 'not_participant' as const }
 			}
 

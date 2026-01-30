@@ -5,7 +5,7 @@ test.describe('Landing Page', () => {
 		await page.goto('/')
 
 		// Header
-		await expect(page.locator('header').getByText('blizko')).toBeVisible()
+		await expect(page.locator('header').getByText('zokoli')).toBeVisible()
 		await expect(page.getByRole('link', { name: 'Přihlásit se' })).toBeVisible()
 		await expect(
 			page.locator('header').getByRole('link', { name: 'Začít' }),
