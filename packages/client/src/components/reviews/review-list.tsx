@@ -1,5 +1,6 @@
-import { MessageSquare, Trash2 } from 'lucide-react'
+import { Flag, MessageSquare, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
+import { ReportDialog } from '@/components/report-dialog'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { StarRating } from '@/components/ui/star-rating'
@@ -55,9 +56,7 @@ export function ReviewList({ eventId, currentUserId }: ReviewListProps) {
 					</CardTitle>
 				</CardHeader>
 				<CardContent>
-					<p className="text-muted-foreground text-sm">
-						Zatim zadna hodnoceni
-					</p>
+					<p className="text-muted-foreground text-sm">Zatim zadna hodnoceni</p>
 				</CardContent>
 			</Card>
 		)
@@ -81,7 +80,11 @@ export function ReviewList({ eventId, currentUserId }: ReviewListProps) {
 					</CardTitle>
 					{data.avgRating !== null && (
 						<div className="flex items-center gap-2">
-							<StarRating value={Math.round(data.avgRating)} readOnly size="sm" />
+							<StarRating
+								value={Math.round(data.avgRating)}
+								readOnly
+								size="sm"
+							/>
 							<span className="text-sm text-muted-foreground">
 								{data.avgRating.toFixed(1)} / 5
 							</span>
@@ -113,20 +116,37 @@ export function ReviewList({ eventId, currentUserId }: ReviewListProps) {
 										</p>
 									)}
 								</div>
-								{currentUserId === review.reviewerId && (
-									<Button
-										variant="ghost"
-										size="sm"
-										onClick={() =>
-											deleteReviewMutation.mutate({ eventId })
-										}
-										disabled={deleteReviewMutation.isPending}
-										className="text-destructive hover:text-destructive shrink-0"
-									>
-										<Trash2 className="h-4 w-4" />
-										<span className="sr-only">Smazat hodnoceni</span>
-									</Button>
-								)}
+								<div className="flex gap-1 shrink-0">
+									{currentUserId &&
+										currentUserId !== review.reviewerId && (
+											<ReportDialog
+												type="review"
+												targetId={review.id}
+												trigger={
+													<Button
+														variant="ghost"
+														size="sm"
+														className="text-muted-foreground hover:text-foreground"
+													>
+														<Flag className="h-4 w-4" />
+														<span className="sr-only">Nahlasit hodnoceni</span>
+													</Button>
+												}
+											/>
+										)}
+									{currentUserId === review.reviewerId && (
+										<Button
+											variant="ghost"
+											size="sm"
+											onClick={() => deleteReviewMutation.mutate({ eventId })}
+											disabled={deleteReviewMutation.isPending}
+											className="text-destructive hover:text-destructive"
+										>
+											<Trash2 className="h-4 w-4" />
+											<span className="sr-only">Smazat hodnoceni</span>
+										</Button>
+									)}
+								</div>
 							</div>
 						</div>
 					))}

@@ -41,6 +41,7 @@ model User {
   followers         Follow[]             @relation("Following")
   following         Follow[]             @relation("Followers")
   notifications     Notification[]
+  reports           Report[]
 }
 
 model Session {
@@ -147,6 +148,7 @@ model Event {
   reviews      Review[]
   payments     Payment[]
   payouts      Payout[]
+  reports      Report[]
 }
 
 model EventParticipant {
@@ -174,6 +176,7 @@ model Review {
 
   event    Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
   reviewer User  @relation("ReviewsWritten", fields: [reviewerId], references: [id], onDelete: Cascade)
+  reports  Report[]
 
   @@unique([eventId, reviewerId])
 }
@@ -283,6 +286,20 @@ model Notification {
   userId    String
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Report {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  reason     String
+  reviewed   Boolean  @default(false)
+  reporterId String
+  eventId    String?
+  reviewId   String?
+
+  reporter User    @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+  event    Event?  @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  review   Review? @relation(fields: [reviewId], references: [id], onDelete: Cascade)
 }
 
 enum NotificationType {

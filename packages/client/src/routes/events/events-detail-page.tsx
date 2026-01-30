@@ -5,6 +5,7 @@ import {
 	CheckCircle,
 	CreditCard,
 	Edit,
+	Flag,
 	MapPin,
 	QrCode,
 	UserCheck,
@@ -15,6 +16,7 @@ import { useEffect } from 'react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
+import { ReportDialog } from '@/components/report-dialog'
 import { ReviewForm } from '@/components/reviews/review-form'
 import { ReviewList } from '@/components/reviews/review-list'
 import { ShareEvent } from '@/components/share-event'
@@ -334,6 +336,18 @@ export function EventsDetailPage() {
 							</Button>
 						)}
 						<ShareEvent eventId={event.id} eventTitle={event.title} />
+						{user && !isOrganizer && (
+							<ReportDialog
+								type="event"
+								targetId={event.id}
+								trigger={
+									<Button variant="ghost" size="sm">
+										<Flag className="h-4 w-4 mr-2" />
+										Nahlasit
+									</Button>
+								}
+							/>
+						)}
 					</div>
 
 					{/* Participants */}
