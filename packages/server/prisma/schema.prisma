@@ -23,6 +23,11 @@ model User {
   neighborhood    String?
   bio             String?
 
+  // Stripe Connect
+  stripeCustomerId  String?   @unique
+  stripeAccountId   String?   @unique
+  stripeOnboarded   Boolean   @default(false)
+
   sessions          Session[]
   accounts          Account[]
   image             UserImage?
@@ -31,6 +36,11 @@ model User {
   organizedEvents   Event[]              @relation("EventOrganizer")
   eventParticipants EventParticipant[]
   reviewsWritten    Review[]             @relation("ReviewsWritten")
+  payments          Payment[]
+  payouts           Payout[]
+  followers         Follow[]             @relation("Following")
+  following         Follow[]             @relation("Followers")
+  notifications     Notification[]
 }
 
 model Session {
@@ -135,6 +145,8 @@ model Event {
   organizer    User               @relation("EventOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
   participants EventParticipant[]
   reviews      Review[]
+  payments     Payment[]
+  payouts      Payout[]
 }
 
 model EventParticipant {
@@ -190,4 +202,55 @@ enum ParticipantStatus {
   CONFIRMED
   CANCELLED
   WAITLISTED
+}
+
+// ============================================================================
+// Payment Models
+// ============================================================================
+
+model Payment {
+  id                    String        @id @default(cuid())
+  createdAt             DateTime      @default(now())
+  updatedAt             DateTime      @updatedAt
+  amount                Int
+  currency              String        @default("CZK")
+  status                PaymentStatus @default(PENDING)
+  stripePaymentIntentId String?       @unique
+  stripeSessionId       String?       @unique
+  eventId               String
+  userId                String
+
+  event   Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, userId])
+}
+
+model Payout {
+  id               String       @id @default(cuid())
+  createdAt        DateTime     @default(now())
+  amount           Int
+  currency         String       @default("CZK")
+  status           PayoutStatus @default(PENDING)
+  stripeTransferId String?      @unique
+  organizerId      String
+  eventId          String?
+
+  organizer User   @relation(fields: [organizerId], references: [id], onDelete: Cascade)
+  event     Event? @relation(fields: [eventId], references: [id], onDelete: SetNull)
+}
+
+enum PaymentStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
+  REFUNDED
+}
+
+enum PayoutStatus {
+  PENDING
+  PROCESSING
+  SUCCEEDED
+  FAILED
 }
