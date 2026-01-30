@@ -119,7 +119,7 @@ export const stripeRouter = router({
 		)
 
 		if (!user.stripeAccountId) {
-			throw Errors.badRequest('No Stripe account found')
+			throw Errors.validation('No Stripe account found')
 		}
 
 		const loginLink = await stripe.accounts.createLoginLink(
@@ -153,17 +153,17 @@ export const stripeRouter = router({
 
 			// Check if event is free
 			if (event.price === 0) {
-				throw Errors.badRequest('This event is free')
+				throw Errors.validation('This event is free')
 			}
 
 			// Check capacity
 			if (event._count.participants >= event.capacity) {
-				throw Errors.badRequest('This event is full')
+				throw Errors.validation('This event is full')
 			}
 
 			// Check if organizer has Stripe account
 			if (!event.organizer.stripeAccountId) {
-				throw Errors.badRequest(
+				throw Errors.validation(
 					'Organizer has not set up payment processing',
 				)
 			}
