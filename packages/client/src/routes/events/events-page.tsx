@@ -1,12 +1,13 @@
-import 'leaflet/dist/leaflet.css'
-import { Calendar, MapPin, Plus, Users } from 'lucide-react'
-import { useMemo, useState } from 'react'
-import { MapContainer, Marker, Popup, TileLayer } from 'react-leaflet'
+import { Calendar, Locate, MapPin, Plus, Users } from 'lucide-react'
+import { useCallback, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
+import { EventMap } from '@/components/event-map'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { SearchInput } from '@/components/ui/search-input'
 import {
 	Select,
@@ -48,6 +49,56 @@ export function EventsPage() {
 	const [search, setSearch] = useState('')
 	const [category, setCategory] = useState('ALL')
 	const [date, setDate] = useState('')
+	const [freeOnly, setFreeOnly] = useState(false)
+	const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
+	const [locationLoading, setLocationLoading] = useState(false)
+	const [locationError, setLocationError] = useState<string | null>(null)
+
+	const requestLocation = useCallback(() => {
+		if (!navigator.geolocation) {
+			setLocationError('Geolokace není podporována vaším prohlížečem')
+			return
+		}
+
+		setLocationLoading(true)
+		setLocationError(null)
+
+		navigator.geolocation.getCurrentPosition(
+			(position) => {
+				setUserLocation({
+					lat: position.coords.latitude,
+					lng: position.coords.longitude,
+				})
+				setLocationLoading(false)
+			},
+			(error) => {
+				setLocationLoading(false)
+				switch (error.code) {
+					case error.PERMISSION_DENIED:
+						setLocationError('Přístup k poloze byl zamítnut')
+						break
+					case error.POSITION_UNAVAILABLE:
+						setLocationError('Informace o poloze nejsou dostupné')
+						break
+					case error.TIMEOUT:
+						setLocationError('Požadavek na polohu vypršel')
+						break
+					default:
+						setLocationError('Nepodařilo se získat polohu')
+				}
+			},
+			{
+				enableHighAccuracy: true,
+				timeout: 10000,
+				maximumAge: 300000, // 5 minutes
+			}
+		)
+	}, [])
+
+	const clearLocation = useCallback(() => {
+		setUserLocation(null)
+		setLocationError(null)
+	}, [])
 
 	const { data, isLoading } = trpc.events.list.useQuery({
 		search: search || undefined,
@@ -63,6 +114,10 @@ export function EventsPage() {
 						| 'OTHER')
 				: undefined,
 		date: date || undefined,
+		freeOnly: freeOnly || undefined,
+		lat: userLocation?.lat,
+		lng: userLocation?.lng,
+		radiusKm: userLocation ? 10 : undefined, // 10km radius when location is set
 	})
 	const events = data?.items
 
@@ -75,10 +130,17 @@ export function EventsPage() {
 		})
 	}
 
-	const mappableEvents = useMemo(
-		() => events?.filter((e) => e.latitude != null && e.longitude != null) ?? [],
-		[events],
-	)
+	// Prepare events for map with required fields
+	const mapEvents = (events ?? [])
+		.filter((e) => e.latitude != null && e.longitude != null)
+		.map((e) => ({
+			id: e.id,
+			title: e.title,
+			latitude: e.latitude!,
+			longitude: e.longitude!,
+			date: e.date,
+			startTime: e.startTime,
+		}))
 
 	return (
 		<div className="min-h-screen bg-background">
@@ -87,63 +149,85 @@ export function EventsPage() {
 					Procházet události
 				</h1>
 
-				{/* Map */}
-				<div className="w-full h-64 rounded-xl overflow-hidden border border-border mb-6">
-					<MapContainer
-						center={[50.0755, 14.4378]}
-						zoom={13}
-						className="h-full w-full"
-						scrollWheelZoom={false}
-					>
-						<TileLayer
-							attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-							url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-						/>
-						{mappableEvents.map((event) => (
-							<Marker
-								key={event.id}
-								position={[event.latitude!, event.longitude!]}
-							>
-								<Popup>
-									<Link to={`/events/${event.id}`} className="font-semibold">
-										{event.title}
-									</Link>
-									<br />
-									<span className="text-xs">
-										{formatDate(event.date)} v {event.startTime}
-									</span>
-								</Popup>
-							</Marker>
-						))}
-					</MapContainer>
-				</div>
+				{/* Map with clustering */}
+				<EventMap
+					events={mapEvents}
+					userLocation={userLocation}
+					className="h-64 mb-6"
+				/>
 
 				{/* Filter Bar */}
-				<div className="flex flex-col sm:flex-row gap-3 mb-6">
-					<SearchInput
-						value={search}
-						onChange={setSearch}
-						placeholder="Hledat události..."
-						className="flex-1"
-					/>
-					<Select value={category} onValueChange={setCategory}>
-						<SelectTrigger className="w-full sm:w-48">
-							<SelectValue placeholder="Kategorie" />
-						</SelectTrigger>
-						<SelectContent>
-							{CATEGORIES.map((cat) => (
-								<SelectItem key={cat.value} value={cat.value}>
-									{cat.label}
-								</SelectItem>
-							))}
-						</SelectContent>
-					</Select>
-					<Input
-						type="date"
-						value={date}
-						onChange={(e) => setDate(e.target.value)}
-						className="w-full sm:w-44"
-					/>
+				<div className="flex flex-col gap-3 mb-6">
+					<div className="flex flex-col sm:flex-row gap-3">
+						<SearchInput
+							value={search}
+							onChange={setSearch}
+							placeholder="Hledat události..."
+							className="flex-1"
+						/>
+						<Select value={category} onValueChange={setCategory}>
+							<SelectTrigger className="w-full sm:w-48">
+								<SelectValue placeholder="Kategorie" />
+							</SelectTrigger>
+							<SelectContent>
+								{CATEGORIES.map((cat) => (
+									<SelectItem key={cat.value} value={cat.value}>
+										{cat.label}
+									</SelectItem>
+								))}
+							</SelectContent>
+						</Select>
+						<Input
+							type="date"
+							value={date}
+							onChange={(e) => setDate(e.target.value)}
+							className="w-full sm:w-44"
+						/>
+					</div>
+
+					{/* Secondary filters row */}
+					<div className="flex flex-wrap items-center gap-4">
+						{/* Free only checkbox */}
+						<div className="flex items-center space-x-2">
+							<Checkbox
+								id="freeOnly"
+								checked={freeOnly}
+								onCheckedChange={(checked) => setFreeOnly(checked === true)}
+							/>
+							<Label htmlFor="freeOnly" className="text-sm cursor-pointer">
+								Pouze zdarma
+							</Label>
+						</div>
+
+						{/* Geolocation button */}
+						<div className="flex items-center gap-2">
+							{userLocation ? (
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={clearLocation}
+									className="text-sm"
+								>
+									<Locate className="h-4 w-4 mr-1" />
+									Zrušit polohu
+								</Button>
+							) : (
+								<Button
+									variant="outline"
+									size="sm"
+									onClick={requestLocation}
+									disabled={locationLoading}
+									className="text-sm"
+								>
+									<Locate className="h-4 w-4 mr-1" />
+									{locationLoading ? 'Načítám...' : 'Akce poblíž'}
+								</Button>
+							)}
+							{locationError && (
+								<span className="text-xs text-destructive">{locationError}</span>
+							)}
+						</div>
+					</div>
 				</div>
 
 				{/* Event List */}
