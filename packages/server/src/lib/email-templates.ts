@@ -45,7 +45,7 @@ export async function eventJoinedEmail(params: {
       <a href="${eventUrl}" class="button">Zobrazit akci</a>
     </div>
     <div class="footer">
-      <p>Blizko - Tvoje sousedská komunita</p>
+      <p>Zokoli - Tvoje sousedská komunita</p>
     </div>
   </div>
 </body>
@@ -63,7 +63,7 @@ Kde: ${eventLocation}
 
 Zobrazit akci: ${eventUrl}
 
-Blizko - Tvoje sousedská komunita
+Zokoli - Tvoje sousedská komunita
 `
 
 	return sendEmail({
@@ -118,7 +118,7 @@ export async function eventCancelledEmail(params: {
       <p>Omlouváme se za nepříjemnosti. Sleduj další akce v tvém okolí!</p>
     </div>
     <div class="footer">
-      <p>Blizko - Tvoje sousedská komunita</p>
+      <p>Zokoli - Tvoje sousedská komunita</p>
     </div>
   </div>
 </body>
@@ -137,7 +137,7 @@ ${reason ? `Důvod: ${reason}` : ''}
 
 Omlouváme se za nepříjemnosti. Sleduj další akce v tvém okolí!
 
-Blizko - Tvoje sousedská komunita
+Zokoli - Tvoje sousedská komunita
 `
 
 	return sendEmail({
@@ -159,14 +159,33 @@ export async function paymentConfirmationEmail(params: {
 	amount: number
 	currency: string
 	receiptUrl?: string
+	qrCodeDataUrl?: string
 }): Promise<boolean> {
-	const { to, userName, eventTitle, eventDate, amount, currency, receiptUrl } =
-		params
+	const {
+		to,
+		userName,
+		eventTitle,
+		eventDate,
+		amount,
+		currency,
+		receiptUrl,
+		qrCodeDataUrl,
+	} = params
 
 	const formattedAmount = new Intl.NumberFormat('cs-CZ', {
 		style: 'currency',
 		currency: currency,
 	}).format(amount / 100)
+
+	const qrCodeSection = qrCodeDataUrl
+		? `
+      <div style="background: white; padding: 16px; border-radius: 8px; margin: 16px 0; text-align: center;">
+        <h3 style="margin-top: 0; margin-bottom: 12px;">Tvoje vstupenka</h3>
+        <img src="${qrCodeDataUrl}" alt="QR kod vstupenky" style="width: 200px; height: 200px; margin: 0 auto;" />
+        <p style="margin-top: 12px; font-size: 12px; color: #6b7280;">Tento QR kod ukazes pri vstupu na akci</p>
+      </div>
+    `
+		: ''
 
 	const html = `
 <!DOCTYPE html>
@@ -187,21 +206,22 @@ export async function paymentConfirmationEmail(params: {
 <body>
   <div class="container">
     <div class="header">
-      <h1 style="margin: 0;">Platba přijata</h1>
+      <h1 style="margin: 0;">Platba prijata</h1>
     </div>
     <div class="content">
       <p>Ahoj ${userName},</p>
-      <p>Tvoje platba byla úspěšně zpracována.</p>
+      <p>Tvoje platba byla uspesne zpracovana.</p>
       <div class="payment-details">
         <h2 style="margin-top: 0;">${eventTitle}</h2>
         <p><strong>Datum akce:</strong> ${eventDate}</p>
         <p class="amount">${formattedAmount}</p>
       </div>
-      ${receiptUrl ? `<a href="${receiptUrl}" class="button">Stáhnout potvrzení</a>` : ''}
-      <p style="margin-top: 20px;">Děkujeme za tvou účast!</p>
+      ${qrCodeSection}
+      ${receiptUrl ? `<a href="${receiptUrl}" class="button">Stahnout potvrzeni</a>` : ''}
+      <p style="margin-top: 20px;">Dekujeme za tvou ucast!</p>
     </div>
     <div class="footer">
-      <p>Blizko - Tvoje sousedská komunita</p>
+      <p>Zokoli - Tvoje sousedska komunita</p>
     </div>
   </div>
 </body>
@@ -211,17 +231,17 @@ export async function paymentConfirmationEmail(params: {
 	const text = `
 Ahoj ${userName},
 
-Tvoje platba byla úspěšně zpracována.
+Tvoje platba byla uspesne zpracovana.
 
 ${eventTitle}
 Datum akce: ${eventDate}
-Částka: ${formattedAmount}
+Castka: ${formattedAmount}
 
-${receiptUrl ? `Stáhnout potvrzení: ${receiptUrl}` : ''}
+${receiptUrl ? `Stahnout potvrzeni: ${receiptUrl}` : ''}
 
-Děkujeme za tvou účast!
+Dekujeme za tvou ucast!
 
-Blizko - Tvoje sousedská komunita
+Zokoli - Tvoje sousedska komunita
 `
 
 	return sendEmail({
@@ -269,7 +289,7 @@ export async function newFollowerEmail(params: {
       <a href="${followerProfileUrl}" class="button">Zobrazit profil</a>
     </div>
     <div class="footer">
-      <p>Blizko - Tvoje sousedská komunita</p>
+      <p>Zokoli - Tvoje sousedská komunita</p>
     </div>
   </div>
 </body>
@@ -285,7 +305,7 @@ Uživatel bude dostávat upozornění na tvoje nové akce.
 
 Zobrazit profil: ${followerProfileUrl}
 
-Blizko - Tvoje sousedská komunita
+Zokoli - Tvoje sousedská komunita
 `
 
 	return sendEmail({

@@ -6,6 +6,7 @@ import {
 	CreditCard,
 	Edit,
 	MapPin,
+	QrCode,
 	Users,
 	XCircle,
 } from 'lucide-react'
@@ -282,15 +283,23 @@ export function EventsDetailPage() {
 									</Badge>
 								)}
 								{isParticipant && (
-									<Button
-										variant="outline"
-										onClick={() => leaveMutation.mutate({ eventId: event.id })}
-										disabled={leaveMutation.isPending}
-									>
-										{leaveMutation.isPending
-											? 'Odcházení...'
-											: 'Odejít z události'}
-									</Button>
+									<>
+										<Button asChild>
+											<Link to={`/events/${event.id}/ticket`}>
+												<QrCode className="h-4 w-4 mr-2" />
+												Zobrazit vstupenku
+											</Link>
+										</Button>
+										<Button
+											variant="outline"
+											onClick={() => leaveMutation.mutate({ eventId: event.id })}
+											disabled={leaveMutation.isPending}
+										>
+											{leaveMutation.isPending
+												? 'Odchazeni...'
+												: 'Odejit z udalosti'}
+										</Button>
+									</>
 								)}
 							</>
 						) : isPaidEvent ? (

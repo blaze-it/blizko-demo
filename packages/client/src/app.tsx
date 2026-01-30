@@ -44,6 +44,9 @@ const EventsPreviewPage = lazy(() =>
 const MyEventsPage = lazy(() =>
 	import('@/routes/events').then((m) => ({ default: m.MyEventsPage })),
 )
+const TicketPage = lazy(() =>
+	import('@/routes/events').then((m) => ({ default: m.TicketPage })),
+)
 
 // Profile
 const ProfilePage = lazy(() =>
@@ -104,6 +107,7 @@ export default function App() {
 						<Route path="/events/:id" element={<EventsDetailPage />} />
 						<Route path="/events/:id/edit" element={<EventsEditPage />} />
 						<Route path="/events/:id/preview" element={<EventsPreviewPage />} />
+						<Route path="/events/:id/ticket" element={<TicketPage />} />
 						<Route path="/my-events" element={<MyEventsPage />} />
 
 						{/* Profile */}

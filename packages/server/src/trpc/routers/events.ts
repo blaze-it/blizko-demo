@@ -5,6 +5,7 @@ import {
 	EventStatus,
 	ParticipantStatus,
 } from '../../generated/prisma/client.js'
+import { generateTicketQRCode } from '../../lib/qrcode.js'
 import { ensureExists } from '../lib/crud-helpers.js'
 import { protectedProcedure, publicProcedure, router } from '../trpc.js'
 
@@ -451,4 +452,53 @@ export const eventsRouter = router({
 
 		return participations
 	}),
+
+	/**
+	 * Get ticket info for a participant including QR code
+	 */
+	getTicket: protectedProcedure
+		.input(z.object({ eventId: z.string() }))
+		.query(async ({ ctx, input }) => {
+			const participant = await ctx.prisma.eventParticipant.findUnique({
+				where: {
+					eventId_userId: {
+						eventId: input.eventId,
+						userId: ctx.userId,
+					},
+				},
+				include: {
+					event: {
+						select: {
+							id: true,
+							title: true,
+							date: true,
+							startTime: true,
+							endTime: true,
+							locationName: true,
+							address: true,
+							organizer: { select: { id: true, name: true } },
+						},
+					},
+					user: {
+						select: { id: true, name: true, email: true },
+					},
+				},
+			})
+
+			if (!participant) {
+				throw Errors.notFound('EventParticipant')
+			}
+
+			// Generate QR code for the ticket
+			const qrCodeDataUrl = await generateTicketQRCode(participant.id)
+
+			return {
+				id: participant.id,
+				status: participant.status,
+				createdAt: participant.createdAt,
+				event: participant.event,
+				user: participant.user,
+				qrCodeDataUrl,
+			}
+		}),
 })

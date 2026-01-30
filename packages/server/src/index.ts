@@ -15,6 +15,7 @@ initEnv()
 import { ParticipantStatus, PaymentStatus } from './generated/prisma/client.js'
 import { auth } from './lib/auth.js'
 import { paymentConfirmationEmail } from './lib/email-templates.js'
+import { generateTicketQRCode } from './lib/qrcode.js'
 import { stripe } from './lib/stripe.js'
 import { createContext } from './trpc/context.js'
 import { appRouter } from './trpc/routers/index.js'
@@ -242,14 +243,14 @@ app.post('/api/webhooks/stripe', async (c) => {
 					})
 
 					// Create EventParticipant
-					const existingParticipant = await prisma.eventParticipant.findUnique({
+					let participant = await prisma.eventParticipant.findUnique({
 						where: {
 							eventId_userId: { eventId, userId },
 						},
 					})
 
-					if (!existingParticipant) {
-						await prisma.eventParticipant.create({
+					if (!participant) {
+						participant = await prisma.eventParticipant.create({
 							data: {
 								eventId,
 								userId,
@@ -258,7 +259,7 @@ app.post('/api/webhooks/stripe', async (c) => {
 						})
 					}
 
-					// Send confirmation email
+					// Send confirmation email with QR code
 					const eventData = await prisma.event.findUnique({
 						where: { id: eventId },
 					})
@@ -266,7 +267,10 @@ app.post('/api/webhooks/stripe', async (c) => {
 						where: { id: userId },
 					})
 
-					if (eventData && user) {
+					if (eventData && user && participant) {
+						// Generate QR code for the ticket
+						const qrCodeDataUrl = await generateTicketQRCode(participant.id)
+
 						await paymentConfirmationEmail({
 							to: user.email,
 							userName: user.name || 'uzivateli',
@@ -279,6 +283,7 @@ app.post('/api/webhooks/stripe', async (c) => {
 							}).format(new Date(eventData.date)),
 							amount: payment.amount,
 							currency: payment.currency,
+							qrCodeDataUrl,
 						})
 					}
 

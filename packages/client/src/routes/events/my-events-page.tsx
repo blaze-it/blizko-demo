@@ -1,4 +1,4 @@
-import { CalendarDays, MapPin, Plus, Users } from 'lucide-react'
+import { CalendarDays, MapPin, Plus, QrCode, Users } from 'lucide-react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Badge } from '@/components/ui/badge'
@@ -100,28 +100,40 @@ export function MyEventsPage() {
 			) : (
 				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
 					{joined.map((p) => (
-						<Link key={p.id} to={`/events/${p.event.id}`}>
-							<Card className="hover:border-primary/50 transition-colors cursor-pointer h-full">
-								<CardContent className="p-5">
-									<div className="flex items-start justify-between gap-2 mb-3">
-										<Badge>{p.event.category}</Badge>
-										<Badge variant="secondary">{p.status}</Badge>
-									</div>
-									<h3 className="text-lg font-semibold mb-2 line-clamp-2">
+						<Card
+							key={p.id}
+							className="hover:border-primary/50 transition-colors h-full"
+						>
+							<CardContent className="p-5">
+								<div className="flex items-start justify-between gap-2 mb-3">
+									<Badge>{p.event.category}</Badge>
+									<Badge variant="secondary">{p.status}</Badge>
+								</div>
+								<Link to={`/events/${p.event.id}`}>
+									<h3 className="text-lg font-semibold mb-2 line-clamp-2 hover:text-primary transition-colors">
 										{p.event.title}
 									</h3>
-									<p className="text-xs text-muted-foreground mb-2">
-										od {p.event.organizer.name ?? 'Anonymní'}
-									</p>
-									<EventMeta
-										date={p.event.date}
-										locationName={p.event.locationName}
-										participantCount={p.event._count.participants}
-										capacity={p.event.capacity}
-									/>
-								</CardContent>
-							</Card>
-						</Link>
+								</Link>
+								<p className="text-xs text-muted-foreground mb-2">
+									od {p.event.organizer.name ?? 'Anonymni'}
+								</p>
+								<EventMeta
+									date={p.event.date}
+									locationName={p.event.locationName}
+									participantCount={p.event._count.participants}
+									capacity={p.event.capacity}
+								/>
+								{p.status === 'CONFIRMED' && (
+									<Link
+										to={`/events/${p.event.id}/ticket`}
+										className="mt-3 inline-flex items-center gap-2 text-sm text-primary hover:underline"
+									>
+										<QrCode className="h-4 w-4" />
+										Zobrazit vstupenku
+									</Link>
+								)}
+							</CardContent>
+						</Card>
 					))}
 				</div>
 			)}
