@@ -13,11 +13,14 @@ import { onShutdown } from './utils/graceful-shutdown.js'
 initEnv()
 
 import { auth } from './lib/auth.js'
+import { paymentConfirmationEmail } from './lib/email-templates.js'
+import { stripe } from './lib/stripe.js'
 import { createContext } from './trpc/context.js'
 import { appRouter } from './trpc/routers/index.js'
 import { prisma } from './utils/db.js'
 import { env } from './utils/env.js'
 import { logger } from './utils/logger.js'
+import { PaymentStatus, ParticipantStatus } from './generated/prisma/client.js'
 
 const MODE = env.NODE_ENV
 const IS_PROD = MODE === 'production'
@@ -62,6 +65,150 @@ app.use(
 // Health check
 app.get('/health', async (c) => {
 	return c.json({ status: 'ok', timestamp: new Date().toISOString() })
+})
+
+// =============================================================================
+// Stripe Webhook Handler (before body parsing)
+// =============================================================================
+app.post('/api/webhooks/stripe', async (c) => {
+	if (!stripe || !env.STRIPE_WEBHOOK_SECRET) {
+		logger.warn('Stripe webhook received but Stripe is not configured')
+		return c.json({ error: 'Stripe not configured' }, 400)
+	}
+
+	const signature = c.req.header('stripe-signature')
+	if (!signature) {
+		logger.warn('Stripe webhook missing signature')
+		return c.json({ error: 'Missing signature' }, 400)
+	}
+
+	let event
+	try {
+		const rawBody = await c.req.text()
+		event = stripe.webhooks.constructEvent(
+			rawBody,
+			signature,
+			env.STRIPE_WEBHOOK_SECRET,
+		)
+	} catch (err) {
+		const message = err instanceof Error ? err.message : 'Unknown error'
+		logger.error(`Stripe webhook signature verification failed: ${message}`)
+		return c.json({ error: 'Invalid signature' }, 400)
+	}
+
+	logger.info(`Stripe webhook received: ${event.type}`)
+
+	try {
+		switch (event.type) {
+			case 'checkout.session.completed': {
+				const session = event.data.object
+				const eventId = session.metadata?.eventId
+				const userId = session.metadata?.userId
+
+				if (!eventId || !userId) {
+					logger.error('Checkout session missing metadata')
+					break
+				}
+
+				// Update payment status
+				const payment = await prisma.payment.findUnique({
+					where: { stripeSessionId: session.id },
+				})
+
+				if (payment) {
+					await prisma.payment.update({
+						where: { id: payment.id },
+						data: {
+							status: PaymentStatus.SUCCEEDED,
+							stripePaymentIntentId:
+								typeof session.payment_intent === 'string'
+									? session.payment_intent
+									: session.payment_intent?.id,
+						},
+					})
+
+					// Create EventParticipant
+					const existingParticipant =
+						await prisma.eventParticipant.findUnique({
+							where: {
+								eventId_userId: { eventId, userId },
+							},
+						})
+
+					if (!existingParticipant) {
+						await prisma.eventParticipant.create({
+							data: {
+								eventId,
+								userId,
+								status: ParticipantStatus.CONFIRMED,
+							},
+						})
+					}
+
+					// Send confirmation email
+					const eventData = await prisma.event.findUnique({
+						where: { id: eventId },
+					})
+					const user = await prisma.user.findUnique({
+						where: { id: userId },
+					})
+
+					if (eventData && user) {
+						await paymentConfirmationEmail({
+							to: user.email,
+							userName: user.name || 'uzivateli',
+							eventTitle: eventData.title,
+							eventDate: new Intl.DateTimeFormat('cs-CZ', {
+								weekday: 'long',
+								day: 'numeric',
+								month: 'long',
+								year: 'numeric',
+							}).format(new Date(eventData.date)),
+							amount: payment.amount,
+							currency: payment.currency,
+						})
+					}
+
+					logger.info(
+						`Payment completed for event ${eventId} by user ${userId}`,
+					)
+				}
+				break
+			}
+
+			case 'charge.refunded': {
+				const charge = event.data.object
+				const paymentIntentId =
+					typeof charge.payment_intent === 'string'
+						? charge.payment_intent
+						: charge.payment_intent?.id
+
+				if (paymentIntentId) {
+					const payment = await prisma.payment.findUnique({
+						where: { stripePaymentIntentId: paymentIntentId },
+					})
+
+					if (payment) {
+						await prisma.payment.update({
+							where: { id: payment.id },
+							data: { status: PaymentStatus.REFUNDED },
+						})
+						logger.info(`Payment ${payment.id} refunded`)
+					}
+				}
+				break
+			}
+
+			default:
+				logger.info(`Unhandled webhook event type: ${event.type}`)
+		}
+	} catch (err) {
+		const message = err instanceof Error ? err.message : 'Unknown error'
+		logger.error(`Error processing Stripe webhook: ${message}`)
+		return c.json({ error: 'Webhook processing failed' }, 500)
+	}
+
+	return c.json({ received: true })
 })
 
 // tRPC API Route
