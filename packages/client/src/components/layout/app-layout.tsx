@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom'
 import { AppSideBar } from '@/components/app-sidebar'
+import { NotificationBell } from '@/components/notification-bell'
 import { ThemeSelector } from '@/components/theme-selector'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Unauthorized } from '@/components/unauthorized'
@@ -16,6 +17,7 @@ function AppLayoutContent() {
 						<nav className="flex flex-wrap items-center justify-between gap-4 sm:flex-nowrap md:gap-8">
 							<SidebarTrigger />
 							<div className="flex items-center gap-2">
+								<NotificationBell />
 								<ThemeSelector />
 							</div>
 						</nav>
