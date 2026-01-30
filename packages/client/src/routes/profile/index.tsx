@@ -1,8 +1,17 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowLeft, Calendar, Mail, Pencil, User } from 'lucide-react'
-import { useState } from 'react'
+import {
+	ArrowLeft,
+	Calendar,
+	CheckCircle,
+	CreditCard,
+	ExternalLink,
+	Mail,
+	Pencil,
+	User,
+} from 'lucide-react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Link } from 'react-router-dom'
+import { Link, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import { Button } from '@/components/ui/button'
@@ -38,9 +47,52 @@ type UpdateProfileData = z.infer<typeof updateProfileSchema>
 
 export function ProfilePage() {
 	usePageTitle('Profil')
+	const [searchParams, setSearchParams] = useSearchParams()
 	const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 	const utils = trpc.useUtils()
 	const { data: user, isLoading } = trpc.user.me.useQuery()
+
+	// Stripe Connect status
+	const { data: stripeStatus, refetch: refetchStripeStatus } =
+		trpc.stripe.getConnectStatus.useQuery(undefined, {
+			enabled: !!user,
+		})
+
+	const createConnectMutation = trpc.stripe.createConnectAccount.useMutation({
+		onSuccess: (data) => {
+			if (data.url) {
+				window.location.href = data.url
+			}
+		},
+		onError: (error) => {
+			toast.error(error.message || 'Nepodařilo se spustit onboarding')
+		},
+	})
+
+	const createDashboardMutation = trpc.stripe.createDashboardLink.useMutation({
+		onSuccess: (data) => {
+			if (data.url) {
+				window.open(data.url, '_blank')
+			}
+		},
+		onError: (error) => {
+			toast.error(error.message || 'Nepodařilo se otevřít dashboard')
+		},
+	})
+
+	// Handle Stripe return
+	useEffect(() => {
+		const stripeParam = searchParams.get('stripe')
+		if (stripeParam === 'success') {
+			toast.success('Stripe účet byl úspěšně nastaven!')
+			refetchStripeStatus()
+			setSearchParams({}, { replace: true })
+		} else if (stripeParam === 'refresh') {
+			toast.info('Prosím dokončete nastavení Stripe účtu')
+			createConnectMutation.mutate()
+			setSearchParams({}, { replace: true })
+		}
+	}, [searchParams, setSearchParams, refetchStripeStatus, createConnectMutation])
 
 	const updateProfileMutation = trpc.user.updateProfile.useMutation({
 		onSuccess: () => {
@@ -122,6 +174,60 @@ export function ProfilePage() {
 					</div>
 				</div>
 			</div>
+
+			{/* Stripe Connect Section */}
+			<Card className="mb-6">
+				<CardHeader>
+					<CardTitle className="flex items-center gap-2">
+						<CreditCard className="h-5 w-5 text-purple-500" />
+						Platby za akce
+					</CardTitle>
+					<CardDescription>
+						Nastavte si prijem plateb za placene akce
+					</CardDescription>
+				</CardHeader>
+				<CardContent>
+					{stripeStatus?.isOnboarded ? (
+						<div className="space-y-4">
+							<div className="flex items-center gap-2 text-green-600">
+								<CheckCircle className="h-5 w-5" />
+								<span className="font-medium">
+									Stripe ucet je aktivni
+								</span>
+							</div>
+							<p className="text-sm text-muted-foreground">
+								Muzete poridat placene akce a prijimat platby od ucastniku.
+							</p>
+							<Button
+								variant="outline"
+								onClick={() => createDashboardMutation.mutate()}
+								disabled={createDashboardMutation.isPending}
+							>
+								<ExternalLink className="mr-2 h-4 w-4" />
+								{createDashboardMutation.isPending
+									? 'Nacitani...'
+									: 'Otevrit Stripe Dashboard'}
+							</Button>
+						</div>
+					) : (
+						<div className="space-y-4">
+							<p className="text-sm text-muted-foreground">
+								Pro prijem plateb za placene akce si musite nastavit Stripe ucet.
+								Proces trva jen par minut.
+							</p>
+							<Button
+								onClick={() => createConnectMutation.mutate()}
+								disabled={createConnectMutation.isPending}
+							>
+								<CreditCard className="mr-2 h-4 w-4" />
+								{createConnectMutation.isPending
+									? 'Nacitani...'
+									: 'Nastavit prijem plateb'}
+							</Button>
+						</div>
+					)}
+				</CardContent>
+			</Card>
 
 			{/* Account Information */}
 			<Card>
