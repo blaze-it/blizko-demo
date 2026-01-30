@@ -9,6 +9,8 @@ import {
 } from 'lucide-react'
 import { MapContainer, Marker, TileLayer } from 'react-leaflet'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { ReviewForm } from '@/components/reviews/review-form'
+import { ReviewList } from '@/components/reviews/review-list'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -235,6 +237,12 @@ export function EventsDetailPage() {
 					)}
 				</CardContent>
 			</Card>
+
+			{/* Reviews Section */}
+			<div className="mt-6 space-y-6">
+				{user && <ReviewForm eventId={event.id} />}
+				<ReviewList eventId={event.id} currentUserId={user?.id} />
+			</div>
 		</div>
 	)
 }
