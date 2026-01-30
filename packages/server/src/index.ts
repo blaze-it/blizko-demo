@@ -1,7 +1,7 @@
 import crypto from 'node:crypto'
-import { AppError } from '@blizko/shared'
 import { serve } from '@hono/node-server'
 import { trpcServer } from '@hono/trpc-server'
+import { AppError } from '@zokoli/shared'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { logger as pinoLogger } from 'hono/logger'
@@ -12,6 +12,7 @@ import { onShutdown } from './utils/graceful-shutdown.js'
 
 initEnv()
 
+import { ParticipantStatus, PaymentStatus } from './generated/prisma/client.js'
 import { auth } from './lib/auth.js'
 import { paymentConfirmationEmail } from './lib/email-templates.js'
 import { stripe } from './lib/stripe.js'
@@ -20,7 +21,6 @@ import { appRouter } from './trpc/routers/index.js'
 import { prisma } from './utils/db.js'
 import { env } from './utils/env.js'
 import { logger } from './utils/logger.js'
-import { PaymentStatus, ParticipantStatus } from './generated/prisma/client.js'
 
 const MODE = env.NODE_ENV
 const IS_PROD = MODE === 'production'
@@ -66,6 +66,120 @@ app.use(
 app.get('/health', async (c) => {
 	return c.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
+
+// =============================================================================
+// OG Meta Tags Route for Social Media Sharing
+// =============================================================================
+app.get('/og/events/:id', async (c) => {
+	const eventId = c.req.param('id')
+	const frontendUrl = env.FRONTEND_URL || env.CLIENT_URL || 'http://localhost:5173'
+
+	try {
+		const event = await prisma.event.findUnique({
+			where: { id: eventId },
+			select: {
+				id: true,
+				title: true,
+				description: true,
+				imageUrl: true,
+				date: true,
+				locationName: true,
+			},
+		})
+
+		if (!event) {
+			// Return fallback OG tags for non-existent events
+			return c.html(`<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta property="og:title" content="Udalost nenalezena | Zokoli">
+	<meta property="og:description" content="Tato udalost neexistuje nebo byla odstranena.">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="${frontendUrl}/events/${eventId}">
+	<meta property="og:site_name" content="Zokoli">
+	<meta name="twitter:card" content="summary">
+	<meta http-equiv="refresh" content="0;url=${frontendUrl}/events/${eventId}">
+	<title>Udalost nenalezena | Zokoli</title>
+</head>
+<body>
+	<p>Presmerovani na <a href="${frontendUrl}/events/${eventId}">${frontendUrl}/events/${eventId}</a></p>
+</body>
+</html>`)
+		}
+
+		// Format date for display
+		const formattedDate = new Intl.DateTimeFormat('cs-CZ', {
+			weekday: 'long',
+			day: 'numeric',
+			month: 'long',
+			year: 'numeric',
+		}).format(new Date(event.date))
+
+		// Truncate description for OG tag (recommended max ~200 chars)
+		const truncatedDescription = event.description.length > 200
+			? `${event.description.slice(0, 197)}...`
+			: event.description
+
+		const ogDescription = `${formattedDate} | ${event.locationName} - ${truncatedDescription}`
+
+		// Default image if event has no image
+		const ogImage = event.imageUrl || `${frontendUrl}/og-default.png`
+
+		const eventUrl = `${frontendUrl}/events/${event.id}`
+
+		return c.html(`<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta property="og:title" content="${escapeHtml(event.title)} | Zokoli">
+	<meta property="og:description" content="${escapeHtml(ogDescription)}">
+	<meta property="og:image" content="${escapeHtml(ogImage)}">
+	<meta property="og:url" content="${eventUrl}">
+	<meta property="og:type" content="website">
+	<meta property="og:site_name" content="Zokoli">
+	<meta property="og:locale" content="cs_CZ">
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="${escapeHtml(event.title)} | Zokoli">
+	<meta name="twitter:description" content="${escapeHtml(ogDescription)}">
+	<meta name="twitter:image" content="${escapeHtml(ogImage)}">
+	<meta http-equiv="refresh" content="0;url=${eventUrl}">
+	<title>${escapeHtml(event.title)} | Zokoli</title>
+</head>
+<body>
+	<p>Presmerovani na <a href="${eventUrl}">${eventUrl}</a></p>
+</body>
+</html>`)
+	} catch (error) {
+		logger.error('Error fetching event for OG tags', error)
+		return c.html(`<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta property="og:title" content="Zokoli">
+	<meta property="og:description" content="Objevujte a vytvářejte lokální mikro-události ve vašem okolí">
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="${frontendUrl}">
+	<meta property="og:site_name" content="Zokoli">
+	<meta http-equiv="refresh" content="0;url=${frontendUrl}/events/${eventId}">
+	<title>Zokoli</title>
+</head>
+<body>
+	<p>Presmerovani na <a href="${frontendUrl}/events/${eventId}">${frontendUrl}/events/${eventId}</a></p>
+</body>
+</html>`)
+	}
+})
+
+// Helper function to escape HTML special characters
+function escapeHtml(text: string): string {
+	return text
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&#039;')
+}
 
 // =============================================================================
 // Stripe Webhook Handler (before body parsing)
@@ -128,12 +242,11 @@ app.post('/api/webhooks/stripe', async (c) => {
 					})
 
 					// Create EventParticipant
-					const existingParticipant =
-						await prisma.eventParticipant.findUnique({
-							where: {
-								eventId_userId: { eventId, userId },
-							},
-						})
+					const existingParticipant = await prisma.eventParticipant.findUnique({
+						where: {
+							eventId_userId: { eventId, userId },
+						},
+					})
 
 					if (!existingParticipant) {
 						await prisma.eventParticipant.create({
@@ -270,7 +383,7 @@ const server = serve(
 		port: portToUse,
 	},
 	(info) => {
-		logger.info(`Blizko API server running on http://localhost:${info.port}`)
+		logger.info(`Zokoli API server running on http://localhost:${info.port}`)
 	},
 )
 

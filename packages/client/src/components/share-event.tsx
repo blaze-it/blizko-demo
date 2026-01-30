@@ -10,6 +10,7 @@ import {
 	DropdownMenuSeparator,
 	DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { API_URL } from '@/config'
 
 interface ShareEventProps {
 	eventId: string
@@ -31,10 +32,19 @@ function WhatsAppIcon({ className }: { className?: string }) {
 	)
 }
 
-export function ShareEvent({ eventId, eventTitle, className }: ShareEventProps) {
+export function ShareEvent({
+	eventId,
+	eventTitle,
+	className,
+}: ShareEventProps) {
 	const [copied, setCopied] = useState(false)
 
+	// Regular event URL for copying/sharing directly
 	const eventUrl = `${window.location.origin}/events/${eventId}`
+
+	// OG URL for social media sharing (provides proper meta tags)
+	// Social media crawlers will fetch OG tags from this URL, then redirect users to eventUrl
+	const ogShareUrl = API_URL ? `${API_URL}/og/events/${eventId}` : eventUrl
 
 	const handleCopyLink = async () => {
 		try {
@@ -48,13 +58,14 @@ export function ShareEvent({ eventId, eventTitle, className }: ShareEventProps) 
 	}
 
 	const handleShareFacebook = () => {
-		const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(eventUrl)}`
+		// Use OG URL for Facebook so it gets proper meta tags
+		const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(ogShareUrl)}`
 		window.open(facebookUrl, '_blank', 'width=600,height=400')
 	}
 
 	const handleShareWhatsApp = () => {
 		const text = `Podivej se na tuto udalost: ${eventTitle}`
-		const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text + ' ' + eventUrl)}`
+		const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${text} ${eventUrl}`)}`
 		window.open(whatsappUrl, '_blank')
 	}
 
