@@ -19,6 +19,9 @@ const listEventsSchema = z.object({
 	lat: z.number().optional(),
 	lng: z.number().optional(),
 	radiusKm: z.number().optional(),
+	priceMin: z.number().optional(),
+	priceMax: z.number().optional(),
+	freeOnly: z.boolean().optional(),
 	cursor: z.string().optional(),
 	limit: z.number().min(1).max(100).default(20),
 })
@@ -69,8 +72,56 @@ export const eventsRouter = router({
 	list: publicProcedure
 		.input(listEventsSchema)
 		.query(async ({ ctx, input }) => {
-			const { category, date, search, lat, lng, radiusKm, cursor, limit } =
-				input
+			const {
+				category,
+				date,
+				search,
+				lat,
+				lng,
+				radiusKm,
+				priceMin,
+				priceMax,
+				freeOnly,
+				cursor,
+				limit,
+			} = input
+
+			// Build search filter - enhanced fulltext search across title, description, locationName, and address
+			const searchFilter = search
+				? {
+						OR: [
+							{ title: { contains: search, mode: 'insensitive' as const } },
+							{
+								description: {
+									contains: search,
+									mode: 'insensitive' as const,
+								},
+							},
+							{
+								locationName: {
+									contains: search,
+									mode: 'insensitive' as const,
+								},
+							},
+							{
+								address: {
+									contains: search,
+									mode: 'insensitive' as const,
+								},
+							},
+						],
+					}
+				: {}
+
+			// Build price filter
+			const priceFilter = freeOnly
+				? { price: 0 }
+				: {
+						...(priceMin !== undefined && { price: { gte: priceMin } }),
+						...(priceMax !== undefined && {
+							price: { ...(priceMin !== undefined ? { gte: priceMin } : {}), lte: priceMax },
+						}),
+					}
 
 			// If geo filter is requested, use raw SQL for Haversine distance
 			if (lat !== undefined && lng !== undefined && radiusKm !== undefined) {
@@ -102,23 +153,8 @@ export const eventsRouter = router({
 								lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000),
 							},
 						}),
-						...(search && {
-							OR: [
-								{ title: { contains: search, mode: 'insensitive' as const } },
-								{
-									description: {
-										contains: search,
-										mode: 'insensitive' as const,
-									},
-								},
-								{
-									locationName: {
-										contains: search,
-										mode: 'insensitive' as const,
-									},
-								},
-							],
-						}),
+						...searchFilter,
+						...priceFilter,
 						...(cursor && { id: { gt: cursor } }),
 					},
 					orderBy: { date: 'asc' },
@@ -147,23 +183,8 @@ export const eventsRouter = router({
 							lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000),
 						},
 					}),
-					...(search && {
-						OR: [
-							{ title: { contains: search, mode: 'insensitive' as const } },
-							{
-								description: {
-									contains: search,
-									mode: 'insensitive' as const,
-								},
-							},
-							{
-								locationName: {
-									contains: search,
-									mode: 'insensitive' as const,
-								},
-							},
-						],
-					}),
+					...searchFilter,
+					...priceFilter,
 					...(cursor && { id: { gt: cursor } }),
 				},
 				orderBy: { date: 'asc' },
