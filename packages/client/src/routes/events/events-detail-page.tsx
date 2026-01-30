@@ -7,6 +7,7 @@ import {
 	Edit,
 	MapPin,
 	QrCode,
+	UserCheck,
 	Users,
 	XCircle,
 } from 'lucide-react'
@@ -254,6 +255,12 @@ export function EventsDetailPage() {
 									<Link to={`/events/${event.id}/edit`}>
 										<Edit className="h-4 w-4 mr-2" />
 										Upravit událost
+									</Link>
+								</Button>
+								<Button asChild variant="secondary">
+									<Link to={`/events/${event.id}/check-in`}>
+										<UserCheck className="h-4 w-4 mr-2" />
+										Odbavit účastníky
 									</Link>
 								</Button>
 								{event.status !== 'CANCELLED' && (

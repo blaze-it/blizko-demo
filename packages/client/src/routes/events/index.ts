@@ -1,3 +1,4 @@
+export { CheckInPage } from './check-in-page'
 export { EventsDetailPage } from './events-detail-page'
 export { EventsEditPage } from './events-edit-page'
 export { EventsNewPage } from './events-new-page'

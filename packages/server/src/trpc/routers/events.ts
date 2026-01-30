@@ -454,6 +454,96 @@ export const eventsRouter = router({
 	}),
 
 	/**
+	 * Get participants for an event (organizer only)
+	 */
+	getParticipants: protectedProcedure
+		.input(z.object({ eventId: z.string() }))
+		.query(async ({ ctx, input }) => {
+			const event = await ensureExists(
+				ctx.prisma.event.findFirst({ where: { id: input.eventId } }),
+				'Event',
+				input.eventId,
+			)
+
+			if (event.organizerId !== ctx.userId) {
+				throw Errors.forbidden('Only the organizer can view participants')
+			}
+
+			const participants = await ctx.prisma.eventParticipant.findMany({
+				where: { eventId: input.eventId },
+				include: {
+					user: {
+						select: { id: true, name: true, email: true },
+					},
+				},
+				orderBy: { createdAt: 'asc' },
+			})
+
+			return participants
+		}),
+
+	/**
+	 * Check in a participant (organizer only)
+	 */
+	checkIn: protectedProcedure
+		.input(
+			z.object({
+				participantId: z.string().optional(),
+				qrCode: z.string().optional(),
+			}),
+		)
+		.mutation(async ({ ctx, input }) => {
+			// Parse participant ID from QR code if provided
+			let participantId = input.participantId
+			if (input.qrCode) {
+				const match = input.qrCode.match(/^ZOKOLI:(.+)$/)
+				if (match) {
+					participantId = match[1]
+				} else {
+					throw Errors.validation('Invalid QR code format')
+				}
+			}
+
+			if (!participantId) {
+				throw Errors.validation('participantId or qrCode is required')
+			}
+
+			const participant = await ensureExists(
+				ctx.prisma.eventParticipant.findFirst({
+					where: { id: participantId },
+					include: {
+						event: true,
+						user: { select: { id: true, name: true, email: true } },
+					},
+				}),
+				'EventParticipant',
+				participantId,
+			)
+
+			if (participant.event.organizerId !== ctx.userId) {
+				throw Errors.forbidden('Only the organizer can check in participants')
+			}
+
+			if (participant.status === ParticipantStatus.CANCELLED) {
+				throw Errors.conflict('Cannot check in a cancelled participant')
+			}
+
+			if (participant.checkedInAt) {
+				throw Errors.conflict('Participant is already checked in')
+			}
+
+			const updated = await ctx.prisma.eventParticipant.update({
+				where: { id: participantId },
+				data: { checkedInAt: new Date() },
+				include: {
+					user: { select: { id: true, name: true, email: true } },
+				},
+			})
+
+			return updated
+		}),
+
+	/**
 	 * Get ticket info for a participant including QR code
 	 */
 	getTicket: protectedProcedure

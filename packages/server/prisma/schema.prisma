@@ -150,11 +150,12 @@ model Event {
 }
 
 model EventParticipant {
-  id        String            @id @default(cuid())
-  createdAt DateTime          @default(now())
-  status    ParticipantStatus @default(CONFIRMED)
-  eventId   String
-  userId    String
+  id          String            @id @default(cuid())
+  createdAt   DateTime          @default(now())
+  status      ParticipantStatus @default(CONFIRMED)
+  checkedInAt DateTime?
+  eventId     String
+  userId      String
 
   event Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
