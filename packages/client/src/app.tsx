@@ -47,6 +47,11 @@ const ProfilePage = lazy(() =>
 	import('@/routes/profile').then((m) => ({ default: m.ProfilePage })),
 )
 
+// Users
+const UserProfilePage = lazy(() =>
+	import('@/routes/users').then((m) => ({ default: m.UserProfilePage })),
+)
+
 function PageLoader() {
 	return (
 		<div className="flex min-h-[50vh] items-center justify-center">
@@ -99,6 +104,9 @@ export default function App() {
 
 						{/* Profile */}
 						<Route path="/profile" element={<ProfilePage />} />
+
+						{/* Users */}
+						<Route path="/users/:id" element={<UserProfilePage />} />
 
 						<Route path="*" element={<NotFound />} />
 					</Route>
