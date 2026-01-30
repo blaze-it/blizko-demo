@@ -1,7 +1,7 @@
 import { Calendar, Locate, MapPin, Plus, Users } from 'lucide-react'
 import { useCallback, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { EventMap } from '@/components/event-map'
+import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { EventMapWithFilters } from '@/components/event-map-with-filters'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -30,6 +30,15 @@ const CATEGORIES = [
 	{ value: 'OTHER', label: 'Ostatní' },
 ] as const
 
+type CategoryValue =
+	| 'WORKOUT'
+	| 'WORKSHOP'
+	| 'KIDS'
+	| 'MEETUP'
+	| 'LECTURE'
+	| 'LEISURE'
+	| 'OTHER'
+
 const CATEGORY_COLORS: Record<
 	string,
 	'default' | 'secondary' | 'accent' | 'outline'
@@ -46,13 +55,49 @@ const CATEGORY_COLORS: Record<
 export function EventsPage() {
 	usePageTitle('Události')
 	const navigate = useNavigate()
-	const [search, setSearch] = useState('')
-	const [category, setCategory] = useState('ALL')
-	const [date, setDate] = useState('')
-	const [freeOnly, setFreeOnly] = useState(false)
-	const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null)
+	const [searchParams, setSearchParams] = useSearchParams()
+
+	// Read filters from URL params
+	const search = searchParams.get('search') || ''
+	const category = searchParams.get('category') || 'ALL'
+	const dateFrom = searchParams.get('dateFrom') || ''
+	const dateTo = searchParams.get('dateTo') || ''
+	const freeOnly = searchParams.get('freeOnly') === 'true'
+	const priceMinParam = searchParams.get('priceMin')
+	const priceMaxParam = searchParams.get('priceMax')
+	const priceMin = priceMinParam ? parseInt(priceMinParam, 10) : undefined
+	const priceMax = priceMaxParam ? parseInt(priceMaxParam, 10) : undefined
+
+	const [userLocation, setUserLocation] = useState<{
+		lat: number
+		lng: number
+	} | null>(null)
 	const [locationLoading, setLocationLoading] = useState(false)
 	const [locationError, setLocationError] = useState<string | null>(null)
+
+	// Update URL params when filter changes
+	const updateFilter = useCallback(
+		(key: string, value: string | boolean | null) => {
+			setSearchParams(
+				(prev) => {
+					const newParams = new URLSearchParams(prev)
+					if (
+						value === null ||
+						value === '' ||
+						value === 'ALL' ||
+						value === false
+					) {
+						newParams.delete(key)
+					} else {
+						newParams.set(key, String(value))
+					}
+					return newParams
+				},
+				{ replace: true },
+			)
+		},
+		[setSearchParams],
+	)
 
 	const requestLocation = useCallback(() => {
 		if (!navigator.geolocation) {
@@ -91,7 +136,7 @@ export function EventsPage() {
 				enableHighAccuracy: true,
 				timeout: 10000,
 				maximumAge: 300000, // 5 minutes
-			}
+			},
 		)
 	}, [])
 
@@ -102,18 +147,11 @@ export function EventsPage() {
 
 	const { data, isLoading } = trpc.events.list.useQuery({
 		search: search || undefined,
-		category:
-			category !== 'ALL'
-				? (category as
-						| 'WORKOUT'
-						| 'WORKSHOP'
-						| 'KIDS'
-						| 'MEETUP'
-						| 'LECTURE'
-						| 'LEISURE'
-						| 'OTHER')
-				: undefined,
-		date: date || undefined,
+		category: category !== 'ALL' ? (category as CategoryValue) : undefined,
+		dateFrom: dateFrom || undefined,
+		dateTo: dateTo || undefined,
+		priceMin,
+		priceMax,
 		freeOnly: freeOnly || undefined,
 		lat: userLocation?.lat,
 		lng: userLocation?.lng,
@@ -130,18 +168,6 @@ export function EventsPage() {
 		})
 	}
 
-	// Prepare events for map with required fields
-	const mapEvents = (events ?? [])
-		.filter((e) => e.latitude != null && e.longitude != null)
-		.map((e) => ({
-			id: e.id,
-			title: e.title,
-			latitude: e.latitude!,
-			longitude: e.longitude!,
-			date: e.date,
-			startTime: e.startTime,
-		}))
-
 	return (
 		<div className="min-h-screen bg-background">
 			<div className="container mx-auto max-w-4xl px-4 py-6 pb-24">
@@ -149,11 +175,10 @@ export function EventsPage() {
 					Procházet události
 				</h1>
 
-				{/* Map with clustering */}
-				<EventMap
-					events={mapEvents}
+				{/* Map with filters */}
+				<EventMapWithFilters
 					userLocation={userLocation}
-					className="h-64 mb-6"
+					className="h-72 mb-6"
 				/>
 
 				{/* Filter Bar */}
@@ -161,11 +186,14 @@ export function EventsPage() {
 					<div className="flex flex-col sm:flex-row gap-3">
 						<SearchInput
 							value={search}
-							onChange={setSearch}
+							onChange={(value) => updateFilter('search', value)}
 							placeholder="Hledat události..."
 							className="flex-1"
 						/>
-						<Select value={category} onValueChange={setCategory}>
+						<Select
+							value={category}
+							onValueChange={(value) => updateFilter('category', value)}
+						>
 							<SelectTrigger className="w-full sm:w-48">
 								<SelectValue placeholder="Kategorie" />
 							</SelectTrigger>
@@ -177,22 +205,73 @@ export function EventsPage() {
 								))}
 							</SelectContent>
 						</Select>
-						<Input
-							type="date"
-							value={date}
-							onChange={(e) => setDate(e.target.value)}
-							className="w-full sm:w-44"
-						/>
 					</div>
 
-					{/* Secondary filters row */}
+					{/* Date range filters */}
+					<div className="flex flex-col sm:flex-row gap-3">
+						<div className="flex items-center gap-2 flex-1">
+							<Label className="text-sm text-muted-foreground whitespace-nowrap">
+								Od:
+							</Label>
+							<Input
+								type="date"
+								value={dateFrom}
+								onChange={(e) => updateFilter('dateFrom', e.target.value)}
+								className="flex-1"
+							/>
+						</div>
+						<div className="flex items-center gap-2 flex-1">
+							<Label className="text-sm text-muted-foreground whitespace-nowrap">
+								Do:
+							</Label>
+							<Input
+								type="date"
+								value={dateTo}
+								onChange={(e) => updateFilter('dateTo', e.target.value)}
+								className="flex-1"
+							/>
+						</div>
+					</div>
+
+					{/* Price range and other filters */}
 					<div className="flex flex-wrap items-center gap-4">
+						{/* Price range */}
+						<div className="flex items-center gap-2">
+							<Label className="text-sm text-muted-foreground whitespace-nowrap">
+								Cena:
+							</Label>
+							<Input
+								type="number"
+								min={0}
+								placeholder="Od"
+								value={priceMin ?? ''}
+								onChange={(e) =>
+									updateFilter('priceMin', e.target.value || null)
+								}
+								className="w-20"
+							/>
+							<span className="text-muted-foreground">-</span>
+							<Input
+								type="number"
+								min={0}
+								placeholder="Do"
+								value={priceMax ?? ''}
+								onChange={(e) =>
+									updateFilter('priceMax', e.target.value || null)
+								}
+								className="w-20"
+							/>
+							<span className="text-sm text-muted-foreground">Kč</span>
+						</div>
+
 						{/* Free only checkbox */}
 						<div className="flex items-center space-x-2">
 							<Checkbox
 								id="freeOnly"
 								checked={freeOnly}
-								onCheckedChange={(checked) => setFreeOnly(checked === true)}
+								onCheckedChange={(checked) =>
+									updateFilter('freeOnly', checked === true)
+								}
 							/>
 							<Label htmlFor="freeOnly" className="text-sm cursor-pointer">
 								Pouze zdarma
@@ -224,7 +303,9 @@ export function EventsPage() {
 								</Button>
 							)}
 							{locationError && (
-								<span className="text-xs text-destructive">{locationError}</span>
+								<span className="text-xs text-destructive">
+									{locationError}
+								</span>
 							)}
 						</div>
 					</div>
@@ -265,7 +346,8 @@ export function EventsPage() {
 															CATEGORY_COLORS[event.category] || 'outline'
 														}
 													>
-														{CATEGORIES.find((c) => c.value === event.category)?.label ?? event.category}
+														{CATEGORIES.find((c) => c.value === event.category)
+															?.label ?? event.category}
 													</Badge>
 												</div>
 												<div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-muted-foreground mt-2">
@@ -275,7 +357,9 @@ export function EventsPage() {
 													</span>
 													<span className="flex items-center gap-1 min-w-0">
 														<MapPin className="h-3.5 w-3.5 shrink-0" />
-														<span className="truncate">{event.locationName}</span>
+														<span className="truncate">
+															{event.locationName}
+														</span>
 													</span>
 													{event.capacity && (
 														<span className="flex items-center gap-1">

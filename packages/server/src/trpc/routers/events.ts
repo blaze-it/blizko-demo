@@ -16,6 +16,8 @@ import { protectedProcedure, publicProcedure, router } from '../trpc.js'
 const listEventsSchema = z.object({
 	category: z.nativeEnum(EventCategory).optional(),
 	date: z.string().optional(),
+	dateFrom: z.string().optional(),
+	dateTo: z.string().optional(),
 	search: z.string().optional(),
 	lat: z.number().optional(),
 	lng: z.number().optional(),
@@ -76,6 +78,8 @@ export const eventsRouter = router({
 			const {
 				category,
 				date,
+				dateFrom,
+				dateTo,
 				search,
 				lat,
 				lng,
@@ -86,6 +90,28 @@ export const eventsRouter = router({
 				cursor,
 				limit,
 			} = input
+
+			// Build date filter
+			const buildDateFilter = () => {
+				// Single date takes priority if provided
+				if (date) {
+					return {
+						gte: new Date(date),
+						lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000),
+					}
+				}
+				// Otherwise use date range if provided
+				if (dateFrom || dateTo) {
+					return {
+						...(dateFrom && { gte: new Date(dateFrom) }),
+						...(dateTo && {
+							lt: new Date(new Date(dateTo).getTime() + 24 * 60 * 60 * 1000),
+						}),
+					}
+				}
+				return undefined
+			}
+			const dateFilter = buildDateFilter()
 
 			// Build search filter - enhanced fulltext search across title, description, locationName, and address
 			const searchFilter = search
@@ -151,12 +177,7 @@ export const eventsRouter = router({
 						id: { in: nearbyIdList },
 						status: EventStatus.PUBLISHED,
 						...(category && { category }),
-						...(date && {
-							date: {
-								gte: new Date(date),
-								lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000),
-							},
-						}),
+						...(dateFilter && { date: dateFilter }),
 						...searchFilter,
 						...priceFilter,
 						...(cursor && { id: { gt: cursor } }),
@@ -181,12 +202,7 @@ export const eventsRouter = router({
 				where: {
 					status: EventStatus.PUBLISHED,
 					...(category && { category }),
-					...(date && {
-						date: {
-							gte: new Date(date),
-							lt: new Date(new Date(date).getTime() + 24 * 60 * 60 * 1000),
-						},
-					}),
+					...(dateFilter && { date: dateFilter }),
 					...searchFilter,
 					...priceFilter,
 					...(cursor && { id: { gt: cursor } }),
