@@ -30,6 +30,7 @@ model User {
   roles             Role[]
   organizedEvents   Event[]              @relation("EventOrganizer")
   eventParticipants EventParticipant[]
+  reviewsWritten    Review[]             @relation("ReviewsWritten")
 }
 
 model Session {
@@ -133,6 +134,7 @@ model Event {
 
   organizer    User               @relation("EventOrganizer", fields: [organizerId], references: [id], onDelete: Cascade)
   participants EventParticipant[]
+  reviews      Review[]
 }
 
 model EventParticipant {
@@ -146,6 +148,21 @@ model EventParticipant {
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([eventId, userId])
+}
+
+model Review {
+  id         String   @id @default(cuid())
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  rating     Int      // 1-5
+  comment    String?
+  eventId    String
+  reviewerId String
+
+  event    Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  reviewer User  @relation("ReviewsWritten", fields: [reviewerId], references: [id], onDelete: Cascade)
+
+  @@unique([eventId, reviewerId])
 }
 
 // ============================================================================
